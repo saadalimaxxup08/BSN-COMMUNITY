@@ -197,7 +197,7 @@ async function processStudentLogin(studentName) {
 
     // Set Current User State
     AppState.currentUser = userData;
-    AppState.activeSemester = userData.semesterKey || "sem-1";
+    AppState.activeSemester = "sem-5"; // Always default to active exam Semester 5
 
     // Set Avatar initials
     const initials = userData.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -205,7 +205,7 @@ async function processStudentLogin(studentName) {
     elements.navStudentName.textContent = userData.name;
     elements.navStudentRoll.textContent = userData.rollNo;
     elements.bannerStudentName.textContent = userData.name;
-    elements.bannerSemesterBadge.textContent = userData.semester || "Semester 1";
+    elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
 
     if (elements.bannerUserStatus) {
         elements.bannerUserStatus.textContent = userData.isNewStudent 
@@ -315,7 +315,7 @@ function closeLockedSemesterModal() {
 
 function renderDashboard() {
     updateStatsSummary();
-    renderSubjects(AppState.activeSemester || 'sem-5');
+    switchSemester(AppState.activeSemester || 'sem-5');
     renderAssessmentHistory();
 }
 
