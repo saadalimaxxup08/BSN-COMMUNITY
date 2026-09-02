@@ -181,8 +181,8 @@ async function processStudentLogin(studentName) {
         userData = {
             name: cleanName,
             rollNo: generatedRoll,
-            semester: "Semester 1",
-            semesterKey: "sem-1",
+            semester: "Semester 5",
+            semesterKey: "sem-5",
             createdAt: new Date().toISOString(),
             isNewStudent: true
         };
