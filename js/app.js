@@ -504,14 +504,26 @@ function renderCurrentQuestion() {
     });
 
     // Button states
-    elements.btnPrevQuestion.disabled = (qIndex === 0);
-    elements.btnPrevQuestion.style.opacity = (qIndex === 0) ? "0.4" : "1";
+    const isModelPaper = AppState.activeQuiz.isModelPaper || AppState.activeQuiz.showAnswersImmediately === false;
+
+    if (isModelPaper) {
+        // Hide Previous button for protected Model Papers
+        elements.btnPrevQuestion.style.display = 'none';
+    } else {
+        elements.btnPrevQuestion.style.display = 'inline-flex';
+        elements.btnPrevQuestion.disabled = (qIndex === 0);
+        elements.btnPrevQuestion.style.opacity = (qIndex === 0) ? "0.4" : "1";
+    }
+
+    const hasAnsweredCurrent = AppState.userAnswers[qIndex] !== null && AppState.userAnswers[qIndex] !== undefined;
 
     if (qIndex === totalQ - 1) {
         elements.btnNextQuestion.style.display = 'none';
         elements.btnSubmitQuiz.style.display = 'inline-flex';
+        elements.btnSubmitQuiz.style.opacity = hasAnsweredCurrent ? "1" : "0.6";
     } else {
         elements.btnNextQuestion.style.display = 'inline-flex';
+        elements.btnNextQuestion.style.opacity = hasAnsweredCurrent ? "1" : "0.6";
         elements.btnSubmitQuiz.style.display = 'none';
     }
 }
@@ -524,6 +536,9 @@ function selectOption(optionIndex) {
 
 function initQuizControls() {
     elements.btnPrevQuestion.addEventListener('click', () => {
+        const isModelPaper = AppState.activeQuiz && (AppState.activeQuiz.isModelPaper || AppState.activeQuiz.showAnswersImmediately === false);
+        if (isModelPaper) return; // Prevent going back in Model Paper mode
+
         if (AppState.currentQuestionIndex > 0) {
             AppState.currentQuestionIndex--;
             renderCurrentQuestion();
@@ -531,6 +546,15 @@ function initQuizControls() {
     });
 
     elements.btnNextQuestion.addEventListener('click', () => {
+        const qIndex = AppState.currentQuestionIndex;
+        const currentAnswer = AppState.userAnswers[qIndex];
+
+        // Mandatory check: Must select an option before moving to the next question
+        if (currentAnswer === null || currentAnswer === undefined) {
+            alert("⚠️ Mandatory Selection Required:\nPlease select an answer option before moving to the next question.");
+            return;
+        }
+
         if (AppState.currentQuestionIndex < AppState.activeQuiz.questions.length - 1) {
             AppState.currentQuestionIndex++;
             renderCurrentQuestion();
@@ -538,6 +562,14 @@ function initQuizControls() {
     });
 
     elements.btnSubmitQuiz.addEventListener('click', () => {
+        const qIndex = AppState.currentQuestionIndex;
+        const currentAnswer = AppState.userAnswers[qIndex];
+
+        if (currentAnswer === null || currentAnswer === undefined) {
+            alert("⚠️ Mandatory Selection Required:\nPlease select an answer option for the current question before submitting.");
+            return;
+        }
+
         const unansweredCount = AppState.userAnswers.filter(a => a === null).length;
         let confirmMsg = "Are you sure you want to submit your assessment?";
         if (unansweredCount > 0) {
@@ -618,6 +650,14 @@ function initQuizControls() {
     const btnTopSubmit = document.getElementById('btn-top-quick-submit');
     if (btnTopSubmit) {
         btnTopSubmit.addEventListener('click', () => {
+            const qIndex = AppState.currentQuestionIndex;
+            const currentAnswer = AppState.userAnswers[qIndex];
+
+            if (currentAnswer === null || currentAnswer === undefined) {
+                alert("⚠️ Mandatory Selection Required:\nPlease select an answer option for the current question before submitting.");
+                return;
+            }
+
             const unansweredCount = AppState.userAnswers.filter(a => a === null).length;
             let confirmMsg = "Are you sure you want to submit your examination paper now?";
             if (unansweredCount > 0) {
