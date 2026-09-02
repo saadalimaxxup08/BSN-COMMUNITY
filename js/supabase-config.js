@@ -5,9 +5,9 @@
 // ===================================================
 
 const SUPABASE_CONFIG = {
-    // Paste your Supabase credentials here when ready:
-    url: "https://YOUR_SUPABASE_PROJECT_ID.supabase.co",
-    anonKey: "YOUR_SUPABASE_ANON_KEY_HERE",
+    // Active Supabase Credentials
+    url: "https://ocdrtjvlurhhrwshggdx.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jZHJ0anZsdXJoaHJ3c2hnZ2R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1ODQ2MDcsImV4cCI6MjEwMjE2MDYwN30.3ua-6EJ7Ga2Ao8dcNbfB7SFYvtjUijl9ON9QwNdUBgs",
     
     client: null,
 
