@@ -185,14 +185,14 @@
             </div>
 
             <div id="semester-tabs" class="semester-tabs-container">
-                <button class="sem-tab-btn active" data-semester="sem-1">Semester 1</button>
-                <button class="sem-tab-btn" data-semester="sem-2">Semester 2</button>
-                <button class="sem-tab-btn" data-semester="sem-3">Semester 3</button>
-                <button class="sem-tab-btn" data-semester="sem-4">Semester 4</button>
-                <button class="sem-tab-btn" data-semester="sem-5">Semester 5</button>
-                <button class="sem-tab-btn" data-semester="sem-6">Semester 6</button>
-                <button class="sem-tab-btn" data-semester="sem-7">Semester 7</button>
-                <button class="sem-tab-btn" data-semester="sem-8">Semester 8</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-1">🔒 Sem 1</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-2">🔒 Sem 2</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-3">🔒 Sem 3</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-4">🔒 Sem 4</button>
+                <button class="sem-tab-btn active glowing-sem-5" data-semester="sem-5">🔥 Semester 5 (Live Exam)</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-6">🔒 Sem 6</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-7">🔒 Sem 7</button>
+                <button class="sem-tab-btn locked-sem" data-semester="sem-8">🔒 Sem 8</button>
             </div>
 
             <!-- Dynamic Subject Quizzes Grid -->
@@ -523,6 +523,26 @@
                     <span>Cancel</span>
                 </button>
             </div>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 7. LOCKED SEMESTER NOTICE MODAL -->
+    <!-- ==================================================== -->
+    <div id="locked-semester-modal" class="modal-overlay">
+        <div class="glass-card modal-card" style="max-width:480px; text-align:center;">
+            <button id="btn-close-locked-modal" class="modal-close-btn">&times;</button>
+            <div class="modal-icon" style="background:rgba(245,158,11,0.15); color:var(--amber-warning);">
+                <span>🔒</span>
+            </div>
+            <h3 id="locked-modal-title" class="modal-title">Assessment Currently Unavailable</h3>
+            <p id="locked-modal-desc" class="modal-desc" style="line-height:1.6; margin-bottom:24px;">
+                Notice: Currently, live examination model papers are active exclusively for <strong>BSN Semester 5</strong>. Question banks for other semesters are under review and will be published shortly.
+            </p>
+            <button type="button" id="btn-go-sem5" class="btn-primary">
+                <span>🔥 Proceed to Semester 5 Examination</span>
+            </button>
         </div>
     </div>
 

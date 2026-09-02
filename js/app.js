@@ -6,14 +6,15 @@
 
 const AppState = {
     currentUser: null,
-    activeSemester: "sem-1",
+    activeSemester: "sem-5", // Default active semester set to Semester 5
     activeQuiz: null,
     currentQuestionIndex: 0,
     userAnswers: [],
     timerInterval: null,
     remainingSeconds: 0,
     latestResult: null,
-    studentHistory: []
+    studentHistory: [],
+    pendingQuizId: null
 };
 
 // ----------------- DOM ELEMENTS -----------------
@@ -228,13 +229,73 @@ function initDashboard() {
         const targetSem = tabBtn.getAttribute('data-semester');
         if (!targetSem) return;
 
-        // Update active tab styling
-        document.querySelectorAll('.sem-tab-btn').forEach(btn => btn.classList.remove('active'));
-        tabBtn.classList.add('active');
+        // If clicking a locked semester (not sem-5), show notice modal
+        if (targetSem !== 'sem-5') {
+            openLockedSemesterModal(targetSem);
+            return;
+        }
 
-        AppState.activeSemester = targetSem;
-        renderSubjects(targetSem);
+        switchSemester(targetSem);
     });
+
+    // Locked Semester Modal Controls
+    const btnGoSem5 = document.getElementById('btn-go-sem5');
+    if (btnGoSem5) {
+        btnGoSem5.addEventListener('click', () => {
+            closeLockedSemesterModal();
+            switchSemester('sem-5');
+        });
+    }
+
+    const btnCloseLocked = document.getElementById('btn-close-locked-modal');
+    if (btnCloseLocked) {
+        btnCloseLocked.addEventListener('click', closeLockedSemesterModal);
+    }
+}
+
+function switchSemester(semKey) {
+    document.querySelectorAll('.sem-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-semester') === semKey) {
+            btn.classList.add('active');
+        }
+    });
+
+    if (elements.bannerSemesterBadge) {
+        elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
+    }
+
+    AppState.activeSemester = semKey;
+    renderSubjects(semKey);
+}
+
+function openLockedSemesterModal(semKey) {
+    const semNames = {
+        'sem-1': 'Semester 1',
+        'sem-2': 'Semester 2',
+        'sem-3': 'Semester 3',
+        'sem-4': 'Semester 4',
+        'sem-6': 'Semester 6',
+        'sem-7': 'Semester 7',
+        'sem-8': 'Semester 8'
+    };
+    const name = semNames[semKey] || 'Selected Semester';
+
+    const modal = document.getElementById('locked-semester-modal');
+    const title = document.getElementById('locked-modal-title');
+    const desc = document.getElementById('locked-modal-desc');
+
+    if (title) title.textContent = `${name} Currently Unavailable`;
+    if (desc) {
+        desc.innerHTML = `Notice: Currently, live examination model papers are available <strong>exclusively for BSN Semester 5</strong>. Question banks for ${name} are currently under review and will be published shortly.`;
+    }
+
+    if (modal) modal.classList.add('active');
+}
+
+function closeLockedSemesterModal() {
+    const modal = document.getElementById('locked-semester-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 function renderDashboard() {

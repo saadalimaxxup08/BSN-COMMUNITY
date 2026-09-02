@@ -526,6 +526,45 @@ body {
     box-shadow: 0 4px 14px var(--cyan-glow);
 }
 
+/* Glowing Highlight for Active Semester 5 */
+.sem-tab-btn.glowing-sem-5 {
+    background: linear-gradient(135deg, #f43f5e, #06b6d4, #10b981) !important;
+    background-size: 200% 200% !important;
+    animation: glowGradient 3s ease infinite, sem5Pulse 2.2s infinite ease-in-out !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 22px rgba(244, 63, 94, 0.65), 0 0 12px rgba(6, 182, 212, 0.5) !important;
+    padding: 10px 22px !important;
+}
+
+@keyframes glowGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes sem5Pulse {
+    0% { transform: scale(1); box-shadow: 0 0 16px rgba(244, 63, 94, 0.6); }
+    50% { transform: scale(1.06); box-shadow: 0 0 28px rgba(244, 63, 94, 0.9), 0 0 16px rgba(6, 182, 212, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 0 16px rgba(244, 63, 94, 0.6); }
+}
+
+/* Locked Semesters */
+.sem-tab-btn.locked-sem {
+    opacity: 0.55;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+}
+
+.sem-tab-btn.locked-sem:hover {
+    opacity: 0.85;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
 /* Subject Grid Cards */
 .subjects-grid {
     display: grid;
