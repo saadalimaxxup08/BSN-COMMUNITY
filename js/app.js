@@ -191,6 +191,8 @@ async function processStudentLogin(studentName) {
         // Existing student returning
         userData = {
             ...check.profile,
+            semester: "Semester 5",
+            semesterKey: "sem-5",
             isNewStudent: false
         };
     }
@@ -282,14 +284,6 @@ window.switchSemester = function(semKey) {
 
     AppState.activeSemester = semKey;
     renderSubjects(semKey);
-
-    // Auto open Exam Briefing modal when Semester 5 tab is clicked
-    if (semKey === 'sem-5') {
-        const modelPaper = findQuizById('s5-model-paper');
-        if (modelPaper) {
-            openExamBriefing(modelPaper);
-        }
-    }
 };
 
 window.startQuiz = function(quizId) {
