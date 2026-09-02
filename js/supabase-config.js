@@ -5,9 +5,9 @@
 // ===================================================
 
 const SUPABASE_CONFIG = {
-    // Active Supabase Credentials
-    url: "https://ocdrtjvlurhhrwshggdx.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jZHJ0anZsdXJoaHJ3c2hnZ2R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1ODQ2MDcsImV4cCI6MjEwMjE2MDYwN30.3ua-6EJ7Ga2Ao8dcNbfB7SFYvtjUijl9ON9QwNdUBgs",
+    // Active Supabase Credentials (Project: nzouoopsknvcwlhlxytz)
+    url: "https://nzouoopsknvcwlhlxytz.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56b3Vvb3Bza252Y3dsaGx4eXR6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODM0MDUzNSwiZXhwIjoyMTAzOTE2NTM1fQ.1Wtd_GyBknc1nN7iw7BIqrs7OmQ8tKOAqOZ_1mlEG_0",
     
     client: null,
 
