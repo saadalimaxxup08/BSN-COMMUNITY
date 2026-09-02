@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zafii MedPortal - BSN Nursing Assessment & Examination System</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Glassmorphic Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- External Libraries (CDN) -->
+    <!-- 1. html2pdf.js for direct Chrome PDF marksheet downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- 2. canvas-confetti for quiz completion celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    
+    <!-- 3. Supabase Client Library (Ready for cloud DB connection) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs Background -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+
+        <!-- ==================================================== -->
+        <!-- 1. LOGIN / FRONT VIEW -->
+        <!-- ==================================================== -->
+        <section id="login-view" class="view-section active">
+            <div class="login-wrapper">
+                <div class="glass-card login-card">
+                    
+                    <div class="login-badge">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>BSN Nursing Examination Portal</span>
+                    </div>
+
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+
+                    <h1 class="login-title">Zafii MedPortal</h1>
+                    <p class="login-subtitle">Standardized Clinical Quizzes & Instant PDF Marksheets for Medical Scholars</p>
+
+                    <!-- Student Login Form -->
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label" for="student-name-input">
+                                <i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Student Full Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="student-name-input" 
+                                class="input-glass" 
+                                placeholder="e.g. Nurse Sarah Jenkins / John Doe" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="student-password-input">
+                                <i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Student PIN / Access Code
+                            </label>
+                            <input 
+                                type="password" 
+                                id="student-password-input" 
+                                class="input-glass" 
+                                placeholder="••••••••" 
+                                value="123456"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <span>Access Student Portal</span>
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </button>
+                    </form>
+
+                    <div class="login-divider">
+                        <span>OR EXPLORE INSTANTLY</span>
+                    </div>
+
+                    <!-- Single Click Demo Login -->
+                    <button type="button" id="btn-demo-login" class="btn-demo">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        <span>One-Click Demo Assessment Login</span>
+                    </button>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================================================== -->
+        <!-- 2. STUDENT DASHBOARD VIEW -->
+        <!-- ==================================================== -->
+        <section id="dashboard-view" class="view-section">
+            
+            <!-- Glass Navbar -->
+            <header class="glass-card top-navbar">
+                <div class="nav-brand">
+                    <div class="nav-logo">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div>
+                        <div class="nav-title">Zafii MedPortal</div>
+                        <div class="nav-sub">BSN Nursing Academy</div>
+                    </div>
+                </div>
+
+                <div class="user-badge-wrap">
+                    <div class="user-profile-pill">
+                        <div id="nav-user-avatar" class="user-avatar-circle">ST</div>
+                        <div>
+                            <div id="nav-student-name" style="font-size:14px; font-weight:700; color:#fff;">Medical Scholar</div>
+                            <div id="nav-student-roll" style="font-size:11px; color:var(--text-muted);">BSN-2026-001</div>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-logout" class="btn-icon-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span style="margin-left:4px;">Sign Out</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Welcome & Stats Banner -->
+            <div class="glass-card welcome-banner">
+                <div class="welcome-header">
+                    <h2>Welcome back, <span id="banner-student-name" style="color:var(--cyan-primary);">Scholar</span>! 👋</h2>
+                    <p>Select your academic semester to begin course assessments. Instant scoring and verified A4 PDF marksheets are automatically generated upon submission.</p>
+                    <div style="margin-top:8px;">
+                        <span id="banner-user-status" class="subject-code-tag" style="background:rgba(16,185,129,0.15); color:var(--emerald-success);">
+                            Account Synchronized
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon cyan">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div id="stat-total-quizzes" class="stat-num">0</div>
+                            <div class="stat-label">Assessments Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-icon emerald">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div id="stat-avg-score" class="stat-num">0%</div>
+                            <div class="stat-label">Cumulative Average</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div id="stat-passed-rate" class="stat-num">0%</div>
+                            <div class="stat-label">Passing Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester Filter Tabs -->
+            <div class="section-title-row">
+                <h3 class="section-title">
+                    <i class="fa-solid fa-book-medical" style="color:var(--cyan-primary);"></i>
+                    <span>Curriculum & Assessment Partition</span>
+                </h3>
+                <span id="banner-semester-badge" class="subject-code-tag" style="background:rgba(6,182,212,0.15); color:var(--cyan-primary);">
+                    Semester 1
+                </span>
+            </div>
+
+            <div id="semester-tabs" class="semester-tabs-container">
+                <button class="sem-tab-btn active" data-semester="sem-1">Semester 1</button>
+                <button class="sem-tab-btn" data-semester="sem-2">Semester 2</button>
+                <button class="sem-tab-btn" data-semester="sem-3">Semester 3</button>
+                <button class="sem-tab-btn" data-semester="sem-4">Semester 4</button>
+                <button class="sem-tab-btn" data-semester="sem-5">Semester 5</button>
+                <button class="sem-tab-btn" data-semester="sem-6">Semester 6</button>
+                <button class="sem-tab-btn" data-semester="sem-7">Semester 7</button>
+                <button class="sem-tab-btn" data-semester="sem-8">Semester 8</button>
+            </div>
+
+            <!-- Dynamic Subject Quizzes Grid -->
+            <div id="subjects-grid" class="subjects-grid">
+                <!-- Subject cards dynamically injected via app.js -->
+            </div>
+
+            <!-- Previous Assessment Records & Marksheet History -->
+            <div class="history-section">
+                <div class="section-title-row">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-clock-rotate-left" style="color:var(--cyan-primary);"></i>
+                        <span>My Assessment History & Verified Marksheets</span>
+                    </h3>
+                </div>
+
+                <div class="glass-card history-card">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Course & Semester</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Injected dynamically via app.js -->
+                        </tbody>
+                    </table>
+
+                    <div id="history-empty-message" style="text-align:center; padding:30px 10px; color:var(--text-muted);">
+                        <i class="fa-regular fa-clipboard" style="font-size:32px; margin-bottom:10px; display:block; opacity:0.6;"></i>
+                        No assessments recorded yet. Complete a quiz above to view your permanent records and download marksheets.
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================== -->
+        <!-- 3. LIVE QUIZ INTERFACE VIEW -->
+        <!-- ==================================================== -->
+        <section id="quiz-view" class="view-section">
+            <div class="quiz-wrapper">
+                
+                <!-- Quiz Top Bar -->
+                <div class="glass-card quiz-header-bar">
+                    <div class="quiz-info-head">
+                        <h3 id="quiz-subject-title">Anatomy & Physiology</h3>
+                        <span id="quiz-subject-code">Semester 1 • ANAT-101</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <button id="btn-top-quick-submit" class="btn-top-submit" title="Submit Assessment">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Submit</span>
+                        </button>
+                        <div id="quiz-timer-pill" class="quiz-timer-pill">
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="quiz-timer-display">70:00</span>
+                        </div>
+                        <button id="btn-quit-quiz" class="btn-icon-logout" title="Exit Assessment">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Track -->
+                <div class="quiz-progress-track">
+                    <div id="quiz-progress-bar" class="quiz-progress-fill"></div>
+                </div>
+
+                <!-- Question Card -->
+                <div class="glass-card question-card">
+                    <div id="question-counter" class="question-counter">Question 1 of 5</div>
+                    <div id="question-text" class="question-text">Loading examination question...</div>
+
+                    <div id="options-container" class="options-list">
+                        <!-- Options injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Quiz Navigation Controls -->
+                <div class="quiz-controls-row">
+                    <button id="btn-prev-question" class="btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Previous</span>
+                    </button>
+
+                    <div style="display:flex; gap:12px;">
+                        <button id="btn-next-question" class="btn-primary" style="width:auto; padding:12px 24px;">
+                            <span>Next Question</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <button id="btn-submit-quiz" class="btn-submit-quiz" style="display:none;">
+                            <i class="fa-solid fa-check-double"></i>
+                            <span>Submit Assessment</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ==================================================== -->
+        <!-- 4. RESULT ANNOUNCEMENT & REVIEW VIEW -->
+        <!-- ==================================================== -->
+        <section id="result-view" class="view-section">
+            <div class="result-wrapper">
+                
+                <!-- Model Paper Protected Result Screen (WhatsApp Group Announcement) -->
+                <div id="model-paper-result-card" class="glass-card whatsapp-result-card" style="display:none;">
+                    <div class="whatsapp-icon-pulse">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <h2 class="whatsapp-title">Assessment Submitted Successfully!</h2>
+                    <p class="whatsapp-desc">
+                        Your answers have been securely recorded. To maintain examination integrity, individual question answer keys are protected. Official result merit lists and marks will be announced in our official student WhatsApp group.
+                    </p>
+
+                    <!-- WhatsApp Group Join Button -->
+                    <a id="link-join-whatsapp" href="https://chat.whatsapp.com/YOUR_GROUP_LINK" target="_blank" class="btn-join-whatsapp">
+                        <i class="fa-brands fa-whatsapp" style="font-size:22px;"></i>
+                        <span>Join Official WhatsApp Group For Results</span>
+                    </a>
+
+                    <!-- Official Candidate Submission Receipt -->
+                    <div class="submission-receipt-card">
+                        <div class="receipt-header">
+                            <span style="font-weight:800; color:#fff; font-size:14px;">
+                                <i class="fa-solid fa-file-circle-check" style="color:#25d366; margin-right:6px;"></i>
+                                Official Submission Receipt
+                            </span>
+                            <span class="subject-code-tag" style="background:rgba(37,211,102,0.15); color:#25d366;">
+                                Status: Recorded
+                            </span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Candidate Name:</span>
+                            <span id="receipt-student-name">Medical Scholar</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Roll Number:</span>
+                            <span id="receipt-student-roll">BSN-2026-001</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Examination Paper:</span>
+                            <span id="receipt-exam-title">Semester 5 Model Paper</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Submission Timestamp:</span>
+                            <span id="receipt-timestamp">--</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Verification Token:</span>
+                            <span id="receipt-token" style="font-family:monospace; color:var(--cyan-primary);">BSN-VERIFIED-9821</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:26px;">
+                        <button id="btn-model-back-dashboard" class="btn-secondary">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Return to Dashboard</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Standard Practice Score Summary Card -->
+                <div id="standard-result-card" class="glass-card result-card-main">
+                    
+                    <div class="result-score-circle">
+                        <div id="result-score-number" class="score-num">0</div>
+                        <div id="result-score-total" class="score-total">/ 5</div>
+                    </div>
+
+                    <h2 id="result-title" class="result-title">Assessment Completed</h2>
+                    <p id="result-subtitle" class="result-sub">Your performance analysis and official marksheet are ready.</p>
+
+                    <!-- Metrics Grid -->
+                    <div class="result-metrics-grid">
+                        <div class="metric-pill">
+                            <div id="metric-correct" class="metric-val correct">0</div>
+                            <div class="metric-lbl">Correct Answers</div>
+                        </div>
+                        <div class="metric-pill">
+                            <div id="metric-incorrect" class="metric-val wrong">0</div>
+                            <div class="metric-lbl">Incorrect / Skipped</div>
+                        </div>
+                        <div class="metric-pill">
+                            <div id="metric-percentage" class="metric-val percent">0%</div>
+                            <div class="metric-lbl">Score Percentage</div>
+                        </div>
+                        <div class="metric-pill">
+                            <div id="metric-grade" class="metric-val grade">-</div>
+                            <div class="metric-lbl">Assigned Grade</div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="result-actions-row">
+                        <!-- Direct Chrome PDF Download -->
+                        <button id="btn-download-pdf" class="btn-download-marksheet">
+                            <i class="fa-solid fa-file-arrow-down"></i>
+                            <span>Download Official PDF Marksheet</span>
+                        </button>
+
+                        <button id="btn-print-direct" class="btn-secondary" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.35); color:#34d399;">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Print / Save as PDF</span>
+                        </button>
+
+                        <button id="btn-preview-marksheet" class="btn-secondary" style="background:rgba(6,182,212,0.15); border-color:var(--border-cyan); color:#fff;">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Preview Marksheet</span>
+                        </button>
+
+                        <button id="btn-retake-quiz" class="btn-secondary">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Re-take Quiz</span>
+                        </button>
+
+                        <button id="btn-back-dashboard" class="btn-secondary">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Return to Dashboard</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Question By Question Review (Hidden for protected Model Papers) -->
+                <div id="review-wrapper">
+                    <div class="section-title-row" style="margin-top:30px;">
+                        <h3 class="review-section-title">
+                            <i class="fa-solid fa-clipboard-check" style="color:var(--cyan-primary);"></i>
+                            <span>Clinical Rationales & Answer Breakdown</span>
+                        </h3>
+                    </div>
+
+                    <div id="review-container">
+                        <!-- Detailed question cards injected via app.js -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 5. DEMO NAME PROMPT MODAL -->
+    <!-- ==================================================== -->
+    <div id="demo-name-modal" class="modal-overlay">
+        <div class="glass-card modal-card">
+            <button id="btn-close-demo-modal" class="modal-close-btn">&times;</button>
+            <div class="modal-icon">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <h3 class="modal-title">Personalize Your Assessment</h3>
+            <p class="modal-desc">Please write your name to personalize your student profile and official downloadable marksheet.</p>
+            
+            <div class="form-group" style="text-align:left;">
+                <label class="form-label" for="modal-demo-name-input">Student Full Name</label>
+                <input 
+                    type="text" 
+                    id="modal-demo-name-input" 
+                    class="input-glass" 
+                    placeholder="e.g. Nurse Zainab / David Miller"
+                >
+            </div>
+
+            <button type="button" id="btn-confirm-demo" class="btn-primary" style="margin-top:14px;">
+                <span>Start Assessment Session</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 6. PRE-EXAM BRIEFING & INSTRUCTIONS MODAL -->
+    <!-- ==================================================== -->
+    <div id="exam-briefing-modal" class="modal-overlay">
+        <div class="glass-card modal-card instruction-modal-dialog">
+            <button id="btn-close-briefing-modal" class="modal-close-btn">&times;</button>
+            
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+                <div class="modal-icon" style="margin:0; width:50px; height:50px; font-size:22px;">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                </div>
+                <div>
+                    <h3 id="briefing-exam-title" style="font-size:18px; font-weight:800; color:#fff;">Examination Briefing</h3>
+                    <span id="briefing-exam-code" style="font-size:12px; color:var(--text-muted);">Semester 5 • BSN-SEM5-MODEL</span>
+                </div>
+            </div>
+
+            <div class="exam-meta-pill-row">
+                <div class="exam-meta-pill">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="briefing-duration">70 Minutes Duration</span>
+                </div>
+                <div class="exam-meta-pill">
+                    <i class="fa-regular fa-circle-question"></i>
+                    <span id="briefing-total-q">5 Questions</span>
+                </div>
+                <div class="exam-meta-pill" style="color:#34d399; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Official Assessment</span>
+                </div>
+            </div>
+
+            <div class="instruction-checklist">
+                <div class="checklist-item">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><strong>Strict 70-Minute Timer:</strong> Once started, the timer runs continuously and cannot be paused.</span>
+                </div>
+                <div class="checklist-item">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><strong>Automatic Lock & Submit:</strong> When the 70 minutes expire, all question options will freeze automatically and your paper will be submitted immediately.</span>
+                </div>
+                <div class="checklist-item">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><strong>Protected Questions:</strong> To ensure fairness, individual answer keys are secured and hidden after submission.</span>
+                </div>
+                <div class="checklist-item">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><strong>Official Result Announcement:</strong> Official results, position ranks, and verified marksheets will be announced in our official WhatsApp group.</span>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+                <button id="btn-start-exam-confirm" class="btn-primary" style="flex:1;">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Agree & Start Examination Now</span>
+                </button>
+                <button id="btn-cancel-briefing" class="btn-secondary">
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 7. MARKSHEET LIVE PREVIEW MODAL -->
+    <!-- ==================================================== -->
+    <div id="marksheet-preview-modal" class="modal-overlay">
+        <div class="glass-card modal-card preview-modal-dialog">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border-glass);">
+                <h3 style="font-size:16px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-file-lines" style="color:var(--cyan-primary);"></i>
+                    <span>Official Marksheet Verification Preview</span>
+                </h3>
+                <button id="btn-close-preview-modal" class="modal-close-btn" style="position:static;">&times;</button>
+            </div>
+
+            <!-- Injected Marksheet Render -->
+            <div id="preview-marksheet-content" style="background:#fff; border-radius:8px; padding:12px; margin-bottom:16px; overflow-x:auto;">
+                <!-- Marksheet template cloned here -->
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button id="btn-modal-download-pdf" class="btn-primary" style="width:auto; padding:10px 20px;">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Download PDF</span>
+                </button>
+                <button id="btn-modal-print" class="btn-secondary" style="padding:10px 18px;">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 7. OFFICIAL MARKSHEET TEMPLATE (PIXEL-PERFECT A4) -->
+    <!-- ==================================================== -->
+    <div id="marksheet-template">
+        <!-- Header -->
+        <div class="ms-header">
+            <div class="ms-logo-title">ZAFII COLLEGE OF NURSING & ALLIED HEALTH SCIENCES</div>
+            <div class="ms-subtitle">Department of Undergraduate Nursing (BSN 4-Year Degree Program)</div>
+            <div class="ms-sheet-title">OFFICIAL EXAMINATION MARKSHEET</div>
+        </div>
+
+        <!-- Student & Exam Details Table -->
+        <table class="ms-details-table">
+            <tr>
+                <td style="width:50%;"><strong>Candidate Name:</strong> <span id="pdf-student-name">Medical Scholar</span></td>
+                <td style="width:50%;"><strong>Roll Number:</strong> <span id="pdf-student-roll">BSN-2026-001</span></td>
+            </tr>
+            <tr>
+                <td><strong>Academic Semester:</strong> <span id="pdf-student-sem">Semester 1</span></td>
+                <td><strong>Course Assessment:</strong> <span id="pdf-exam-subject">Anatomy & Physiology</span></td>
+            </tr>
+            <tr>
+                <td><strong>Examination Date:</strong> <span id="pdf-exam-date">01-Sep-2026</span></td>
+                <td><strong>Time Taken:</strong> <span id="pdf-time-taken">8m 30s</span></td>
+            </tr>
+        </table>
+
+        <!-- Score Performance Table -->
+        <table class="ms-score-table">
+            <tr>
+                <td style="width:25%;">
+                    <div id="pdf-score-text" class="ms-score-val">4 / 5</div>
+                    <div class="ms-score-lbl">Score Obtained</div>
+                </td>
+                <td style="width:25%;">
+                    <div id="pdf-percentage-text" class="ms-score-val">80%</div>
+                    <div class="ms-score-lbl">Percentage</div>
+                </td>
+                <td style="width:25%;">
+                    <div id="pdf-grade-badge" class="ms-score-val">A</div>
+                    <div class="ms-score-lbl">Grade</div>
+                </td>
+                <td style="width:25%;">
+                    <span id="pdf-status-badge" class="marksheet-badge badge-passed">PASSED (VERIFIED)</span>
+                    <div class="ms-score-lbl">Official Standing</div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Question Breakdown Table (Fixed Widths) -->
+        <table class="ms-table">
+            <thead>
+                <tr>
+                    <th style="width:35px; text-align:center;">#</th>
+                    <th>Question & Candidate Response</th>
+                    <th style="width:95px; text-align:center;">Evaluation</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-breakdown-body">
+                <!-- Dynamically filled by pdf-generator.js -->
+            </tbody>
+        </table>
+
+        <!-- Signatures & Verification Stamp -->
+        <div class="ms-footer-signatures">
+            <div class="ms-sig-block">
+                <div class="ms-sig-line"></div>
+                <div class="ms-sig-title">Course Coordinator / Instructor</div>
+            </div>
+
+            <div class="ms-qr-seal">
+                <div style="font-size:18px; color:#0369a1; margin-bottom:2px;">★ ★ ★</div>
+                <div style="font-weight:700; color:#0f172a;">Computer-Generated Certified Marksheet</div>
+                <div>Zafii Academic Examination Board</div>
+            </div>
+
+            <div class="ms-sig-block">
+                <div class="ms-sig-line"></div>
+                <div class="ms-sig-title">Controller of Examinations</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Application Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/quiz-data.js"></script>
+    <script src="js/pdf-generator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
