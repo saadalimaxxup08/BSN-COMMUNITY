@@ -1328,45 +1328,7 @@ const QUIZ_DATA = {
                         "explanation": "Verified clinical response."
                 }
         ]
-},
-        {
-            id: "s5-pediatrics",
-            title: "Pediatric Nursing",
-            code: "PED-501",
-            semester: "Semester 5",
-            description: "Growth milestones, childhood diseases, vaccination charts, and neonatology.",
-            durationMinutes: 10,
-            icon: "fa-baby",
-            badgeColor: "amber",
-            totalQuestions: 2,
-            questions: [
-                {
-                    id: 1,
-                    question: "At what age does the anterior fontanelle normally close in a healthy infant?",
-                    options: [
-                        "2 - 3 months",
-                        "6 - 8 months",
-                        "12 - 18 months",
-                        "24 - 36 months"
-                    ],
-                    correctIndex: 2,
-                    explanation: "The anterior fontanelle typically closes between 12 to 18 months of age, whereas posterior fontanelle closes around 2 to 3 months."
-                },
-                {
-                    id: 2,
-                    question: "What scale is assessed immediately at 1 minute and 5 minutes after infant birth?",
-                    options: [
-                        "Glasgow Coma Scale",
-                        "APGAR Scale",
-                        "Braden Scale",
-                        "Morse Fall Scale"
-                    ],
-                    correctIndex: 1,
-                    explanation: "The APGAR score assesses Appearance, Pulse, Grimace, Activity, and Respiration of newborns."
-                }
-            ]
-        }
-    ],
+    },
     "sem-6": [
         {
             id: "s6-mental-health",
