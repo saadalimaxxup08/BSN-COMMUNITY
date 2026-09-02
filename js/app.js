@@ -440,7 +440,12 @@ function renderSubjects(semesterKey) {
         return;
     }
 
-    const subjects = getSubjectsBySemester('sem-5');
+    let subjects = getSubjectsBySemester('sem-5');
+    if (!subjects || subjects.length === 0) {
+        const fallbackQuiz = findQuizById('s5-model-paper');
+        if (fallbackQuiz) subjects = [fallbackQuiz];
+    }
+
     if (!subjects || subjects.length === 0) return;
 
     subjects.forEach(subject => {
@@ -449,8 +454,8 @@ function renderSubjects(semesterKey) {
         card.innerHTML = `
             <div>
                 <div class="subject-header">
-                    <div class="subject-icon-box ${subject.badgeColor || 'cyan'}">
-                        <i class="fa-solid ${subject.icon || 'fa-notes-medical'}"></i>
+                    <div class="subject-icon-box ${subject.badgeColor || 'rose'}">
+                        <i class="fa-solid ${subject.icon || 'fa-baby'}"></i>
                     </div>
                     <span class="subject-code-tag">${subject.code}</span>
                 </div>
@@ -470,7 +475,7 @@ function renderSubjects(semesterKey) {
                     </div>
                 </div>
 
-                <button class="btn-start-quiz" onclick="startQuiz('${subject.id}')">
+                <button class="btn-start-quiz" onclick="startQuiz('${subject.id}')" style="margin-top:16px;">
                     <span>Start Assessment</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
