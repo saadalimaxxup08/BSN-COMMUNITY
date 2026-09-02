@@ -282,6 +282,25 @@ window.switchSemester = function(semKey) {
 
     AppState.activeSemester = semKey;
     renderSubjects(semKey);
+
+    // Auto open Exam Briefing modal when Semester 5 tab is clicked
+    if (semKey === 'sem-5') {
+        const modelPaper = findQuizById('s5-model-paper');
+        if (modelPaper) {
+            openExamBriefing(modelPaper);
+        }
+    }
+};
+
+window.startQuiz = function(quizId) {
+    const quiz = findQuizById(quizId);
+    if (!quiz) {
+        alert("Assessment data could not be found!");
+        return;
+    }
+
+    // Open Pre-Assessment Instructions Briefing Modal first
+    openExamBriefing(quiz);
 };
 
 function openLockedSemesterModal(semKey) {
