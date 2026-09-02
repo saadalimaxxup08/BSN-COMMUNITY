@@ -222,21 +222,17 @@ async function processStudentLogin(studentName) {
 // ----------------- DASHBOARD & SEMESTERS -----------------
 function initDashboard() {
     // Semester Tabs event delegation
-    elements.semesterTabs.addEventListener('click', (e) => {
-        const tabBtn = e.target.closest('.sem-tab-btn');
-        if (!tabBtn) return;
+    if (elements.semesterTabs) {
+        elements.semesterTabs.addEventListener('click', (e) => {
+            const tabBtn = e.target.closest('.sem-tab-btn');
+            if (!tabBtn) return;
 
-        const targetSem = tabBtn.getAttribute('data-semester');
-        if (!targetSem) return;
+            const targetSem = tabBtn.getAttribute('data-semester');
+            if (!targetSem) return;
 
-        // If clicking a locked semester (not sem-5), show notice modal
-        if (targetSem !== 'sem-5') {
-            openLockedSemesterModal(targetSem);
-            return;
-        }
-
-        switchSemester(targetSem);
-    });
+            switchSemester(targetSem);
+        });
+    }
 
     // Locked Semester Modal Controls
     const btnGoSem5 = document.getElementById('btn-go-sem5');
@@ -251,23 +247,42 @@ function initDashboard() {
     if (btnCloseLocked) {
         btnCloseLocked.addEventListener('click', closeLockedSemesterModal);
     }
+
+    const lockedModal = document.getElementById('locked-semester-modal');
+    if (lockedModal) {
+        lockedModal.addEventListener('click', (e) => {
+            if (e.target === lockedModal) closeLockedSemesterModal();
+        });
+    }
 }
 
-function switchSemester(semKey) {
+window.switchSemester = function(semKey) {
     document.querySelectorAll('.sem-tab-btn').forEach(btn => {
-        btn.classList.remove('active');
         if (btn.getAttribute('data-semester') === semKey) {
             btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
         }
     });
 
+    const semNames = {
+        'sem-1': 'Semester 1',
+        'sem-2': 'Semester 2',
+        'sem-3': 'Semester 3',
+        'sem-4': 'Semester 4',
+        'sem-5': 'Semester 5 (Active Exam)',
+        'sem-6': 'Semester 6',
+        'sem-7': 'Semester 7',
+        'sem-8': 'Semester 8'
+    };
+
     if (elements.bannerSemesterBadge) {
-        elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
+        elements.bannerSemesterBadge.textContent = semNames[semKey] || semKey;
     }
 
     AppState.activeSemester = semKey;
     renderSubjects(semKey);
-}
+};
 
 function openLockedSemesterModal(semKey) {
     const semNames = {
@@ -300,7 +315,7 @@ function closeLockedSemesterModal() {
 
 function renderDashboard() {
     updateStatsSummary();
-    renderSubjects(AppState.activeSemester);
+    renderSubjects(AppState.activeSemester || 'sem-5');
     renderAssessmentHistory();
 }
 
@@ -371,24 +386,43 @@ window.reDownloadHistoricalMarksheet = function(index) {
 };
 
 function renderSubjects(semesterKey) {
-    const subjects = getSubjectsBySemester(semesterKey);
+    if (!elements.subjectsGrid) return;
     elements.subjectsGrid.innerHTML = '';
 
-    if (!subjects || subjects.length === 0) {
+    if (semesterKey !== 'sem-5') {
+        const semNames = {
+            'sem-1': 'Semester 1',
+            'sem-2': 'Semester 2',
+            'sem-3': 'Semester 3',
+            'sem-4': 'Semester 4',
+            'sem-6': 'Semester 6',
+            'sem-7': 'Semester 7',
+            'sem-8': 'Semester 8'
+        };
+        const semName = semNames[semesterKey] || 'Selected Semester';
+
         elements.subjectsGrid.innerHTML = `
-            <div class="glass-card empty-state">
-                <i class="fa-solid fa-folder-open"></i>
-                <h3 style="font-size:18px; margin-bottom:6px; color:#fff;">Curriculum in Preparation</h3>
-                <p style="font-size:13px; color:var(--text-muted); max-width:400px; margin:0 auto 16px;">
-                    Assessments for this semester are currently being curated. You can easily add more questions in js/quiz-data.js.
+            <div class="glass-card empty-state" style="padding:42px 28px; text-align:center; max-width:620px; margin:0 auto; grid-column: 1 / -1; width:100%;">
+                <div style="width:64px; height:64px; border-radius:50%; background:rgba(245,158,11,0.15); color:var(--amber-warning); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 18px;">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 style="font-size:22px; font-weight:800; margin-bottom:10px; color:#fff;">
+                    ${semName} Assessment Currently Unavailable
+                </h3>
+                <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px; max-width:500px;">
+                    Notice: Live examination model papers are currently active exclusively for <strong>BSN Semester 5</strong>. Question banks for ${semName} are under review and will be published shortly.
                 </p>
-                <button class="sem-tab-btn active" onclick="document.querySelector('[data-semester=sem-1]').click()">
-                    Return to Semester 1
+                <button class="btn-primary" style="width:auto; padding:12px 28px; margin:0 auto;" onclick="switchSemester('sem-5')">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Proceed to Semester 5 Examination</span>
                 </button>
             </div>
         `;
         return;
     }
+
+    const subjects = getSubjectsBySemester('sem-5');
+    if (!subjects || subjects.length === 0) return;
 
     subjects.forEach(subject => {
         const card = document.createElement('div');
