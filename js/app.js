@@ -528,6 +528,72 @@ function closeExamBriefing() {
     AppState.pendingQuizId = null;
 }
 
+// ----------------- RUNNING QUIZ PERSISTENCE -----------------
+function saveRunningQuizState() {
+    if (!AppState.activeQuiz) return;
+    try {
+        const state = {
+            quizId: AppState.activeQuiz.id,
+            currentQuestionIndex: AppState.currentQuestionIndex,
+            userAnswers: AppState.userAnswers,
+            remainingSeconds: AppState.remainingSeconds,
+            startTimestamp: Date.now()
+        };
+        localStorage.setItem('zafii_running_quiz', JSON.stringify(state));
+    } catch (e) {
+        console.warn("Could not save running quiz state:", e);
+    }
+}
+
+function clearRunningQuizState() {
+    try {
+        localStorage.removeItem('zafii_running_quiz');
+    } catch (e) {}
+}
+
+function restoreRunningQuizState() {
+    try {
+        const saved = localStorage.getItem('zafii_running_quiz');
+        if (!saved) return false;
+
+        const state = JSON.parse(saved);
+        if (!state || !state.quizId) return false;
+
+        const quiz = findQuizById(state.quizId);
+        if (!quiz) return false;
+
+        // Calculate elapsed seconds while browser was reloading
+        const elapsedSeconds = Math.floor((Date.now() - (state.startTimestamp || Date.now())) / 1000);
+        const netRemaining = (state.remainingSeconds || 0) - elapsedSeconds;
+
+        if (netRemaining <= 0) {
+            clearRunningQuizState();
+            return false;
+        }
+
+        AppState.activeQuiz = quiz;
+        AppState.currentQuestionIndex = state.currentQuestionIndex || 0;
+        AppState.userAnswers = state.userAnswers || new Array(quiz.questions.length).fill(null);
+        AppState.remainingSeconds = netRemaining;
+
+        if (elements.optionsContainer) {
+            elements.optionsContainer.classList.remove('quiz-locked');
+        }
+
+        elements.quizSubjectTitle.textContent = quiz.title;
+        elements.quizSubjectCode.textContent = `${quiz.semester} • ${quiz.code}`;
+
+        startTimer();
+        renderCurrentQuestion();
+        switchView('quiz');
+
+        return true;
+    } catch (e) {
+        console.warn("Error restoring running quiz state:", e);
+        return false;
+    }
+}
+
 function startActualQuiz(quizId) {
     const quiz = findQuizById(quizId);
     if (!quiz) return;
@@ -536,6 +602,8 @@ function startActualQuiz(quizId) {
     AppState.currentQuestionIndex = 0;
     AppState.userAnswers = new Array(quiz.questions.length).fill(null);
     AppState.remainingSeconds = quiz.durationMinutes * 60; // e.g. 70 mins = 4200s
+
+    saveRunningQuizState();
 
     // Remove any previous lock
     if (elements.optionsContainer) {
@@ -558,6 +626,7 @@ function startTimer() {
     AppState.timerInterval = setInterval(() => {
         AppState.remainingSeconds--;
         updateTimerUI();
+        saveRunningQuizState();
 
         if (AppState.remainingSeconds <= 0) {
             clearInterval(AppState.timerInterval);
@@ -654,6 +723,7 @@ function renderCurrentQuestion() {
 function selectOption(optionIndex) {
     const qIndex = AppState.currentQuestionIndex;
     AppState.userAnswers[qIndex] = optionIndex;
+    saveRunningQuizState();
     renderCurrentQuestion();
 }
 
@@ -706,6 +776,7 @@ function initQuizControls() {
     elements.btnQuitQuiz.addEventListener('click', () => {
         if (confirm("Are you sure you want to quit this assessment? Your progress will not be recorded.")) {
             clearInterval(AppState.timerInterval);
+            clearRunningQuizState();
             switchView('dashboard');
         }
     });
@@ -826,6 +897,7 @@ function initQuizControls() {
 // ----------------- EVALUATION & RESULT -----------------
 async function submitQuiz(isAutoSubmit = false) {
     clearInterval(AppState.timerInterval);
+    clearRunningQuizState();
 
     const quiz = AppState.activeQuiz;
     const questions = quiz.questions;
@@ -1009,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDashboard();
     initQuizControls();
 
-    // Auto-restore active student session on page refresh
+    // 1. Auto-restore active student session on page refresh
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
@@ -1021,4 +1093,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
         console.warn("Auto session restore failed:", e);
     }
+
+    // 2. Auto-resume active running exam if page was refreshed during assessment!
+    restoreRunningQuizState();
 });
