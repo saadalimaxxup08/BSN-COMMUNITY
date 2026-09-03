@@ -150,6 +150,9 @@ function initAuth() {
     elements.btnLogout.addEventListener('click', () => {
         if (confirm("Are you sure you want to sign out from your student portal?")) {
             clearInterval(AppState.timerInterval);
+            try {
+                localStorage.removeItem('zafii_active_session');
+            } catch (e) {}
             AppState.currentUser = null;
             AppState.studentHistory = [];
             elements.loginForm.reset();
@@ -195,6 +198,13 @@ async function processStudentLogin(studentName) {
             semesterKey: "sem-5",
             isNewStudent: false
         };
+    }
+
+    // Save active session to LocalStorage so page refresh maintains student session
+    try {
+        localStorage.setItem('zafii_active_session', JSON.stringify(userData));
+    } catch (e) {
+        console.warn("Could not save session to localStorage:", e);
     }
 
     // Set Current User State
@@ -994,8 +1004,21 @@ function renderResultScreen(res) {
 }
 
 // ----------------- APP BOOTSTRAP -----------------
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
     initDashboard();
     initQuizControls();
+
+    // Auto-restore active student session on page refresh
+    try {
+        const savedSession = localStorage.getItem('zafii_active_session');
+        if (savedSession) {
+            const parsed = JSON.parse(savedSession);
+            if (parsed && parsed.name) {
+                await processStudentLogin(parsed.name);
+            }
+        }
+    } catch (e) {
+        console.warn("Auto session restore failed:", e);
+    }
 });
