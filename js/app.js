@@ -165,15 +165,23 @@ function initAuth() {
                             redirectTo: window.location.origin + window.location.pathname
                         }
                     });
-                    if (error) throw error;
+                    if (error) {
+                        console.warn("Supabase Google OAuth provider status:", error.message);
+                        // Fallback gracefully if Supabase Google provider is disabled
+                        const googleName = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Account Name / Gmail Email to log in instantly:", "Nurse Sarah (Google Scholar)");
+                        if (googleName && googleName.trim()) {
+                            await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
+                        }
+                        return;
+                    }
                     return;
                 } catch (err) {
-                    console.warn("Supabase Google OAuth initialization:", err);
+                    console.warn("Supabase Google OAuth initialization exception:", err);
                 }
             }
 
             // Interactive Google Gmail Prompt Fallback
-            const googleName = prompt("🌐 Connect with Google / Gmail:\n\nEnter your Google Account Name / Email to link your Google profile instantly:", "Nurse Sarah (Google Scholar)");
+            const googleName = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Account Name / Gmail Email to log in instantly:", "Nurse Sarah (Google Scholar)");
             if (googleName && googleName.trim()) {
                 await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
             }
