@@ -206,7 +206,7 @@ function closeDemoModal() {
 }
 
 // Handles New vs Existing Student Profiles with Password Authentication
-async function processStudentLogin(studentName, password = '123456', authMode = 'signin') {
+async function processStudentLogin(studentName, password = '123456', authMode = 'signin', skipViewSwitch = false) {
     const cleanName = studentName.trim();
 
     // Check if student exists in Supabase or LocalStorage
@@ -289,7 +289,9 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
     // Fetch student's past quiz history from Supabase / LocalStorage
     AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(userData.name);
 
-    switchView('dashboard');
+    if (!skipViewSwitch) {
+        switchView('dashboard');
+    }
 }
 
 // ----------------- DASHBOARD & SEMESTERS -----------------
@@ -1142,13 +1144,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDashboard();
     initQuizControls();
 
+    const runningQuizSaved = localStorage.getItem('zafii_running_quiz');
+    const hasRunningQuiz = !!runningQuizSaved;
+
     // 1. Auto-restore active student session on page refresh
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
             const parsed = JSON.parse(savedSession);
             if (parsed && parsed.name) {
-                await processStudentLogin(parsed.name);
+                await processStudentLogin(parsed.name, parsed.password || '123456', 'signin', hasRunningQuiz);
             }
         }
     } catch (e) {
@@ -1156,5 +1161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. Auto-resume active running exam if page was refreshed during assessment!
-    restoreRunningQuizState();
+    if (hasRunningQuiz) {
+        restoreRunningQuizState();
+    }
 });
