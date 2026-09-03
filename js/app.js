@@ -153,15 +153,28 @@ function initAuth() {
         await processStudentLogin(name, password, currentAuthMode);
     });
 
-    // Google / Gmail OAuth 1-Click Sign-In (Direct Interactive Google Account Connector)
+    // Real Authentic Google / Gmail OAuth 1-Click Permission System
     const btnGoogleLogin = document.getElementById('btn-google-login');
     if (btnGoogleLogin) {
         btnGoogleLogin.addEventListener('click', async () => {
-            const googleInput = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Email or Name to sign in instantly with Google:", "Medical Scholar (Google Account)");
-            
-            if (googleInput && googleInput.trim()) {
-                const cleanGoogleName = googleInput.trim();
-                await processStudentLogin(cleanGoogleName, 'google_oauth_verified', 'signup');
+            if (!SUPABASE_CONFIG.client) {
+                alert("⚠️ Supabase Client is initializing. Please check your internet connection.");
+                return;
+            }
+
+            try {
+                // Real Google OAuth Redirect to accounts.google.com
+                const { data, error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
+                    }
+                });
+                if (error) {
+                    alert(`⚠️ Google Authentication Setup Needed:\n${error.message}\n\nPlease ensure Google Provider is enabled in Supabase Dashboard.`);
+                }
+            } catch (err) {
+                alert("⚠️ Could not connect to Google OAuth: " + err.message);
             }
         });
     }
@@ -1159,7 +1172,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const runningQuizSaved = localStorage.getItem('zafii_running_quiz');
     const hasRunningQuiz = !!runningQuizSaved;
 
-    // 1. Auto-restore active student session on page refresh
+    // 1. Check if returning from official Google OAuth Permission Screen
+    if (SUPABASE_CONFIG.client) {
+        try {
+            const { data: { session } } = await SUPABASE_CONFIG.client.auth.getSession();
+            if (session && session.user) {
+                const googleUser = session.user;
+                const googleName = googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0] || "Google Student";
+                await processStudentLogin(googleName, 'google_oauth_verified', 'signup', hasRunningQuiz);
+            }
+        } catch (e) {
+            console.warn("Google OAuth callback check:", e);
+        }
+    }
+
+    // 2. Auto-restore active student session on page refresh
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
@@ -1172,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.warn("Auto session restore failed:", e);
     }
 
-    // 2. Auto-resume active running exam if page was refreshed during assessment!
+    // 3. Auto-resume active running exam if page was refreshed during assessment!
     if (hasRunningQuiz) {
         restoreRunningQuizState();
     }
