@@ -1330,30 +1330,13 @@ async function loadAdminDashboardData() {
     const tbodyStudents = document.getElementById('admin-students-tbody');
     const tbodyResults = document.getElementById('admin-results-tbody');
 
-    // 1. Fetch Students
-    const students = await SUPABASE_CONFIG.getAllStudents();
+    // 1. Fetch Students and Quiz Submissions concurrently
+    const [students, results] = await Promise.all([
+        SUPABASE_CONFIG.getAllStudents(),
+        SUPABASE_CONFIG.getAllQuizResults()
+    ]);
+
     if (elTotalStudents) elTotalStudents.textContent = students.length;
-
-    if (tbodyStudents) {
-        tbodyStudents.innerHTML = '';
-        if (students.length === 0) {
-            tbodyStudents.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No student accounts found.</td></tr>`;
-        } else {
-            students.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${escapeHtml(s.name)}</strong></td>
-                    <td><code style="color:var(--cyan-primary); font-weight:700;">${escapeHtml(s.rollNo)}</code></td>
-                    <td>${escapeHtml(s.semester)}</td>
-                    <td>${escapeHtml(s.createdAt)}</td>
-                `;
-                tbodyStudents.appendChild(tr);
-            });
-        }
-    }
-
-    // 2. Fetch Quiz Submissions
-    const results = await SUPABASE_CONFIG.getAllQuizResults();
     if (elTotalQuizzes) elTotalQuizzes.textContent = results.length;
 
     if (results.length > 0) {
@@ -1364,35 +1347,77 @@ async function loadAdminDashboardData() {
         if (elAvgPassRate) elAvgPassRate.textContent = `0%`;
     }
 
+    // Map student email/name to their quiz results
+    const resultMap = {};
+    results.forEach(r => {
+        const key = (r.studentName || '').trim().toLowerCase();
+        if (!resultMap[key]) resultMap[key] = [];
+        resultMap[key].push(r);
+    });
+
+    // 2. Render Live Student Roster Directory Table
+    if (tbodyStudents) {
+        tbodyStudents.innerHTML = '';
+        if (students.length === 0) {
+            tbodyStudents.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No registered student profiles found in database.</td></tr>`;
+        } else {
+            students.forEach(s => {
+                const tr = document.createElement('tr');
+                const key = (s.name || '').trim().toLowerCase();
+                const studentQuizzes = resultMap[key] || [];
+                const sem5Exam = studentQuizzes.find(q => q.subjectCode === 'PED-501-MODEL') || studentQuizzes[0];
+                
+                const examStatusBadge = sem5Exam 
+                    ? `<span class="badge badge-passed" style="font-size:11px; padding:3px 8px;"><i class="fa-solid fa-check"></i> Sem 5 Exam Completed (${sem5Exam.score}/${sem5Exam.totalQuestions})</span>` 
+                    : `<span class="badge" style="background:rgba(245,158,11,0.15); color:var(--amber-warning); font-size:11px; padding:3px 8px;"><i class="fa-solid fa-hourglass-half"></i> Pending Exam</span>`;
+
+                tr.innerHTML = `
+                    <td style="vertical-align:middle;">
+                        <div style="font-weight:800; color:#ffffff; font-size:14px;">${escapeHtml(s.name)}</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${examStatusBadge}</div>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(s.rollNo)}</code>
+                    </td>
+                    <td style="vertical-align:middle; font-weight:600; color:#cbd5e1;">${escapeHtml(s.semester || 'Semester 5')}</td>
+                    <td style="vertical-align:middle; color:var(--text-muted); font-size:12.5px;">${escapeHtml(s.createdAt)}</td>
+                `;
+                tbodyStudents.appendChild(tr);
+            });
+        }
+    }
+
+    // 3. Render All Student Quiz Submissions Table
     if (tbodyResults) {
         tbodyResults.innerHTML = '';
         if (results.length === 0) {
-            tbodyResults.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No quiz submissions recorded yet.</td></tr>`;
+            tbodyResults.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">No quiz submissions recorded yet. Complete a quiz to view live marksheets.</td></tr>`;
         } else {
             results.forEach((r, idx) => {
                 const tr = document.createElement('tr');
+                const statusBadge = r.isPassed 
+                    ? '<span class="status-tag status-correct">✓ PASSED</span>' 
+                    : '<span class="status-tag status-incorrect">✗ RE-TAKE</span>';
+
                 tr.innerHTML = `
-                    <td>
-                        <div style="font-weight:700; color:#fff;">${escapeHtml(r.studentName)}</div>
-                        <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(r.rollNo)}</div>
+                    <td style="vertical-align:middle;">
+                        <div style="font-weight:800; color:#ffffff; font-size:14px;">${escapeHtml(r.studentName)}</div>
+                        <div style="font-size:11px; color:var(--cyan-primary); font-weight:700; margin-top:2px;">${escapeHtml(r.rollNo)}</div>
                     </td>
-                    <td>
-                        <div style="font-weight:700;">${escapeHtml(r.subjectTitle)}</div>
-                        <div style="font-size:11px; color:var(--cyan-primary);">${escapeHtml(r.subjectCode)}</div>
+                    <td style="vertical-align:middle;">
+                        <div style="font-weight:700; color:#fff; font-size:13px;">${escapeHtml(r.subjectTitle)}</div>
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-top:2px;">${escapeHtml(r.subjectCode)} • ${escapeHtml(r.semester || 'Semester 5')}</div>
                     </td>
-                    <td>
-                        <div style="font-weight:800; color:#fff;">${r.score} / ${r.totalQuestions} (${r.percentage}%)</div>
-                        <div style="font-size:11px; color:var(--amber-warning);">${escapeHtml(r.grade)}</div>
+                    <td style="vertical-align:middle;">
+                        <div style="font-weight:800; color:#ffffff; font-size:13.5px;">${r.score} / ${r.totalQuestions} (${r.percentage}%)</div>
+                        <div style="font-size:11px; color:var(--amber-warning); font-weight:700; margin-top:2px;">${escapeHtml(r.grade)}</div>
                     </td>
-                    <td>
-                        <span class="badge ${r.isPassed ? 'badge-passed' : 'badge-failed'}">
-                            ${r.isPassed ? 'PASSED' : 'FAILED'}
-                        </span>
-                    </td>
-                    <td>${escapeHtml(r.date)}</td>
-                    <td style="text-align:right;">
-                        <button class="btn-table-action btn-admin-view-marksheet" data-index="${idx}">
-                            <i class="fa-solid fa-file-pdf"></i> View Marksheet
+                    <td style="vertical-align:middle;">${statusBadge}</td>
+                    <td style="vertical-align:middle; color:var(--text-muted); font-size:12px; font-weight:600;">${escapeHtml(r.date)}<div style="font-size:10.5px; opacity:0.8;">${escapeHtml(r.timeTaken || '')}</div></td>
+                    <td style="vertical-align:middle; text-align:right;">
+                        <button class="btn-table-action btn-admin-view-marksheet" data-index="${idx}" style="white-space:nowrap;">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>View Marksheet</span>
                         </button>
                     </td>
                 `;
