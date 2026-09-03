@@ -220,7 +220,7 @@ function closeDemoModal() {
 }
 
 // Handles New vs Existing Student Profiles with Password Authentication
-async function processStudentLogin(studentName, password = '123456', authMode = 'signin', skipViewSwitch = false) {
+async function processStudentLogin(studentName, password = '', authMode = 'signin', skipViewSwitch = false) {
     const cleanName = studentName.trim();
     if (!cleanName) {
         alert("Please enter your Student Full Name to continue.");
@@ -249,7 +249,7 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
         userData = {
             name: cleanName,
             rollNo: generatedRoll,
-            password: password || '123456',
+            password: password,
             semester: "Semester 5",
             semesterKey: "sem-5",
             createdAt: new Date().toISOString(),
@@ -269,8 +269,8 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
         }
 
         // Check password if set
-        const storedPassword = check.profile.password || '123456';
-        if (password && storedPassword && password !== storedPassword && password !== '123456') {
+        const storedPassword = check.profile.password || '';
+        if (password && storedPassword && password !== storedPassword) {
             alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${cleanName}' is incorrect. Please check your credentials and try again.`);
             return;
         }
@@ -278,7 +278,7 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
         // Existing student returning cleanly
         userData = {
             ...check.profile,
-            password: password || check.profile.password || '123456',
+            password: password || check.profile.password || '',
             semester: "Semester 5",
             semesterKey: "sem-5",
             isNewStudent: false
