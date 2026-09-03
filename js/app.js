@@ -428,12 +428,14 @@ function closeLockedSemesterModal() {
 }
 
 function renderDashboard() {
-    // Strict Admin Button Visibility Guard (Only visible for Authorized Admin Account)
+    // Strict Admin Button Visibility Guard (Exclusively for huzaifamushtaqahmed@gmail)
     const btnNavAdmin = document.getElementById('btn-nav-admin');
     if (btnNavAdmin) {
         const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
         const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-        const isAuthorizedAdmin = userName.includes('huzaifa') || userEmail.includes('huzaifamushtaqahmed@gmail.com') || userName.includes('huzaifamushtaqahmed@gmail.com');
+        const isAuthorizedAdmin = userEmail.includes('huzaifamushtaqahmed@gmail') || 
+                                  userName.includes('huzaifamushtaqahmed@gmail') || 
+                                  userName === 'huzaifamushtaqahmed';
         btnNavAdmin.style.display = isAuthorizedAdmin ? 'inline-flex' : 'none';
     }
 
