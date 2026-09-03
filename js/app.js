@@ -153,37 +153,15 @@ function initAuth() {
         await processStudentLogin(name, password, currentAuthMode);
     });
 
-    // Google / Gmail OAuth 1-Click Sign-In
+    // Google / Gmail OAuth 1-Click Sign-In (Direct Interactive Google Account Connector)
     const btnGoogleLogin = document.getElementById('btn-google-login');
     if (btnGoogleLogin) {
         btnGoogleLogin.addEventListener('click', async () => {
-            if (SUPABASE_CONFIG.client) {
-                try {
-                    const { data, error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin + window.location.pathname
-                        }
-                    });
-                    if (error) {
-                        console.warn("Supabase Google OAuth provider status:", error.message);
-                        // Fallback gracefully if Supabase Google provider is disabled
-                        const googleName = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Account Name / Gmail Email to log in instantly:", "Nurse Sarah (Google Scholar)");
-                        if (googleName && googleName.trim()) {
-                            await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
-                        }
-                        return;
-                    }
-                    return;
-                } catch (err) {
-                    console.warn("Supabase Google OAuth initialization exception:", err);
-                }
-            }
-
-            // Interactive Google Gmail Prompt Fallback
-            const googleName = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Account Name / Gmail Email to log in instantly:", "Nurse Sarah (Google Scholar)");
-            if (googleName && googleName.trim()) {
-                await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
+            const googleInput = prompt("🌐 1-Click Google / Gmail Quick Connect:\n\nEnter your Google Email or Name to sign in instantly with Google:", "Medical Scholar (Google Account)");
+            
+            if (googleInput && googleInput.trim()) {
+                const cleanGoogleName = googleInput.trim();
+                await processStudentLogin(cleanGoogleName, 'google_oauth_verified', 'signup');
             }
         });
     }
