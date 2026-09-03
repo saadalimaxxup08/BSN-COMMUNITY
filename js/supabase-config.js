@@ -43,7 +43,17 @@ const SUPABASE_CONFIG = {
                     .maybeSingle();
 
                 if (data && !error) {
-                    return { isNew: false, profile: data };
+                    return { 
+                        isNew: false, 
+                        profile: {
+                            name: data.name,
+                            rollNo: data.roll_no || data.rollNo,
+                            password: data.password || '123456',
+                            semester: data.semester || 'Semester 5',
+                            semesterKey: 'sem-5',
+                            createdAt: data.created_at || new Date().toISOString()
+                        }
+                    };
                 }
             } catch (err) {
                 console.warn("Supabase fetch student profile failed, trying local storage:", err);
@@ -73,7 +83,8 @@ const SUPABASE_CONFIG = {
                         {
                             name: profileData.name,
                             roll_no: profileData.rollNo,
-                            semester: profileData.semester || "Semester 1",
+                            password: profileData.password || '123456',
+                            semester: profileData.semester || "Semester 5",
                             created_at: profileData.createdAt || new Date().toISOString()
                         }
                     ], { onConflict: 'name' });

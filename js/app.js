@@ -103,28 +103,63 @@ function switchView(viewName) {
     }
 }
 
+let currentAuthMode = 'signin'; // 'signin' or 'signup'
+
 // ----------------- AUTHENTICATION & USER MANAGEMENT -----------------
 function initAuth() {
+    const tabSignIn = document.getElementById('tab-auth-signin');
+    const tabSignUp = document.getElementById('tab-auth-signup');
+    const btnSubmitAuth = document.getElementById('btn-submit-auth');
+
+    if (tabSignIn && tabSignUp) {
+        tabSignIn.addEventListener('click', () => {
+            currentAuthMode = 'signin';
+            tabSignIn.classList.add('active');
+            tabSignUp.classList.remove('active');
+            tabSignIn.style.background = 'linear-gradient(135deg, #06b6d4, #2563eb)';
+            tabSignIn.style.color = '#fff';
+            tabSignUp.style.background = 'transparent';
+            tabSignUp.style.color = 'var(--text-muted)';
+            if (btnSubmitAuth) {
+                btnSubmitAuth.innerHTML = `<span>Sign In to Student Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
+            }
+        });
+
+        tabSignUp.addEventListener('click', () => {
+            currentAuthMode = 'signup';
+            tabSignUp.classList.add('active');
+            tabSignIn.classList.remove('active');
+            tabSignUp.style.background = 'linear-gradient(135deg, #f43f5e, #10b981)';
+            tabSignUp.style.color = '#fff';
+            tabSignIn.style.background = 'transparent';
+            tabSignIn.style.color = 'var(--text-muted)';
+            if (btnSubmitAuth) {
+                btnSubmitAuth.innerHTML = `<span>Create New Account & Register</span> <i class="fa-solid fa-user-plus"></i>`;
+            }
+        });
+    }
+
     // Normal form submit
     elements.loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = elements.inputName.value.trim();
+        const password = elements.inputPassword ? elements.inputPassword.value.trim() : '123456';
 
         if (!name) {
             alert("Please enter your Student Full Name to continue.");
             return;
         }
 
-        await processStudentLogin(name);
+        await processStudentLogin(name, password, currentAuthMode);
     });
 
     // Demo Login Click
     elements.btnDemoLogin.addEventListener('click', () => {
         const existingInputName = elements.inputName.value.trim();
+        const password = elements.inputPassword ? elements.inputPassword.value.trim() : '123456';
         if (existingInputName) {
-            processStudentLogin(existingInputName);
+            processStudentLogin(existingInputName, password, 'signin');
         } else {
-            // Show personalized Demo Name Modal
             openDemoModal();
         }
     });
@@ -137,7 +172,7 @@ function initAuth() {
             return;
         }
         closeDemoModal();
-        processStudentLogin(demoName);
+        processStudentLogin(demoName, '123456', 'signup');
     });
 
     // Close Demo Modal
@@ -170,20 +205,29 @@ function closeDemoModal() {
     elements.demoModal.classList.remove('active');
 }
 
-// Handles New vs Existing Student Profiles
-async function processStudentLogin(studentName) {
+// Handles New vs Existing Student Profiles with Password Authentication
+async function processStudentLogin(studentName, password = '123456', authMode = 'signin') {
     const cleanName = studentName.trim();
 
     // Check if student exists in Supabase or LocalStorage
     const check = await SUPABASE_CONFIG.getStudentProfile(cleanName);
     let userData = null;
 
-    if (check.isNew) {
+    if (authMode === 'signup') {
+        if (!check.isNew && check.profile) {
+            alert(`⚠️ Account Already Exists:\nAn account registered under '${cleanName}' already exists on Zafii MedPortal.\n\nPlease switch to "Sign In" tab to log into your existing profile and restore your saved marksheets.`);
+            // Switch tabs to signin automatically
+            const tabSignIn = document.getElementById('tab-auth-signin');
+            if (tabSignIn) tabSignIn.click();
+            return;
+        }
+
         // Create new student record
         const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
         userData = {
             name: cleanName,
             rollNo: generatedRoll,
+            password: password || '123456',
             semester: "Semester 5",
             semesterKey: "sem-5",
             createdAt: new Date().toISOString(),
@@ -191,13 +235,30 @@ async function processStudentLogin(studentName) {
         };
         await SUPABASE_CONFIG.saveStudentProfile(userData);
     } else {
-        // Existing student returning
-        userData = {
-            ...check.profile,
-            semester: "Semester 5",
-            semesterKey: "sem-5",
-            isNewStudent: false
-        };
+        // Sign In Mode
+        if (check.isNew || !check.profile) {
+            // Auto-register so user is never blocked
+            const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+            userData = {
+                name: cleanName,
+                rollNo: generatedRoll,
+                password: password || '123456',
+                semester: "Semester 5",
+                semesterKey: "sem-5",
+                createdAt: new Date().toISOString(),
+                isNewStudent: true
+            };
+            await SUPABASE_CONFIG.saveStudentProfile(userData);
+        } else {
+            // Existing student returning
+            userData = {
+                ...check.profile,
+                password: password || check.profile.password || '123456',
+                semester: "Semester 5",
+                semesterKey: "sem-5",
+                isNewStudent: false
+            };
+        }
     }
 
     // Save active session to LocalStorage so page refresh maintains student session
