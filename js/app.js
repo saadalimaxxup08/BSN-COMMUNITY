@@ -158,23 +158,22 @@ function initAuth() {
     if (btnGoogleLogin) {
         btnGoogleLogin.addEventListener('click', async () => {
             if (!SUPABASE_CONFIG.client) {
-                alert("⚠️ Supabase Client is initializing. Please check your internet connection.");
+                alert("⚠️ Connecting to Google Authentication Server... Please wait.");
                 return;
             }
 
             try {
-                // Real Google OAuth Redirect to accounts.google.com
-                const { data, error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
+                const { error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
                         redirectTo: window.location.origin + window.location.pathname
                     }
                 });
                 if (error) {
-                    alert(`⚠️ Google Authentication Setup Needed:\n${error.message}\n\nPlease ensure Google Provider is enabled in Supabase Dashboard.`);
+                    alert(`⚠️ Google Login Notice:\n${error.message}`);
                 }
             } catch (err) {
-                alert("⚠️ Could not connect to Google OAuth: " + err.message);
+                alert("⚠️ Connection Error: " + err.message);
             }
         });
     }
