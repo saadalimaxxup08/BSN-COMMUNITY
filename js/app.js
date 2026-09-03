@@ -88,6 +88,8 @@ function switchView(viewName) {
     elements.dashboardView.classList.remove('active');
     elements.quizView.classList.remove('active');
     elements.resultView.classList.remove('active');
+    const adminView = document.getElementById('admin-view');
+    if (adminView) adminView.classList.remove('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -100,6 +102,8 @@ function switchView(viewName) {
         elements.quizView.classList.add('active');
     } else if (viewName === 'result') {
         elements.resultView.classList.add('active');
+    } else if (viewName === 'admin') {
+        if (adminView) adminView.classList.add('active');
     }
 }
 
@@ -1209,8 +1213,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         restoreRunningQuizState();
     }
 
-    // 3. Register PWA Service Worker & Phone App Install Prompt
+    // 4. Register PWA Service Worker & Phone App Install Prompt
     initPWAInstallation();
+
+    // 5. Initialize Admin Controller Passcode Module
+    initAdminModule();
 });
 
 // ----------------- PWA INSTALLATION ENGINE -----------------
@@ -1247,5 +1254,150 @@ function initPWAInstallation() {
                 alert("📱 To Install Zafii MedPortal App on your Phone / PC:\n\n1. Tap the Chrome menu button (⋮) at top right.\n2. Select 'Add to Home screen' or 'Install app'.\n\nZafii MedPortal will be installed as a standalone Android app!");
             }
         });
+    }
+}
+
+// ----------------- ADMIN CONTROLLER MODULE -----------------
+function initAdminModule() {
+    const btnNavAdmin = document.getElementById('btn-nav-admin');
+    const adminModal = document.getElementById('admin-passcode-modal');
+    const btnCloseAdminModal = document.getElementById('btn-close-admin-modal');
+    const inputPasscode = document.getElementById('admin-passcode-input');
+    const btnSubmitPasscode = document.getElementById('btn-submit-admin-passcode');
+    const btnAdminExit = document.getElementById('btn-admin-exit');
+
+    if (btnNavAdmin && adminModal) {
+        btnNavAdmin.addEventListener('click', () => {
+            if (inputPasscode) inputPasscode.value = '';
+            adminModal.classList.add('active');
+            if (inputPasscode) inputPasscode.focus();
+        });
+    }
+
+    if (btnCloseAdminModal && adminModal) {
+        btnCloseAdminModal.addEventListener('click', () => {
+            adminModal.classList.remove('active');
+        });
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) adminModal.classList.remove('active');
+        });
+    }
+
+    async function handleAdminAuth() {
+        const entered = inputPasscode ? inputPasscode.value.trim() : '';
+        if (entered === 'Huzaifa.1234' || entered === 'huzaifamushtaqahmed') {
+            adminModal.classList.remove('active');
+            await loadAdminDashboardData();
+            switchView('admin');
+        } else {
+            alert("❌ Unauthorized Access Denied:\nIncorrect Master Admin Passcode. Please check your admin credentials.");
+            if (inputPasscode) inputPasscode.value = '';
+        }
+    }
+
+    if (btnSubmitPasscode) {
+        btnSubmitPasscode.addEventListener('click', handleAdminAuth);
+    }
+
+    if (inputPasscode) {
+        inputPasscode.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') handleAdminAuth();
+        });
+    }
+
+    if (btnAdminExit) {
+        btnAdminExit.addEventListener('click', () => {
+            switchView(AppState.currentUser ? 'dashboard' : 'login');
+        });
+    }
+}
+
+async function loadAdminDashboardData() {
+    const elTotalStudents = document.getElementById('admin-total-students');
+    const elTotalQuizzes = document.getElementById('admin-total-quizzes');
+    const elAvgPassRate = document.getElementById('admin-avg-pass-rate');
+    const tbodyStudents = document.getElementById('admin-students-tbody');
+    const tbodyResults = document.getElementById('admin-results-tbody');
+
+    // 1. Fetch Students
+    const students = await SUPABASE_CONFIG.getAllStudents();
+    if (elTotalStudents) elTotalStudents.textContent = students.length;
+
+    if (tbodyStudents) {
+        tbodyStudents.innerHTML = '';
+        if (students.length === 0) {
+            tbodyStudents.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No student accounts found.</td></tr>`;
+        } else {
+            students.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(s.name)}</strong></td>
+                    <td><code style="color:var(--cyan-primary); font-weight:700;">${escapeHtml(s.rollNo)}</code></td>
+                    <td>${escapeHtml(s.semester)}</td>
+                    <td>${escapeHtml(s.createdAt)}</td>
+                `;
+                tbodyStudents.appendChild(tr);
+            });
+        }
+    }
+
+    // 2. Fetch Quiz Submissions
+    const results = await SUPABASE_CONFIG.getAllQuizResults();
+    if (elTotalQuizzes) elTotalQuizzes.textContent = results.length;
+
+    if (results.length > 0) {
+        const passCount = results.filter(r => r.isPassed).length;
+        const avgRate = Math.round((passCount / results.length) * 100);
+        if (elAvgPassRate) elAvgPassRate.textContent = `${avgRate}%`;
+    } else {
+        if (elAvgPassRate) elAvgPassRate.textContent = `0%`;
+    }
+
+    if (tbodyResults) {
+        tbodyResults.innerHTML = '';
+        if (results.length === 0) {
+            tbodyResults.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No quiz submissions recorded yet.</td></tr>`;
+        } else {
+            results.forEach((r, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:700; color:#fff;">${escapeHtml(r.studentName)}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(r.rollNo)}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight:700;">${escapeHtml(r.subjectTitle)}</div>
+                        <div style="font-size:11px; color:var(--cyan-primary);">${escapeHtml(r.subjectCode)}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight:800; color:#fff;">${r.score} / ${r.totalQuestions} (${r.percentage}%)</div>
+                        <div style="font-size:11px; color:var(--amber-warning);">${escapeHtml(r.grade)}</div>
+                    </td>
+                    <td>
+                        <span class="badge ${r.isPassed ? 'badge-passed' : 'badge-failed'}">
+                            ${r.isPassed ? 'PASSED' : 'FAILED'}
+                        </span>
+                    </td>
+                    <td>${escapeHtml(r.date)}</td>
+                    <td style="text-align:right;">
+                        <button class="btn-table-action btn-admin-view-marksheet" data-index="${idx}">
+                            <i class="fa-solid fa-file-pdf"></i> View Marksheet
+                        </button>
+                    </td>
+                `;
+                tbodyResults.appendChild(tr);
+            });
+
+            // Bind Marksheet Inspector buttons for Admin
+            tbodyResults.querySelectorAll('.btn-admin-view-marksheet').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.currentTarget.getAttribute('data-index');
+                    const targetResult = results[idx];
+                    if (targetResult) {
+                        generateMarksheetPDF(targetResult);
+                    }
+                });
+            });
+        }
     }
 }

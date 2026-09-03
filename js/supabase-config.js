@@ -208,6 +208,85 @@ const SUPABASE_CONFIG = {
         } catch (e) {
             return [];
         }
+    },
+
+    // ----------------- ADMIN CONTROLLER METHODS -----------------
+
+    // Fetch all registered students for Admin Controller
+    async getAllStudents() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (data && !error) {
+                    return data.map(s => ({
+                        name: s.name,
+                        rollNo: s.roll_no,
+                        password: s.password || '',
+                        semester: s.semester || 'Semester 5',
+                        createdAt: new Date(s.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                    }));
+                }
+            } catch (err) {
+                console.warn("Supabase fetch all students error, using local fallback:", err);
+            }
+        }
+
+        // LocalStorage Fallback
+        try {
+            const localMap = JSON.parse(localStorage.getItem('zafii_students') || '{}');
+            return Object.values(localMap).map(s => ({
+                name: s.name,
+                rollNo: s.rollNo || s.roll_no,
+                password: s.password || '',
+                semester: s.semester || 'Semester 5',
+                createdAt: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'
+            }));
+        } catch (e) {
+            return [];
+        }
+    },
+
+    // Fetch all quiz submissions for Admin Controller
+    async getAllQuizResults() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('quiz_results')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (data && !error) {
+                    return data.map(item => ({
+                        studentName: item.student_name,
+                        rollNo: item.roll_no,
+                        semester: item.semester,
+                        subjectTitle: item.subject_title,
+                        subjectCode: item.subject_code,
+                        score: item.score,
+                        totalQuestions: item.total_questions,
+                        percentage: item.percentage,
+                        grade: item.grade,
+                        isPassed: item.passed,
+                        breakdown: item.breakdown || [],
+                        timeTaken: item.time_taken,
+                        date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    }));
+                }
+            } catch (err) {
+                console.warn("Supabase fetch all results error, using local fallback:", err);
+            }
+        }
+
+        // LocalStorage Fallback
+        try {
+            return JSON.parse(localStorage.getItem('zafii_all_results') || '[]');
+        } catch (e) {
+            return [];
+        }
     }
 };
 

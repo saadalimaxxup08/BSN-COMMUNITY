@@ -148,6 +148,11 @@
                 </div>
 
                 <div class="user-badge-wrap">
+                    <button id="btn-nav-admin" class="btn-primary" style="padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow:0 0 15px rgba(139,92,246,0.4);">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Admin Control</span>
+                    </button>
+
                     <button id="btn-install-pwa" class="btn-primary" style="display:none; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #10b981, #06b6d4); box-shadow:0 0 15px rgba(16,185,129,0.4);">
                         <i class="fa-solid fa-mobile-screen-button"></i>
                         <span>Install Phone App</span>
@@ -514,6 +519,105 @@
             </div>
         </section>
 
+        <!-- ==================================================== -->
+        <!-- 4.5. ADMIN CONTROLLER DASHBOARD VIEW -->
+        <!-- ==================================================== -->
+        <section id="admin-view" class="view-section">
+            <header class="glass-card top-navbar" style="border-top:2px solid #8b5cf6;">
+                <div class="nav-brand">
+                    <div class="nav-logo" style="background:linear-gradient(135deg, #8b5cf6, #ec4899);">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <div class="nav-title">Admin Controller Console</div>
+                        <div class="nav-sub">Zafii BSN Academy Student Management System</div>
+                    </div>
+                </div>
+
+                <button id="btn-admin-exit" class="btn-primary" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Exit Admin Panel</span>
+                </button>
+            </header>
+
+            <!-- Admin Overview Analytics Cards -->
+            <div class="stats-grid" style="margin-top:20px;">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <div id="admin-total-students" class="stat-value">0</div>
+                        <div class="stat-label">Total Registered Scholars</div>
+                    </div>
+                </div>
+
+                <div class="glass-card stat-card">
+                    <div class="stat-icon cyan"><i class="fa-solid fa-file-signature"></i></div>
+                    <div>
+                        <div id="admin-total-quizzes" class="stat-value">0</div>
+                        <div class="stat-label">Total Exams Completed</div>
+                    </div>
+                </div>
+
+                <div class="glass-card stat-card">
+                    <div class="stat-icon emerald"><i class="fa-solid fa-chart-line"></i></div>
+                    <div>
+                        <div id="admin-avg-pass-rate" class="stat-value">0%</div>
+                        <div class="stat-label">Academy Passing Accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Student Roster Directory Table -->
+            <div class="glass-card history-card" style="margin-top:24px;">
+                <div class="section-title-row" style="margin-bottom:16px;">
+                    <h3 style="color:#fff; font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-address-book" style="color:#8b5cf6;"></i>
+                        <span>Registered BSN Student Directory</span>
+                    </h3>
+                </div>
+
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Roll Number</th>
+                            <th>Semester</th>
+                            <th>Registration Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-students-tbody">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Loading registered student database...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- All Quiz Submissions Table -->
+            <div class="glass-card history-card" style="margin-top:24px;">
+                <div class="section-title-row" style="margin-bottom:16px;">
+                    <h3 style="color:#fff; font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-graduation-cap" style="color:#ec4899;"></i>
+                        <span>All Student Quiz Submissions & Verified Marksheets</span>
+                    </h3>
+                </div>
+
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Student Candidate</th>
+                            <th>Subject & Code</th>
+                            <th>Score & Grade</th>
+                            <th>Status</th>
+                            <th>Date Completed</th>
+                            <th style="text-align:right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-results-tbody">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading student exam submission history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </div>
 
 
@@ -542,6 +646,35 @@
             <button type="button" id="btn-confirm-demo" class="btn-primary" style="margin-top:14px;">
                 <span>Start Assessment Session</span>
                 <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 5.5. ADMIN SECURITY PASSCODE MODAL -->
+    <!-- ==================================================== -->
+    <div id="admin-passcode-modal" class="modal-overlay">
+        <div class="glass-card modal-card" style="max-width: 420px; border-top: 2px solid #8b5cf6;">
+            <button id="btn-close-admin-modal" class="modal-close-btn">&times;</button>
+            <div class="modal-icon" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="modal-title">Admin Controller Access</h3>
+            <p class="modal-desc">Enter Master Admin Passcode to unlock the Student Management Controller Dashboard.</p>
+            
+            <div class="form-group" style="text-align:left;">
+                <label class="form-label" for="admin-passcode-input">Master Passcode</label>
+                <input 
+                    type="password" 
+                    id="admin-passcode-input" 
+                    class="input-glass" 
+                    placeholder="••••••••"
+                >
+            </div>
+
+            <button type="button" id="btn-submit-admin-passcode" class="btn-primary" style="margin-top:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow:0 4px 14px rgba(139,92,246,0.4);">
+                <span>Unlock Controller Panel</span>
+                <i class="fa-solid fa-key"></i>
             </button>
         </div>
     </div>
