@@ -1177,7 +1177,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await SUPABASE_CONFIG.client.auth.getSession();
             if (session && session.user) {
                 const googleUser = session.user;
-                const googleName = googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0] || "Google Student";
+                const googleName = googleUser.user_metadata?.full_name || googleUser.user_metadata?.name || googleUser.email?.split('@')[0] || "Google Student";
+                
+                // Clean hash token from URL address bar
+                if (window.location.hash && window.location.hash.includes('access_token')) {
+                    history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                }
+
                 await processStudentLogin(googleName, 'google_oauth_verified', 'signup', hasRunningQuiz);
             }
         } catch (e) {
