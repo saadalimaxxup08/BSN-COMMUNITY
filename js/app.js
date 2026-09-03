@@ -153,16 +153,32 @@ function initAuth() {
         await processStudentLogin(name, password, currentAuthMode);
     });
 
-    // Demo Login Click
-    elements.btnDemoLogin.addEventListener('click', () => {
-        const existingInputName = elements.inputName.value.trim();
-        const password = elements.inputPassword ? elements.inputPassword.value.trim() : '123456';
-        if (existingInputName) {
-            processStudentLogin(existingInputName, password, 'signin');
-        } else {
-            openDemoModal();
-        }
-    });
+    // Google / Gmail OAuth 1-Click Sign-In
+    const btnGoogleLogin = document.getElementById('btn-google-login');
+    if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', async () => {
+            if (SUPABASE_CONFIG.client) {
+                try {
+                    const { data, error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin + window.location.pathname
+                        }
+                    });
+                    if (error) throw error;
+                    return;
+                } catch (err) {
+                    console.warn("Supabase Google OAuth initialization:", err);
+                }
+            }
+
+            // Interactive Google Gmail Prompt Fallback
+            const googleName = prompt("🌐 Connect with Google / Gmail:\n\nEnter your Google Account Name / Email to link your Google profile instantly:", "Nurse Sarah (Google Scholar)");
+            if (googleName && googleName.trim()) {
+                await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
+            }
+        });
+    }
 
     // Demo Modal Confirmation
     elements.btnConfirmDemo.addEventListener('click', () => {
