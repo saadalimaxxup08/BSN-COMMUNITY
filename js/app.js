@@ -250,9 +250,7 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
         // Sign In Mode: STRICT VALIDATION
         if (check.isNew || !check.profile) {
             // Account does NOT exist! Block sign-in!
-            alert(`❌ Account Not Found:\nNo registered student profile was found under '${cleanName}'.\n\nIf you are a new student, please click on the "Sign Up" tab above to create your account.`);
-            const tabSignUp = document.getElementById('tab-auth-signup');
-            if (tabSignUp) tabSignUp.click();
+            alert(`❌ Account Not Found:\nNo registered student profile was found under '${cleanName}'.\n\nIf you are a new student, please click on the "Sign Up" tab to create your account.`);
             return;
         }
 
@@ -1176,4 +1174,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (hasRunningQuiz) {
         restoreRunningQuizState();
     }
+
+    // 3. Register PWA Service Worker & Phone App Install Prompt
+    initPWAInstallation();
 });
+
+// ----------------- PWA INSTALLATION ENGINE -----------------
+let deferredPWAInstallPrompt = null;
+
+function initPWAInstallation() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log("⚡ [PWA] Service Worker Registered Successfully!", reg))
+            .catch(err => console.warn("PWA Service Worker registration failed:", err));
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPWAInstallPrompt = e;
+        const btnInstall = document.getElementById('btn-install-pwa');
+        if (btnInstall) {
+            btnInstall.style.display = 'inline-flex';
+        }
+    });
+
+    const btnInstall = document.getElementById('btn-install-pwa');
+    if (btnInstall) {
+        btnInstall.addEventListener('click', async () => {
+            if (deferredPWAInstallPrompt) {
+                deferredPWAInstallPrompt.prompt();
+                const choiceResult = await deferredPWAInstallPrompt.userChoice;
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted PWA app installation prompt!');
+                    btnInstall.style.display = 'none';
+                }
+                deferredPWAInstallPrompt = null;
+            } else {
+                alert("📱 To Install Zafii MedPortal App on your Phone / PC:\n\n1. Tap the Chrome menu button (⋮) at top right.\n2. Select 'Add to Home screen' or 'Install app'.\n\nZafii MedPortal will be installed as a standalone Android app!");
+            }
+        });
+    }
+}

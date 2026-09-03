@@ -1,0 +1,19 @@
+{
+  "short_name": "Zafii WEB",
+  "name": "Zafii MedPortal - BSN Nursing Academy",
+  "description": "Standardized Clinical Quizzes, Live Model Papers & Instant Verified A4 PDF Marksheets for Nursing Scholars",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230b0f19'/><circle cx='256' cy='256' r='200' fill='none' stroke='%2306b6d4' stroke-width='24'/><path d='M256 120v272M120 256h272' stroke='%2306b6d4' stroke-width='48' stroke-linecap='round'/></svg>",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0b0f19",
+  "theme_color": "#06b6d4",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["education", "medical"]
+}

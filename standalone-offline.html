@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zafii MedPortal - Offline BSN Nursing Assessment & Examination System</title>
     
+    <!-- PWA Web App Manifest & Mobile App Integration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#06b6d4">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Zafii WEB">
+
     <!-- Fallback Font Stack & FontAwesome CDN (if online) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -129,6 +137,10 @@
                 </div>
 
                 <div class="user-badge-wrap">
+                    <button id="btn-install-pwa" class="btn-primary" style="display:none; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #10b981, #06b6d4); box-shadow:0 0 15px rgba(16,185,129,0.4);">
+                        <span>📱 Install Phone App</span>
+                    </button>
+
                     <div class="user-profile-pill">
                         <div id="nav-user-avatar" class="user-avatar-circle">ST</div>
                         <div>
