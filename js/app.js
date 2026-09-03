@@ -433,9 +433,9 @@ function renderDashboard() {
     if (btnNavAdmin) {
         const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
         const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-        const isAuthorizedAdmin = userEmail.includes('huzaifamushtaqahmed@gmail') || 
-                                  userName.includes('huzaifamushtaqahmed@gmail') || 
-                                  userName === 'huzaifamushtaqahmed';
+        const isAuthorizedAdmin = userName.includes('huzaifa') || 
+                                  userEmail.includes('huzaifa') || 
+                                  userName.includes('huzaifamushtaqahmed');
         btnNavAdmin.style.display = isAuthorizedAdmin ? 'inline-flex' : 'none';
     }
 
