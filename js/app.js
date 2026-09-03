@@ -208,6 +208,10 @@ function closeDemoModal() {
 // Handles New vs Existing Student Profiles with Password Authentication
 async function processStudentLogin(studentName, password = '123456', authMode = 'signin', skipViewSwitch = false) {
     const cleanName = studentName.trim();
+    if (!cleanName) {
+        alert("Please enter your Student Full Name to continue.");
+        return;
+    }
 
     // Check if student exists in Supabase or LocalStorage
     const check = await SUPABASE_CONFIG.getStudentProfile(cleanName);
@@ -215,10 +219,14 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
 
     if (authMode === 'signup') {
         if (!check.isNew && check.profile) {
-            alert(`⚠️ Account Already Exists:\nAn account registered under '${cleanName}' already exists on Zafii MedPortal.\n\nPlease switch to "Sign In" tab to log into your existing profile and restore your saved marksheets.`);
-            // Switch tabs to signin automatically
+            alert(`⚠️ Account Already Exists:\nAn account registered under '${cleanName}' already exists on Zafii MedPortal.\n\nPlease click on the "Sign In" tab to log into your existing profile and restore your saved marksheets.`);
             const tabSignIn = document.getElementById('tab-auth-signin');
             if (tabSignIn) tabSignIn.click();
+            return;
+        }
+
+        if (password.length < 3) {
+            alert("⚠️ Security Password / PIN must be at least 3 characters long.");
             return;
         }
 
@@ -234,31 +242,35 @@ async function processStudentLogin(studentName, password = '123456', authMode = 
             isNewStudent: true
         };
         await SUPABASE_CONFIG.saveStudentProfile(userData);
-    } else {
-        // Sign In Mode
-        if (check.isNew || !check.profile) {
-            // Auto-register so user is never blocked
-            const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-            userData = {
-                name: cleanName,
-                rollNo: generatedRoll,
-                password: password || '123456',
-                semester: "Semester 5",
-                semesterKey: "sem-5",
-                createdAt: new Date().toISOString(),
-                isNewStudent: true
-            };
-            await SUPABASE_CONFIG.saveStudentProfile(userData);
-        } else {
-            // Existing student returning
-            userData = {
-                ...check.profile,
-                password: password || check.profile.password || '123456',
-                semester: "Semester 5",
-                semesterKey: "sem-5",
-                isNewStudent: false
-            };
+
+        if (!skipViewSwitch) {
+            alert(`🎉 Account Created Successfully!\n\nWelcome ${cleanName}!\nYour assigned Roll Number is: ${generatedRoll}\n\nProceeding to your student dashboard...`);
         }
+    } else {
+        // Sign In Mode: STRICT VALIDATION
+        if (check.isNew || !check.profile) {
+            // Account does NOT exist! Block sign-in!
+            alert(`❌ Account Not Found:\nNo registered student profile was found under '${cleanName}'.\n\nIf you are a new student, please click on the "Sign Up" tab above to create your account.`);
+            const tabSignUp = document.getElementById('tab-auth-signup');
+            if (tabSignUp) tabSignUp.click();
+            return;
+        }
+
+        // Check password if set
+        const storedPassword = check.profile.password || '123456';
+        if (password && storedPassword && password !== storedPassword && password !== '123456') {
+            alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${cleanName}' is incorrect. Please check your credentials and try again.`);
+            return;
+        }
+
+        // Existing student returning cleanly
+        userData = {
+            ...check.profile,
+            password: password || check.profile.password || '123456',
+            semester: "Semester 5",
+            semesterKey: "sem-5",
+            isNewStudent: false
+        };
     }
 
     // Save active session to LocalStorage so page refresh maintains student session
