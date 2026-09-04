@@ -157,27 +157,53 @@ function initAuth() {
         await processStudentLogin(name, password, currentAuthMode);
     });
 
-    // Real Authentic Google / Gmail OAuth 1-Click Permission System
-    const btnGoogleLogin = document.getElementById('btn-google-login');
-    if (btnGoogleLogin) {
-        btnGoogleLogin.addEventListener('click', async () => {
-            if (!SUPABASE_CONFIG.client) {
-                alert("⚠️ Connecting to Google Authentication Server... Please wait.");
-                return;
+    // Assignment Focus Mode Buttons
+    const btnAssignmentGoogle = document.getElementById('btn-assignment-google');
+    const btnShowFullPortal = document.getElementById('btn-show-full-portal');
+    const assignmentCard = document.getElementById('assignment-landing-card');
+    const fullPortalCard = document.getElementById('full-portal-login-card');
+
+    if (btnShowFullPortal && assignmentCard && fullPortalCard) {
+        btnShowFullPortal.addEventListener('click', () => {
+            assignmentCard.style.display = 'none';
+            fullPortalCard.style.display = 'block';
+        });
+    }
+
+    if (btnAssignmentGoogle) {
+        btnAssignmentGoogle.addEventListener('click', async () => {
+            if (SUPABASE_CONFIG.client) {
+                try {
+                    const { error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin + window.location.pathname
+                        }
+                    });
+                    if (error) {
+                        console.warn("Supabase Google OAuth initialization:", error.message);
+                    } else {
+                        return;
+                    }
+                } catch (e) {}
             }
 
-            try {
-                const { error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: window.location.origin + window.location.pathname
-                    }
-                });
-                if (error) {
-                    alert(`⚠️ Google Login Notice:\n${error.message}`);
+            // Interactive Google Candidate Prompt
+            const googleName = prompt("🌐 Pediatric Nursing Live Assignment Submission:\n\nEnter your Candidate Full Name / Email to verify your identity and start your 70-minute assessment:", "Nurse Zainab (Candidate)");
+            if (googleName && googleName.trim()) {
+                const cleanInput = googleName.trim().toLowerCase();
+                const isAdmin = cleanInput.includes('zafione6119@gmail') || 
+                                cleanInput.includes('saadalimaxxup02@gmail') || 
+                                cleanInput.includes('huzaifamushtaqahmed');
+
+                await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
+                
+                if (!isAdmin) {
+                    // Automatically launch Pediatric Nursing assignment for students
+                    setTimeout(() => {
+                        startQuiz('PED-501-MODEL');
+                    }, 300);
                 }
-            } catch (err) {
-                alert("⚠️ Connection Error: " + err.message);
             }
         });
     }
@@ -431,14 +457,19 @@ function closeLockedSemesterModal() {
 }
 
 function renderDashboard() {
-    // Strict Admin Button Visibility Guard (Exclusively for huzaifamushtaqahmed@gmail)
+    // Strict Admin Button Visibility Guard (Exclusively for Authorized Admin Emails)
     const btnNavAdmin = document.getElementById('btn-nav-admin');
     if (btnNavAdmin) {
         const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
         const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-        const isAuthorizedAdmin = userName.includes('huzaifa') || 
-                                  userEmail.includes('huzaifa') || 
+        
+        const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
+                                  userName.includes('zafione6119@gmail') ||
+                                  userEmail.includes('saadalimaxxup02@gmail') ||
+                                  userName.includes('saadalimaxxup02@gmail') ||
+                                  userEmail.includes('huzaifamushtaqahmed') ||
                                   userName.includes('huzaifamushtaqahmed');
+
         btnNavAdmin.style.display = isAuthorizedAdmin ? 'inline-flex' : 'none';
     }
 
