@@ -255,65 +255,87 @@ function closeDemoModal() {
     elements.demoModal.classList.remove('active');
 }
 
-// Handles New vs Existing Student Profiles with Password Authentication
+// Handles New vs Existing Student Profiles with Unique Email Authentication
 async function processStudentLogin(studentName, password = '', authMode = 'signin', skipViewSwitch = false) {
-    const cleanName = studentName.trim();
-    if (!cleanName) {
-        alert("Please enter your Student Full Name to continue.");
+    const rawInput = studentName.trim();
+    if (!rawInput) {
+        alert("Please enter your Student Full Name / Email to continue.");
         return;
     }
 
-    // Check if student exists in Supabase or LocalStorage
-    const check = await SUPABASE_CONFIG.getStudentProfile(cleanName);
+    let userEmail = '';
+    let displayName = rawInput;
+
+    if (rawInput.includes('@')) {
+        userEmail = rawInput.toLowerCase();
+        const prefix = rawInput.split('@')[0];
+        displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    }
+
+    // Check if student exists in Supabase or LocalStorage by unique email/name
+    const check = await SUPABASE_CONFIG.getStudentProfile(displayName, userEmail);
     let userData = null;
 
     if (authMode === 'signup') {
         if (!check.isNew && check.profile) {
-            alert(`⚠️ Account Already Exists:\nAn account registered under '${cleanName}' already exists on Zafii MedPortal.\n\nPlease click on the "Sign In" tab to log into your existing profile and restore your saved marksheets.`);
-            const tabSignIn = document.getElementById('tab-auth-signin');
-            if (tabSignIn) tabSignIn.click();
-            return;
-        }
+            // Assignment Submission Mode & Google OAuth: Seamlessly restore candidate profile without blocking alert!
+            if (password === 'google_oauth_verified' || (document.getElementById('assignment-landing-card') && document.getElementById('assignment-landing-card').style.display !== 'none')) {
+                userData = {
+                    ...check.profile,
+                    email: userEmail || check.profile.email || '',
+                    semester: "Semester 5",
+                    semesterKey: "sem-5",
+                    isNewStudent: false
+                };
+            } else {
+                alert(`⚠️ Account Already Exists:\nAn account registered under '${displayName}' already exists on Zafii MedPortal.\n\nPlease click on the "Sign In" tab to log into your existing profile.`);
+                const tabSignIn = document.getElementById('tab-auth-signin');
+                if (tabSignIn) tabSignIn.click();
+                return;
+            }
+        } else {
+            if (password !== 'google_oauth_verified' && password.length > 0 && password.length < 3) {
+                alert("⚠️ Security Password / PIN must be at least 3 characters long.");
+                return;
+            }
 
-        if (password.length < 3) {
-            alert("⚠️ Security Password / PIN must be at least 3 characters long.");
-            return;
-        }
+            // Create new student record
+            const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+            userData = {
+                name: displayName,
+                email: userEmail || rawInput,
+                rollNo: generatedRoll,
+                password: password,
+                semester: "Semester 5",
+                semesterKey: "sem-5",
+                createdAt: new Date().toISOString(),
+                isNewStudent: true
+            };
+            await SUPABASE_CONFIG.saveStudentProfile(userData);
 
-        // Create new student record
-        const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-        userData = {
-            name: cleanName,
-            rollNo: generatedRoll,
-            password: password,
-            semester: "Semester 5",
-            semesterKey: "sem-5",
-            createdAt: new Date().toISOString(),
-            isNewStudent: true
-        };
-        await SUPABASE_CONFIG.saveStudentProfile(userData);
-
-        if (!skipViewSwitch) {
-            alert(`🎉 Account Created Successfully!\n\nWelcome ${cleanName}!\nYour assigned Roll Number is: ${generatedRoll}\n\nProceeding to your student dashboard...`);
+            if (!skipViewSwitch && password !== 'google_oauth_verified') {
+                alert(`🎉 Account Created Successfully!\n\nWelcome ${displayName}!\nYour assigned Roll Number is: ${generatedRoll}\n\nProceeding to your assessment...`);
+            }
         }
     } else {
         // Sign In Mode: STRICT VALIDATION
         if (check.isNew || !check.profile) {
             // Account does NOT exist! Block sign-in!
-            alert(`❌ Account Not Found:\nNo registered student profile was found under '${cleanName}'.\n\nIf you are a new student, please click on the "Sign Up" tab to create your account.`);
+            alert(`❌ Account Not Found:\nNo registered student profile was found under '${displayName}'.\n\nIf you are a new student, please click on the "Sign Up" tab to create your account.`);
             return;
         }
 
         // Check password if set
         const storedPassword = check.profile.password || '';
         if (password && storedPassword && password !== storedPassword) {
-            alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${cleanName}' is incorrect. Please check your credentials and try again.`);
+            alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${displayName}' is incorrect. Please check your credentials and try again.`);
             return;
         }
 
         // Existing student returning cleanly
         userData = {
             ...check.profile,
+            email: userEmail || check.profile.email || '',
             password: password || check.profile.password || '',
             semester: "Semester 5",
             semesterKey: "sem-5",

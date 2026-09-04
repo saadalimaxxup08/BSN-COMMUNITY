@@ -34,21 +34,31 @@ const SUPABASE_CONFIG = {
         const cleanName = (studentName || '').trim().toLowerCase();
         
         // Try Supabase first
+    // Fetch student profile by unique Gmail / Email account or name
+    async getStudentProfile(identifier, email = '') {
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanName = (identifier || '').trim().toLowerCase();
+        const searchKey = cleanEmail || cleanName;
+
+        // Try Supabase first
         if (this.client) {
             try {
-                const { data, error } = await this.client
-                    .from('students')
-                    .select('*')
-                    .ilike('name', cleanName)
-                    .maybeSingle();
+                let query = this.client.from('students').select('*');
+                if (cleanEmail) {
+                    query = query.ilike('email', cleanEmail);
+                } else {
+                    query = query.ilike('name', cleanName);
+                }
+                const { data, error } = await query.maybeSingle();
 
                 if (data && !error) {
                     return { 
                         isNew: false, 
                         profile: {
                             name: data.name,
+                            email: data.email || cleanEmail,
                             rollNo: data.roll_no || data.rollNo,
-                            password: data.password || '123456',
+                            password: data.password || '',
                             semester: data.semester || 'Semester 5',
                             semesterKey: 'sem-5',
                             createdAt: data.created_at || new Date().toISOString()
@@ -62,17 +72,19 @@ const SUPABASE_CONFIG = {
 
         // Fallback / Offline LocalStorage
         const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
-        if (localStudents[cleanName]) {
-            return { isNew: false, profile: localStudents[cleanName] };
+        if (localStudents[searchKey] || localStudents[cleanName]) {
+            return { isNew: false, profile: localStudents[searchKey] || localStudents[cleanName] };
         }
 
         // Brand New Student
         return { isNew: true, profile: null };
     },
 
-    // Save or register student profile
+    // Save or register student profile indexed by unique Gmail / Email account
     async saveStudentProfile(profileData) {
-        const cleanName = profileData.name.trim().toLowerCase();
+        const cleanEmail = (profileData.email || '').trim().toLowerCase();
+        const cleanName = (profileData.name || '').trim().toLowerCase();
+        const primaryKey = cleanEmail || cleanName;
 
         // Save to Supabase
         if (this.client) {
@@ -82,12 +94,13 @@ const SUPABASE_CONFIG = {
                     .upsert([
                         {
                             name: profileData.name,
+                            email: profileData.email || primaryKey,
                             roll_no: profileData.rollNo,
-                            password: profileData.password || '123456',
+                            password: profileData.password || '',
                             semester: profileData.semester || "Semester 5",
                             created_at: profileData.createdAt || new Date().toISOString()
                         }
-                    ], { onConflict: 'name' });
+                    ], { onConflict: cleanEmail ? 'email' : 'name' });
             } catch (err) {
                 console.warn("Supabase save profile failed:", err);
             }
@@ -96,6 +109,7 @@ const SUPABASE_CONFIG = {
         // Cache in LocalStorage
         try {
             const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
+            localStudents[primaryKey] = profileData;
             localStudents[cleanName] = profileData;
             localStorage.setItem('zafii_students', JSON.stringify(localStudents));
         } catch (e) {
@@ -226,10 +240,11 @@ const SUPABASE_CONFIG = {
 
                 if (data && !error && data.length > 0) {
                     data.forEach(s => {
-                        const key = (s.name || '').trim().toLowerCase();
+                        const key = (s.email || s.name || '').trim().toLowerCase();
                         if (key && !studentMap[key]) {
                             studentMap[key] = {
                                 name: s.name,
+                                email: s.email || '',
                                 rollNo: s.roll_no,
                                 password: s.password || '',
                                 semester: s.semester || 'Semester 5',
@@ -255,6 +270,7 @@ const SUPABASE_CONFIG = {
                         if (key && !studentMap[key]) {
                             studentMap[key] = {
                                 name: item.student_name,
+                                email: '',
                                 rollNo: item.roll_no || 'BSN-2026',
                                 password: '',
                                 semester: item.semester || 'Semester 5',
@@ -270,10 +286,11 @@ const SUPABASE_CONFIG = {
         try {
             const localMap = JSON.parse(localStorage.getItem('zafii_students') || '{}');
             Object.values(localMap).forEach(s => {
-                const key = (s.name || '').trim().toLowerCase();
+                const key = (s.email || s.name || '').trim().toLowerCase();
                 if (key && !studentMap[key]) {
                     studentMap[key] = {
                         name: s.name,
+                        email: s.email || '',
                         rollNo: s.rollNo || s.roll_no || 'BSN-2026',
                         password: s.password || '',
                         semester: s.semester || 'Semester 5',
