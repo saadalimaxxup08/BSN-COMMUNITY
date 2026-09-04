@@ -682,6 +682,16 @@ window.isUserAdmin = function() {
            userName.includes('huzaifamushtaqahmed');
 };
 
+// Formats Account ID to masked privacy string (e.g. 27601544 -> 276***44)
+window.formatMaskedAccountId = function(accId) {
+    if (!accId || accId === 'N/A') return 'N/A';
+    const str = accId.toString().trim();
+    if (str.length < 5) return str;
+    const first3 = str.slice(0, 3);
+    const last2 = str.slice(-2);
+    return `${first3}***${last2}`;
+};
+
 function checkExamWindowStatus() {
     const isTimerHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
     const countdownCard = document.getElementById('exam-countdown-card');
@@ -2088,7 +2098,7 @@ async function loadAdminDashboardData() {
                     <td style="vertical-align:middle;">
                         <div style="font-weight:800; color:#ffffff; font-size:14px;">${escapeHtml(r.studentName)}</div>
                         <div style="font-size:11px; color:var(--cyan-primary); font-weight:700; margin-top:2px;">
-                            ${escapeHtml(r.rollNo)} &bull; <span style="color:#f472b6; font-weight:800;">ID: ${escapeHtml(r.accountId || 'N/A')}</span>
+                            ${escapeHtml(r.rollNo)} &bull; <span style="color:#f472b6; font-weight:800;">ID: ${formatMaskedAccountId(r.accountId)}</span>
                         </div>
                     </td>
                     <td style="vertical-align:middle;">
@@ -2164,7 +2174,7 @@ async function loadAdminDashboardData() {
                 tr.innerHTML = `
                     <td style="vertical-align:middle;">
                         <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(r.rollNo)}</code>
-                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:3px 8px; border-radius:8px; color:#f472b6; font-weight:800; font-size:11px; margin-left:4px;">ID: ${escapeHtml(r.accountId || 'N/A')}</code>
+                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:3px 8px; border-radius:8px; color:#f472b6; font-weight:800; font-size:11px; margin-left:4px;">ID: ${formatMaskedAccountId(r.accountId)}</code>
                     </td>
                     <td style="vertical-align:middle; font-weight:800; color:#ffffff; font-size:13.5px;">${escapeHtml(r.studentName)}</td>
                     <td style="vertical-align:middle; font-weight:800; color:#ffffff;">${r.score} / ${r.totalQuestions}</td>
@@ -2197,11 +2207,13 @@ window.exportMasterMeritListPDF = async function() {
         const statusText = isPassed ? "PASSED" : "FAILED";
         const statusColor = isPassed ? "#10b981" : "#f43f5e";
         const statusBg = isPassed ? "rgba(16,185,129,0.12)" : "rgba(244,63,94,0.12)";
+        const maskedAccId = formatMaskedAccountId(r.accountId);
 
         return `
             <tr style="border-bottom:1px solid #e2e8f0;">
                 <td style="padding:10px 12px; font-weight:700; color:#0f172a; text-align:center;">${idx + 1}</td>
                 <td style="padding:10px 12px; font-family:monospace; font-weight:800; color:#0284c7;">${escapeHtml(r.rollNo)}</td>
+                <td style="padding:10px 12px; font-family:monospace; font-weight:800; color:#be185d;">${maskedAccId}</td>
                 <td style="padding:10px 12px; font-weight:700; color:#0f172a;">${escapeHtml(r.studentName)}</td>
                 <td style="padding:10px 12px; font-weight:800; text-align:center;">${r.score} / ${r.totalQuestions}</td>
                 <td style="padding:10px 12px; font-weight:800; text-align:center; color:#0284c7;">${r.percentage}%</td>
@@ -2261,6 +2273,7 @@ window.exportMasterMeritListPDF = async function() {
                     <tr>
                         <th class="center" style="width:35px;">#</th>
                         <th>Roll Number</th>
+                        <th>Account ID</th>
                         <th>Candidate Name</th>
                         <th class="center">Score / 70</th>
                         <th class="center">Percentage</th>
@@ -2273,8 +2286,11 @@ window.exportMasterMeritListPDF = async function() {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="7" style="border:none; padding-top:14px;">
+                        <td colspan="8" style="border:none; padding-top:14px;">
                             <div class="footer">
+                                <p><strong>Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
+                                <p>© ZAFII NURSING CARE Examination Board • Protected Record</p>
+                            </div>
                                 <p><strong>Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
                                 <p>© ZAFII NURSING CARE Examination Board • Protected Record</p>
                             </div>
