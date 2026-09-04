@@ -157,11 +157,17 @@ function initAuth() {
         await processStudentLogin(name, password, currentAuthMode);
     });
 
-    // Assignment Focus Mode Buttons
+    // Assignment Focus Mode Buttons (Default First Page)
     const btnAssignmentGoogle = document.getElementById('btn-assignment-google');
     const btnShowFullPortal = document.getElementById('btn-show-full-portal');
     const assignmentCard = document.getElementById('assignment-landing-card');
     const fullPortalCard = document.getElementById('full-portal-login-card');
+
+    // Always enforce Assignment Landing Card as the default initial front page
+    if (assignmentCard && fullPortalCard) {
+        assignmentCard.style.display = 'block';
+        fullPortalCard.style.display = 'none';
+    }
 
     if (btnShowFullPortal && assignmentCard && fullPortalCard) {
         btnShowFullPortal.addEventListener('click', () => {
