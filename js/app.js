@@ -1617,12 +1617,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     initPWAInstallation();
     initAdminModule();
 
-    // Sync global result release/protection status from Supabase
+    // Sync global result release/protection status & timer hidden status from Supabase
     await SUPABASE_CONFIG.getResultsReleasedStatus();
+    await SUPABASE_CONFIG.getExamTimerHiddenStatus();
 
     // Start Live Examination Access Window Countdown (04 Sep 6:00 PM - 05 Sep 6:00 PM PKT)
     checkExamWindowStatus();
     setInterval(checkExamWindowStatus, 1000);
+    setInterval(async () => {
+        const wasHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
+        const isHiddenNow = await SUPABASE_CONFIG.getExamTimerHiddenStatus();
+        if (wasHidden !== isHiddenNow) {
+            checkExamWindowStatus();
+        }
+    }, 4000);
 
     // Initial check & auto-background sync for offline queued submissions
     if (navigator.onLine) {
@@ -1863,16 +1871,16 @@ function initAdminModule() {
     updateExamTimerControlUI();
 
     if (btnToggleTimer) {
-        btnToggleTimer.addEventListener('click', () => {
+        btnToggleTimer.addEventListener('click', async () => {
             const current = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
             const newState = !current;
-            localStorage.setItem('zafii_exam_timer_hidden', newState ? 'true' : 'false');
+            await SUPABASE_CONFIG.setExamTimerHiddenStatus(newState);
             updateExamTimerControlUI();
             checkExamWindowStatus();
 
             alert(newState 
-                ? "👁️ Countdown Banner Hidden & Exam Access Open!\n\nThe countdown timer card is now hidden on student dashboards. Students can freely access and start their examination paper anytime!" 
-                : "⏰ Countdown Banner Visible & Schedule Enforced!\n\nThe live examination schedule is now active. Countdown timer banner is visible and candidate access is strictly governed by the official time window.");
+                ? "👁️ Countdown Banner Hidden & Global Access Unlocked!\n\nThe countdown timer card is now hidden for ALL candidates across all devices. Every student can freely access and start their examination paper!" 
+                : "⏰ Countdown Banner Visible & Global Schedule Enforced!\n\nThe live examination schedule is now active globally across all devices. Countdown timer banner is visible and candidate access is strictly governed by the official time window.");
         });
     }
 }

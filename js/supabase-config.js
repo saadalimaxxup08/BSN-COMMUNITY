@@ -492,6 +492,50 @@ const SUPABASE_CONFIG = {
             }
         }
         return isReleased;
+    },
+
+    async getExamTimerHiddenStatus() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .eq('name', 'SYSTEM_SETTINGS_EXAM_TIMER_HIDDEN')
+                    .maybeSingle();
+
+                if (data && !error) {
+                    const isHidden = data.roll_no === 'true';
+                    localStorage.setItem('zafii_exam_timer_hidden', isHidden ? 'true' : 'false');
+                    return isHidden;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch exam timer hidden status failed:", err);
+            }
+        }
+        return localStorage.getItem('zafii_exam_timer_hidden') === 'true';
+    },
+
+    async setExamTimerHiddenStatus(isHidden) {
+        const valueStr = isHidden ? 'true' : 'false';
+        localStorage.setItem('zafii_exam_timer_hidden', valueStr);
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: 'SYSTEM_SETTINGS_EXAM_TIMER_HIDDEN',
+                            roll_no: valueStr,
+                            semester: 'SYSTEM_CONFIG',
+                            created_at: new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+            } catch (err) {
+                console.warn("Supabase save exam timer hidden status failed:", err);
+            }
+        }
+        return isHidden;
     }
 };
 
