@@ -295,141 +295,184 @@ function closeDemoModal() {
     elements.demoModal.classList.remove('active');
 }
 
+// Function to show Roll Number & Verification Badge Popup with [X] close button
+function showRollNumberPopup(userObj, callback) {
+    const modal = document.getElementById('roll-number-popup-modal');
+    const elName = document.getElementById('popup-student-name');
+    const elRoll = document.getElementById('popup-student-roll');
+    const elEmail = document.getElementById('popup-student-email');
+    const btnClose = document.getElementById('btn-close-roll-popup');
+    const btnConfirm = document.getElementById('btn-confirm-roll-popup');
+
+    if (elName) elName.textContent = userObj.name || 'Medical Scholar';
+    if (elRoll) elRoll.textContent = userObj.rollNo || 'BSN-2026-0000';
+    if (elEmail) elEmail.textContent = userObj.email || userObj.name || '-';
+
+    if (modal) modal.classList.add('active');
+
+    const closeHandler = () => {
+        if (modal) modal.classList.remove('active');
+        switchView('dashboard');
+        if (callback) callback();
+    };
+
+    if (btnClose) btnClose.onclick = closeHandler;
+    if (btnConfirm) btnConfirm.onclick = closeHandler;
+}
+
+// Function to open Student Full Name Setup Modal for new accounts
+function openNameSetupModal(userObj, callback) {
+    const modal = document.getElementById('student-name-setup-modal');
+    const input = document.getElementById('setup-student-name-input');
+    const btnSave = document.getElementById('btn-save-student-name');
+
+    if (modal) modal.classList.add('active');
+    if (input) {
+        input.value = (userObj.name && !userObj.name.includes('@')) ? userObj.name : '';
+        setTimeout(() => input.focus(), 200);
+    }
+
+    const saveHandler = async () => {
+        const enteredName = input ? input.value.trim() : '';
+        if (!enteredName) {
+            alert("Bara-e-karam apna Poora Naam (Full Student Name) darj karein.");
+            return;
+        }
+
+        userObj.name = enteredName;
+        userObj.needsNameSetup = false;
+        await SUPABASE_CONFIG.saveStudentProfile(userObj);
+
+        try {
+            localStorage.setItem('zafii_active_session', JSON.stringify(userObj));
+        } catch (e) {}
+
+        AppState.currentUser = userObj;
+
+        // Set UI Elements
+        const initials = enteredName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials || "ST";
+        if (elements.navStudentName) elements.navStudentName.textContent = enteredName;
+        if (elements.navStudentRoll) elements.navStudentRoll.textContent = userObj.rollNo;
+        if (elements.bannerStudentName) elements.bannerStudentName.textContent = enteredName;
+
+        if (modal) modal.classList.remove('active');
+
+        if (callback) callback(userObj);
+    };
+
+    if (btnSave) btnSave.onclick = saveHandler;
+}
+
 // Handles New vs Existing Student Profiles with Unique Email Authentication
-async function processStudentLogin(studentName, password = '', authMode = 'signin', skipViewSwitch = false) {
-    const rawInput = studentName.trim();
+async function processStudentLogin(studentInput, password = '', authMode = 'signin', skipViewSwitch = false) {
+    const rawInput = studentInput.trim();
     if (!rawInput) {
-        alert("Please enter your Student Full Name / Email to continue.");
+        alert("Bara-e-karam apna Email Address enter karein.");
         return;
     }
 
-    let userEmail = '';
-    let displayName = rawInput;
-
-    if (rawInput.includes('@')) {
-        userEmail = rawInput.toLowerCase();
-        const prefix = rawInput.split('@')[0];
-        displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    let userEmail = rawInput.toLowerCase();
+    if (!userEmail.includes('@')) {
+        userEmail = rawInput + '@gmail.com';
     }
 
-    // Check if input is a Master Admin account email
-    const cleanLower = rawInput.toLowerCase();
-    const isAdminEmail = cleanLower.includes('zafione6119@gmail') ||
-                         cleanLower.includes('saadalimaxxup02@gmail') ||
-                         cleanLower.includes('huzaifamushtaqahmed');
-
-    // Strict Master Admin Account Protection Guard
-    if (isAdminEmail && password !== 'google_oauth_verified') {
-        const checkPass = password ? password.trim() : '';
-        if (checkPass !== 'Huzaifa.1234' && checkPass !== 'huzaifamushtaqahmed') {
-            alert(`❌ Incorrect Admin Passcode / PIN:\n\nAccess denied for Master Admin account '${rawInput}'. Please enter the correct Master Admin Passcode (Huzaifa.1234).`);
-            return;
-        }
-    }
+    // Check if student exists in Supabase or LocalStorage by unique email
+    const check = await SUPABASE_CONFIG.getStudentProfile(userEmail.split('@')[0], userEmail);
+    let userData = null;
 
     if (authMode === 'signup') {
         if (password !== 'google_oauth_verified') {
-            // 1. Mandatory Gmail Verification Rule: Must end with @gmail.com
-            const isGmail = rawInput.toLowerCase().endsWith('@gmail.com');
-            if (!isGmail) {
-                alert("⚠️ Official Gmail Address Required:\n\nSign Up karne ke liye valid Gmail address (ending with '@gmail.com') daalna lazmi hai.\nExample: nurse.sarah@gmail.com");
-                return;
-            }
-
-            // 2. Mandatory Password Rule: Must enter a password
+            // Password validation
             if (!password || !password.trim()) {
-                alert("⚠️ Password Required:\n\nSign Up karne ke liye Password daalna lazmi hai. Bara-e-karam apna password darj karein.");
+                alert("⚠️ Password Required:\n\nSign Up karne ke liye Password daalna lazmi hai.");
                 return;
             }
         }
 
+        // Check duplicate email registration
         if (!check.isNew && check.profile) {
-            // Assignment Submission Mode & Google OAuth: Seamlessly restore candidate profile without blocking alert!
-            if (password === 'google_oauth_verified' || (document.getElementById('assignment-landing-card') && document.getElementById('assignment-landing-card').style.display !== 'none')) {
-                userData = {
-                    ...check.profile,
-                    email: userEmail || check.profile.email || '',
-                    password: check.profile.password || '12345678',
-                    semester: "Semester 5",
-                    semesterKey: "sem-5",
-                    isNewStudent: false
-                };
-            } else {
-                alert(`⚠️ Account Already Exists:\nAn account registered under '${displayName}' already exists.\n\nPlease click on the "Sign In" tab to log into your existing profile.`);
-                const tabSignIn = document.getElementById('tab-auth-signin');
-                if (tabSignIn) tabSignIn.click();
-                return;
-            }
-        } else {
-            // Create new student record
-            const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-            userData = {
-                name: displayName,
-                email: userEmail || rawInput,
-                rollNo: generatedRoll,
-                password: password || '12345678',
-                semester: "Semester 5",
-                semesterKey: "sem-5",
-                createdAt: new Date().toISOString(),
-                isNewStudent: true
-            };
-            await SUPABASE_CONFIG.saveStudentProfile(userData);
+            alert(`⚠️ Account Already Registered:\n\n'${userEmail}' par pehle se account majood hai. Bara-e-karam "Sign In" tab par ja kar login karein.`);
+            const tabSignIn = document.getElementById('tab-auth-signin');
+            if (tabSignIn) tabSignIn.click();
+            return;
+        }
 
-            if (!skipViewSwitch && password !== 'google_oauth_verified') {
-                alert(`🎉 Account Created Successfully!\n\nWelcome ${displayName}!\nYour assigned Roll Number is: ${generatedRoll}\n\nProceeding to your assessment...`);
+        // Create new student record
+        const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+        userData = {
+            name: userEmail.split('@')[0],
+            email: userEmail,
+            rollNo: generatedRoll,
+            password: password || '12345678',
+            semester: "Semester 5",
+            semesterKey: "sem-5",
+            createdAt: new Date().toISOString(),
+            isNewStudent: true,
+            needsNameSetup: true
+        };
+        await SUPABASE_CONFIG.saveStudentProfile(userData);
+
+        try {
+            localStorage.setItem('zafii_active_session', JSON.stringify(userData));
+        } catch (e) {}
+
+        AppState.currentUser = userData;
+
+        // Prompt Student Name Setup Modal immediately after Sign Up!
+        openNameSetupModal(userData, (updatedUser) => {
+            showRollNumberPopup(updatedUser);
+        });
+        return;
+
+    } else {
+        // Sign In Mode: Check account existence
+        if (check.isNew || !check.profile) {
+            alert(`⚠️ Account Not Found:\n\n'${userEmail}' ka koi account nahi mila.\n\nBara-e-karam "Sign Up" tab par click karke apna account banayein.`);
+            const tabSignUp = document.getElementById('tab-auth-signup');
+            if (tabSignUp) tabSignUp.click();
+            return;
+        }
+
+        // Existing profile -> Verify password strictly
+        const storedPassword = check.profile.password || '12345678';
+        if (password !== 'google_oauth_verified') {
+            if (password && storedPassword && password !== storedPassword) {
+                alert(`❌ Incorrect Password:\n\n'${userEmail}' ke liye aapka password galat hai. Bara-e-karam sahi password enter karein.`);
+                return;
             }
         }
-    } else {
-        // Sign In Mode: Strict Credentials Verification Engine
-        if (check.isNew || !check.profile) {
-            // Account does not exist yet -> Prompt to Sign Up!
-            if (!isAdminEmail && password !== 'google_oauth_verified') {
-                alert(`⚠️ Account Not Registered:\n\nNo student account found for '${displayName}'.\n\nPlease click on the "Sign Up" tab to register your account first.`);
-                const tabSignUp = document.getElementById('tab-auth-signup');
-                if (tabSignUp) tabSignUp.click();
-                return;
-            } else {
-                // Auto-create Admin or Google Verified Profile
-                const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-                userData = {
-                    name: displayName,
-                    email: userEmail || rawInput,
-                    rollNo: generatedRoll,
-                    password: password || 'Huzaifa.1234',
-                    semester: "Semester 5",
-                    semesterKey: "sem-5",
-                    createdAt: new Date().toISOString(),
-                    isNewStudent: true
-                };
-                await SUPABASE_CONFIG.saveStudentProfile(userData);
-            }
+
+        userData = {
+            ...check.profile,
+            email: userEmail || check.profile.email || '',
+            semester: "Semester 5",
+            semesterKey: "sem-5",
+            isNewStudent: false
+        };
+
+        try {
+            localStorage.setItem('zafii_active_session', JSON.stringify(userData));
+        } catch (e) {}
+
+        AppState.currentUser = userData;
+
+        // Update UI
+        const initials = (userData.name || 'ST').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials || "ST";
+        if (elements.navStudentName) elements.navStudentName.textContent = userData.name || userEmail;
+        if (elements.navStudentRoll) elements.navStudentRoll.textContent = userData.rollNo;
+        if (elements.bannerStudentName) elements.bannerStudentName.textContent = userData.name || userEmail;
+
+        // Check if name setup is needed
+        if (!userData.name || userData.name.includes('@') || userData.needsNameSetup) {
+            openNameSetupModal(userData, (updatedUser) => {
+                showRollNumberPopup(updatedUser);
+            });
         } else {
-            // Existing student profile -> Verify password strictly!
-            const storedPassword = (check.profile.password && check.profile.password !== '123456') 
-                ? check.profile.password 
-                : '12345678';
-
-            if (password !== 'google_oauth_verified' && !isAdminEmail) {
-                if (password && password !== storedPassword && password !== '12345678') {
-                    alert(`❌ Incorrect Password / PIN:\n\nThe password you entered for '${displayName}' is incorrect. Please check your password and try again.`);
-                    return;
-                }
-            }
-
-            // Existing student returning cleanly
-            userData = {
-                ...check.profile,
-                email: userEmail || check.profile.email || '',
-                password: password || storedPassword,
-                semester: "Semester 5",
-                semesterKey: "sem-5",
-                isNewStudent: false
-            };
+            showRollNumberPopup(userData);
         }
     }
-
-    // Always ensure student profile is persisted to Supabase students table
-    await SUPABASE_CONFIG.saveStudentProfile(userData);
 
     // Save active session to LocalStorage so page refresh maintains student session
     try {

@@ -912,6 +912,66 @@
                     <span>Print</span>
                 </button>
             </div>
+    <!-- ==================================================== -->
+    <!-- 6.5. NEW STUDENT FULL NAME SETUP MODAL -->
+    <!-- ==================================================== -->
+    <div id="student-name-setup-modal" class="modal-overlay">
+        <div class="glass-card modal-card" style="max-width:480px; text-align:center; position:relative;">
+            <div class="modal-icon" style="background:rgba(6,182,212,0.15); color:var(--cyan-primary); margin:0 auto 12px auto;">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <h3 class="modal-title" style="font-size:18px; font-weight:800; color:#fff;">Welcome to ZAFII NURSING CARE! 🎉</h3>
+            <p class="modal-desc" style="line-height:1.5; color:var(--text-muted); margin-bottom:20px; font-size:13px;">
+                Please enter your <strong>Full Student Name</strong> to personalize your student portal, live examination papers, and certified PDF marksheets.
+            </p>
+            <div class="form-group" style="text-align:left; margin-bottom:20px;">
+                <label class="form-label" for="setup-student-name-input">
+                    <i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Student Full Name <span style="color:#f43f5e;">*</span>
+                </label>
+                <input type="text" id="setup-student-name-input" class="input-glass" placeholder="e.g. Nurse Sarah Jenkins / Saadii" required>
+            </div>
+            <button type="button" id="btn-save-student-name" class="btn-primary" style="width:100%; padding:12px 20px; font-size:14px; font-weight:800;">
+                <span>Save Profile & Continue</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- 6.6. ROLL NUMBER & STUDENT VERIFICATION BADGE POPUP -->
+    <!-- ==================================================== -->
+    <div id="roll-number-popup-modal" class="modal-overlay">
+        <div class="glass-card modal-card" style="max-width:440px; text-align:center; position:relative; border-top:3px solid #10b981;">
+            <button id="btn-close-roll-popup" class="modal-close-btn" style="position:absolute; top:14px; right:14px; font-size:24px; cursor:pointer;">&times;</button>
+            
+            <div class="modal-icon" style="background:rgba(16,185,129,0.15); color:var(--emerald-success); margin:0 auto 12px auto;">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+            <h3 class="modal-title" style="font-size:18px; font-weight:800; color:#fff;">Student Identity Verified</h3>
+            <p class="modal-desc" style="color:var(--text-muted); font-size:12.5px; margin-bottom:16px;">
+                Your student profile has been registered and synced with ZAFII NURSING CARE database.
+            </p>
+
+            <div style="background:rgba(15,23,42,0.7); border:1px solid var(--border-glass); border-radius:12px; padding:16px; margin-bottom:20px; text-align:left;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="color:var(--text-muted); font-size:12px;">Student Name:</span>
+                    <strong id="popup-student-name" style="color:#fff; font-size:13.5px;">-</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="color:var(--text-muted); font-size:12px;">Assigned Roll Number:</span>
+                    <code id="popup-student-roll" style="background:rgba(6,182,212,0.15); color:var(--cyan-primary); padding:2px 8px; border-radius:6px; font-weight:800; font-size:13px;">BSN-2026-0000</code>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted); font-size:12px;">Email Account:</span>
+                    <span id="popup-student-email" style="color:#cbd5e1; font-size:12px;">-</span>
+                </div>
+            </div>
+
+            <button type="button" id="btn-confirm-roll-popup" class="btn-primary" style="width:100%; background:linear-gradient(135deg, #10b981, #06b6d4);">
+                <span>Proceed to Student Dashboard</span>
+                <i class="fa-solid fa-check"></i>
+            </button>
         </div>
     </div>
 
@@ -1000,10 +1060,10 @@
     </div>
 
 
-    <!-- Application Scripts (Version 4.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=4.0"></script>
-    <script src="js/quiz-data.js?v=4.0"></script>
-    <script src="js/pdf-generator.js?v=4.0"></script>
-    <script src="js/app.js?v=4.0"></script>
+    <!-- Application Scripts (Version 5.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=5.0"></script>
+    <script src="js/quiz-data.js?v=5.0"></script>
+    <script src="js/pdf-generator.js?v=5.0"></script>
+    <script src="js/app.js?v=5.0"></script>
 </body>
 </html>
