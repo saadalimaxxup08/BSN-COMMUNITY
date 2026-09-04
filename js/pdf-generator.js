@@ -85,7 +85,7 @@ function populateMarksheetDOM(resultData) {
     return marksheetElement;
 }
 
-// Generates and downloads the official PDF marksheet
+// Generates and downloads the PDF marksheet
 async function generateMarksheetPDF(resultData) {
     const marksheetElement = populateMarksheetDOM(resultData);
     if (!marksheetElement) {

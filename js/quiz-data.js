@@ -478,7 +478,7 @@ const QUIZ_DATA = {
                 "title": "Pediatric Health Nursing - 70 Scenario Mock Paper",
                 "code": "PED-501-MODEL",
                 "semester": "Semester 5",
-                "description": "Official 70-scenario Pediatric Health Nursing examination. Strict 70-minute timer with protected candidate answers.",
+                "description": "70-scenario Pediatric Health Nursing examination. Strict 70-minute timer with protected candidate answers.",
                 "durationMinutes": 70,
                 "icon": "fa-baby",
                 "badgeColor": "rose",

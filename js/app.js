@@ -622,7 +622,7 @@ window.switchSemester = function(semKey) {
     renderSubjects(semKey);
 };
 
-// Official Live Exam Access Window Configuration (4 Sep 6:00 PM PKT to 5 Sep 6:00 PM PKT)
+// Live Exam Access Window Configuration (4 Sep 6:00 PM PKT to 5 Sep 6:00 PM PKT)
 const EXAM_WINDOW = {
     // 04 Sep 2026 18:00:00 PKT (UTC+5)
     startTime: new Date('2026-09-04T18:00:00+05:00').getTime(),
@@ -700,7 +700,7 @@ function checkExamWindowStatus() {
 window.startQuiz = function(quizId) {
     const windowStatus = checkExamWindowStatus();
     if (!windowStatus.isAvailable) {
-        alert("🔒 Official Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 06:00 PM PKT (Sep 4) and close tomorrow at 06:00 PM PKT (Sep 5).\n\nPlease return during the official examination window to submit your paper!");
+        alert("🔒 Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 06:00 PM PKT (Sep 4) and close tomorrow at 06:00 PM PKT (Sep 5).\n\nPlease return during the examination window to submit your paper!");
         return;
     }
 
@@ -1566,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const runningQuizSaved = localStorage.getItem('zafii_running_quiz');
     const hasRunningQuiz = !!runningQuizSaved;
 
-    // 1. Check if returning from official Google OAuth Permission Screen
+    // 1. Check if returning from Google OAuth Permission Screen
     if (SUPABASE_CONFIG.client) {
         try {
             const { data: { session } } = await SUPABASE_CONFIG.client.auth.getSession();
@@ -1579,20 +1579,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     history.replaceState(null, document.title, window.location.pathname + window.location.search);
                 }
 
-                await processStudentLogin(googleName, 'google_oauth_verified', 'signup', hasRunningQuiz);
+                await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signup', false, googleName);
             }
         } catch (e) {
-            console.warn("Google OAuth callback check:", e);
+            console.warn("Supabase auth session restore error:", e);
         }
     }
 
-    // 2. Auto-restore active student session on page refresh (Strict Verification)
+    // 2. Fallback check active student session in LocalStorage
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
             const parsed = JSON.parse(savedSession);
             if (parsed && (parsed.email || parsed.name)) {
-                const identifier = parsed.email || parsed.name;
+                // Double check if account profile still exists in Supabase
+                const identifier = parsed.email ? parsed.email.split('@')[0] : parsed.name;
                 const check = await SUPABASE_CONFIG.getStudentProfile(identifier, parsed.email || '');
                 if (!check.isNew && check.profile) {
                     AppState.currentUser = check.profile;
@@ -1675,16 +1676,13 @@ function initAdminModule() {
         btnNavAdmin.addEventListener('click', () => {
             if (inputPasscode) inputPasscode.value = '';
             adminModal.classList.add('active');
-            if (inputPasscode) inputPasscode.focus();
+            if (inputPasscode) setTimeout(() => inputPasscode.focus(), 200);
         });
     }
 
     if (btnCloseAdminModal && adminModal) {
         btnCloseAdminModal.addEventListener('click', () => {
             adminModal.classList.remove('active');
-        });
-        adminModal.addEventListener('click', (e) => {
-            if (e.target === adminModal) adminModal.classList.remove('active');
         });
     }
 
@@ -1705,7 +1703,7 @@ function initAdminModule() {
     }
 
     if (inputPasscode) {
-        inputPasscode.addEventListener('keyup', (e) => {
+        inputPasscode.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleAdminAuth();
         });
     }
@@ -1723,19 +1721,24 @@ function initAdminModule() {
 
     function updatePublishUI() {
         const released = localStorage.getItem('zafii_results_released') === 'true';
-        if (released) {
-            if (lblPublish) lblPublish.textContent = "✅ Marksheets Published to Students";
-            if (descPublish) descPublish.innerHTML = "<strong style='color:#34d399;'>Active:</strong> Marksheets are currently visible on student dashboards.";
-            if (btnPublishResults) btnPublishResults.style.background = "linear-gradient(135deg, #059669, #10b981)";
-        } else {
-            if (lblPublish) lblPublish.textContent = "Release Results to Student Dashboards";
-            if (descPublish) descPublish.innerHTML = "Currently: Results are Protected (Hidden from Student Dashboards).";
-            if (btnPublishResults) btnPublishResults.style.background = "linear-gradient(135deg, #10b981, #06b6d4)";
+        if (lblPublish) {
+            lblPublish.textContent = released ? "Protect Results (Hide from Students)" : "Release Results to Student Dashboards";
+        }
+        if (descPublish) {
+            descPublish.textContent = released 
+                ? "Currently: Results & Marksheets are RELEASED (Visible on Student Dashboards)."
+                : "Currently: Results are Protected (Hidden from Student Dashboards).";
+        }
+        if (btnPublishResults) {
+            btnPublishResults.style.background = released 
+                ? "linear-gradient(135deg, #f43f5e, #e11d48)" 
+                : "linear-gradient(135deg, #10b981, #06b6d4)";
         }
     }
 
+    updatePublishUI();
+
     if (btnPublishResults) {
-        updatePublishUI();
         btnPublishResults.addEventListener('click', () => {
             const current = localStorage.getItem('zafii_results_released') === 'true';
             const newState = !current;
@@ -1743,7 +1746,7 @@ function initAdminModule() {
             updatePublishUI();
             
             alert(newState 
-                ? "🎉 Results & Marksheets Released!\n\nAll student accounts can now view their official score breakdowns and PDF marksheets on their student dashboard!" 
+                ? "🎉 Results & Marksheets Released!\n\nAll student accounts can now view their score breakdowns and PDF marksheets on their student dashboard!" 
                 : "🔒 Results Protected!\n\nStudent marksheets are now hidden. Scores are strictly accessible in the Admin Controller Panel.");
             
             renderAssessmentHistory();
@@ -1865,7 +1868,7 @@ async function loadAdminDashboardData() {
         }
     }
 
-    // 4. Render Official BSN Semester 5 Master Merit List Table
+    // 4. Render BSN Semester 5 Master Merit List Table
     const tbodyMasterMerit = document.getElementById('admin-master-merit-tbody');
     if (tbodyMasterMerit) {
         tbodyMasterMerit.innerHTML = '';
@@ -1964,7 +1967,7 @@ window.exportMasterMeritListPDF = async function() {
         <body>
             <div class="header">
                 <h1>ZAFII NURSING CARE</h1>
-                <h3>OFFICIAL SEMESTER 5 ASSESSMENT MASTER MERIT LIST REPORT</h3>
+                <h3>SEMESTER 5 ASSESSMENT MASTER MERIT LIST REPORT</h3>
             </div>
             
             <div class="meta-bar">
@@ -1992,8 +1995,8 @@ window.exportMasterMeritListPDF = async function() {
                     <tr>
                         <td colspan="7" style="border:none; padding-top:14px;">
                             <div class="footer">
-                                <p><strong>Official Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
-                                <p>© ZAFII NURSING CARE Examination Board • Protected Official Record</p>
+                                <p><strong>Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
+                                <p>© ZAFII NURSING CARE Examination Board • Protected Record</p>
                             </div>
                         </td>
                     </tr>
