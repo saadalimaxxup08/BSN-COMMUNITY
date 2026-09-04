@@ -121,10 +121,12 @@ const SUPABASE_CONFIG = {
 
     // ----------------- QUIZ RESULTS & HISTORY -----------------
 
-    // Save Quiz Result to Supabase & LocalStorage
+    // Save Quiz Result to Supabase & LocalStorage (With Offline Resilience Queue)
     async saveQuizResult(resultData) {
-        // Save to Supabase
-        if (this.client) {
+        let isSavedToSupabase = false;
+
+        // Try saving to Supabase first
+        if (this.client && navigator.onLine) {
             try {
                 const { data, error } = await this.client
                     .from('quiz_results')
@@ -147,14 +149,76 @@ const SUPABASE_CONFIG = {
                     ]);
 
                 if (error) throw error;
-                console.log("✅ Result saved to Supabase:", data);
+                isSavedToSupabase = true;
+                console.log("✅ Result saved to Supabase cleanly:", data);
             } catch (err) {
-                console.error("Error saving to Supabase:", err);
+                console.warn("⚠️ Supabase save failed (offline or network drop). Queueing for background sync:", err);
             }
         }
 
-        // Save locally for student history
+        // If Supabase save failed or device is offline, add to pending sync queue
+        if (!isSavedToSupabase) {
+            try {
+                const queue = JSON.parse(localStorage.getItem('zafii_offline_pending_results') || '[]');
+                queue.push(resultData);
+                localStorage.setItem('zafii_offline_pending_results', JSON.stringify(queue));
+                console.log("📦 Result safely queued in LocalStorage offline buffer.");
+            } catch (e) {
+                console.error("Could not queue offline result:", e);
+            }
+        }
+
+        // Save locally for student history UI
         this.saveResultLocally(resultData);
+    },
+
+    // Background Sync Engine: Flushes offline pending quiz submissions to Supabase
+    async syncOfflinePendingResults() {
+        if (!this.client || !navigator.onLine) return;
+
+        try {
+            const queue = JSON.parse(localStorage.getItem('zafii_offline_pending_results') || '[]');
+            if (queue.length === 0) return;
+
+            console.log(`📡 Reconnected to Internet! Syncing ${queue.length} pending offline submissions to Supabase...`);
+            const remainingQueue = [];
+
+            for (const item of queue) {
+                try {
+                    const { error } = await this.client
+                        .from('quiz_results')
+                        .insert([
+                            {
+                                student_name: item.studentName,
+                                roll_no: item.rollNo,
+                                semester: item.semester,
+                                subject_title: item.subjectTitle,
+                                subject_code: item.subjectCode,
+                                score: item.score,
+                                total_questions: item.totalQuestions,
+                                percentage: item.percentage,
+                                grade: item.grade,
+                                passed: item.isPassed,
+                                breakdown: item.breakdown,
+                                time_taken: item.timeTaken,
+                                created_at: item.createdAt || new Date().toISOString()
+                            }
+                        ]);
+
+                    if (error) {
+                        remainingQueue.push(item);
+                    } else {
+                        console.log(`✅ Synced offline submission for candidate ${item.studentName} (${item.rollNo})`);
+                    }
+                } catch (e) {
+                    remainingQueue.push(item);
+                }
+            }
+
+            localStorage.setItem('zafii_offline_pending_results', JSON.stringify(remainingQueue));
+        } catch (err) {
+            console.warn("Offline sync process warning:", err);
+        }
     },
 
     // Cache result in local storage indexed by student

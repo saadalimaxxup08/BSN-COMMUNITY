@@ -1376,6 +1376,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkExamWindowStatus();
     setInterval(checkExamWindowStatus, 1000);
 
+    // Initial check & auto-background sync for offline queued submissions
+    if (navigator.onLine) {
+        SUPABASE_CONFIG.syncOfflinePendingResults();
+    }
+    window.addEventListener('online', () => {
+        console.log("📡 Device reconnected to internet! Triggering background sync...");
+        SUPABASE_CONFIG.syncOfflinePendingResults();
+    });
+
     const runningQuizSaved = localStorage.getItem('zafii_running_quiz');
     const hasRunningQuiz = !!runningQuizSaved;
 
@@ -1724,15 +1733,23 @@ window.exportMasterMeritListPDF = async function() {
         <head>
             <title>Zafii BSN Academy - Master Merit List Report</title>
             <style>
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 24px; color: #0f172a; background: #ffffff; }
-                .header { text-align: center; border-bottom: 3px solid #0284c7; padding-bottom: 14px; margin-bottom: 20px; }
+                @page { 
+                    size: A4 portrait; 
+                    margin: 12mm 15mm 15mm 15mm; 
+                }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; color: #0f172a; background: #ffffff; }
+                .header { text-align: center; border-bottom: 3px solid #0284c7; padding-bottom: 12px; margin-bottom: 16px; page-break-after: avoid; }
                 .header h1 { margin: 0; font-size: 22px; color: #0f172a; font-weight: 800; letter-spacing: 1px; }
-                .header h3 { margin: 6px 0 0 0; font-size: 14px; color: #0284c7; font-weight: 700; }
-                .meta-bar { display: flex; justify-content: space-between; font-size: 12px; color: #475569; margin-bottom: 18px; background: #f8fafc; padding: 10px 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
-                table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-                th { background: #0f172a; color: #ffffff; padding: 10px 12px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 11.5px; }
+                .header h3 { margin: 6px 0 0 0; font-size: 13.5px; color: #0284c7; font-weight: 700; }
+                .meta-bar { display: flex; justify-content: space-between; font-size: 12px; color: #475569; margin-bottom: 16px; background: #f8fafc; padding: 10px 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                thead { display: table-header-group; }
+                tfoot { display: table-footer-group; }
+                tr { page-break-inside: avoid; break-inside: avoid; }
+                th { background: #0f172a; color: #ffffff; padding: 10px 12px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 11px; }
                 th.center { text-align: center; }
-                .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+                td { padding: 9px 12px; }
+                .footer { margin-top: 16px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 12px; }
                 @media print {
                     body { margin: 0; }
                     .no-print { display: none; }
@@ -1754,7 +1771,7 @@ window.exportMasterMeritListPDF = async function() {
             <table>
                 <thead>
                     <tr>
-                        <th class="center" style="width:40px;">#</th>
+                        <th class="center" style="width:35px;">#</th>
                         <th>Roll Number</th>
                         <th>Candidate Name</th>
                         <th class="center">Score / 70</th>
@@ -1766,12 +1783,17 @@ window.exportMasterMeritListPDF = async function() {
                 <tbody>
                     ${rowsHTML}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7" style="border:none; padding-top:14px;">
+                            <div class="footer">
+                                <p><strong>Official Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
+                                <p>© Zafii BSN Academy Medical Examination Board • Protected Official Record</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
-
-            <div class="footer">
-                <p><strong>Official Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
-                <p>© Zafii BSN Academy Medical Examination Board • Protected Official Record</p>
-            </div>
 
             <script>
                 window.onload = function() {
