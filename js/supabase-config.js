@@ -212,8 +212,11 @@ const SUPABASE_CONFIG = {
 
     // ----------------- ADMIN CONTROLLER METHODS -----------------
 
-    // Fetch all registered students for Admin Controller
+    // Fetch all registered students for Admin Controller (Bulletproof multi-source merge)
     async getAllStudents() {
+        const studentMap = {};
+
+        // 1. Fetch from Supabase students table
         if (this.client) {
             try {
                 const { data, error } = await this.client
@@ -221,33 +224,66 @@ const SUPABASE_CONFIG = {
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (data && !error) {
-                    return data.map(s => ({
-                        name: s.name,
-                        rollNo: s.roll_no,
-                        password: s.password || '',
-                        semester: s.semester || 'Semester 5',
-                        createdAt: new Date(s.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                    }));
+                if (data && !error && data.length > 0) {
+                    data.forEach(s => {
+                        const key = (s.name || '').trim().toLowerCase();
+                        if (key && !studentMap[key]) {
+                            studentMap[key] = {
+                                name: s.name,
+                                rollNo: s.roll_no,
+                                password: s.password || '',
+                                semester: s.semester || 'Semester 5',
+                                createdAt: new Date(s.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                            };
+                        }
+                    });
                 }
             } catch (err) {
-                console.warn("Supabase fetch all students error, using local fallback:", err);
+                console.warn("Supabase fetch all students error:", err);
             }
+
+            // 2. Cross-reference quiz_results to ensure no student who took an exam is missed
+            try {
+                const { data: qData } = await this.client
+                    .from('quiz_results')
+                    .select('student_name, roll_no, semester, created_at')
+                    .order('created_at', { ascending: false });
+
+                if (qData && qData.length > 0) {
+                    qData.forEach(item => {
+                        const key = (item.student_name || '').trim().toLowerCase();
+                        if (key && !studentMap[key]) {
+                            studentMap[key] = {
+                                name: item.student_name,
+                                rollNo: item.roll_no || 'BSN-2026',
+                                password: '',
+                                semester: item.semester || 'Semester 5',
+                                createdAt: new Date(item.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                            };
+                        }
+                    });
+                }
+            } catch (e) {}
         }
 
-        // LocalStorage Fallback
+        // 3. Merge LocalStorage Fallback Profiles
         try {
             const localMap = JSON.parse(localStorage.getItem('zafii_students') || '{}');
-            return Object.values(localMap).map(s => ({
-                name: s.name,
-                rollNo: s.rollNo || s.roll_no,
-                password: s.password || '',
-                semester: s.semester || 'Semester 5',
-                createdAt: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'
-            }));
-        } catch (e) {
-            return [];
-        }
+            Object.values(localMap).forEach(s => {
+                const key = (s.name || '').trim().toLowerCase();
+                if (key && !studentMap[key]) {
+                    studentMap[key] = {
+                        name: s.name,
+                        rollNo: s.rollNo || s.roll_no || 'BSN-2026',
+                        password: s.password || '',
+                        semester: s.semester || 'Semester 5',
+                        createdAt: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'
+                    };
+                }
+            });
+        } catch (e) {}
+
+        return Object.values(studentMap);
     },
 
     // Fetch all quiz submissions for Admin Controller

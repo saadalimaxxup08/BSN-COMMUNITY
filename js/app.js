@@ -289,6 +289,9 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
         };
     }
 
+    // Always ensure student profile is persisted to Supabase students table
+    await SUPABASE_CONFIG.saveStudentProfile(userData);
+
     // Save active session to LocalStorage so page refresh maintains student session
     try {
         localStorage.setItem('zafii_active_session', JSON.stringify(userData));
