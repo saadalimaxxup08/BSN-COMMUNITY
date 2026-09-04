@@ -52,6 +52,7 @@ const elements = {
     statPassedRate: document.getElementById('stat-passed-rate'),
     historyTableBody: document.getElementById('history-table-body'),
     historyEmptyMessage: document.getElementById('history-empty-message'),
+    historySection: document.querySelector('.history-section'),
 
     // Quiz Elements
     quizSubjectTitle: document.getElementById('quiz-subject-title'),
@@ -788,14 +789,17 @@ function updateStatsSummary() {
 
 function renderAssessmentHistory() {
     const history = AppState.studentHistory || [];
+    const historySec = elements.historySection || document.querySelector('.history-section');
     elements.historyTableBody.innerHTML = '';
 
     if (history.length === 0) {
-        elements.historyEmptyMessage.style.display = 'block';
+        if (historySec) historySec.style.display = 'none';
+        if (elements.historyEmptyMessage) elements.historyEmptyMessage.style.display = 'none';
         return;
     }
 
-    elements.historyEmptyMessage.style.display = 'none';
+    if (historySec) historySec.style.display = 'block';
+    if (elements.historyEmptyMessage) elements.historyEmptyMessage.style.display = 'none';
 
     const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
     const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
