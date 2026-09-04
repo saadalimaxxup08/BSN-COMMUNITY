@@ -1808,18 +1808,28 @@ body {
 /* ===================================================
    9. ADMIN CONTROLLER PANEL LAYOUT FIXES
    =================================================== */
+/* Ensure all view section wrappers sit cleanly flush at the top of the container */
+.view-section,
+#login-view,
+#dashboard-view,
+#quiz-view,
+#result-view,
 #admin-view {
-    width: 100%;
-    margin: 0 !important;
-    padding: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
     position: relative !important;
     top: 0 !important;
+    width: 100%;
+}
+
+#admin-view {
     align-self: flex-start;
 }
 
-#admin-view .top-navbar {
+#admin-view .top-navbar,
+.top-navbar,
+.quiz-header-bar {
     margin-top: 0 !important;
-    padding-top: 16px !important;
     margin-bottom: 20px;
 }
 
