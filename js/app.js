@@ -269,7 +269,7 @@ function initAuth() {
 
         if (candidateInput && candidateInput.trim()) {
             const cleanInput = candidateInput.trim().toLowerCase();
-            const isAdmin = cleanInput.includes('zafione6119@gmail') || 
+            const isAdmin = cleanInput.includes('zafiione6119@gmail') || 
                             cleanInput.includes('saadalimaxxup02@gmail') || 
                             cleanInput.includes('huzaifamushtaqahmed');
 
@@ -671,6 +671,17 @@ const EXAM_WINDOW = {
     endTime: new Date('2026-09-05T18:00:00+05:00').getTime()
 };
 
+window.isUserAdmin = function() {
+    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
+    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
+    return userEmail.includes('zafiione6119@gmail') ||
+           userName.includes('zafiione6119@gmail') ||
+           userEmail.includes('saadalimaxxup02@gmail') ||
+           userName.includes('saadalimaxxup02@gmail') ||
+           userEmail.includes('huzaifamushtaqahmed') ||
+           userName.includes('huzaifamushtaqahmed');
+};
+
 function checkExamWindowStatus() {
     const isTimerHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
     const countdownCard = document.getElementById('exam-countdown-card');
@@ -692,15 +703,7 @@ function checkExamWindowStatus() {
 
     const now = Date.now();
     const elTimerText = document.getElementById('live-exam-timer-text');
-
-    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
-                              userName.includes('zafione6119@gmail') ||
-                              userEmail.includes('saadalimaxxup02@gmail') ||
-                              userName.includes('saadalimaxxup02@gmail') ||
-                              userEmail.includes('huzaifamushtaqahmed') ||
-                              userName.includes('huzaifamushtaqahmed');
+    const isAuthorizedAdmin = window.isUserAdmin();
 
     if (now < EXAM_WINDOW.startTime) {
         const diff = EXAM_WINDOW.startTime - now;
@@ -805,16 +808,7 @@ function renderDashboard() {
     // Strict Admin Button Visibility Guard (Exclusively for Authorized Admin Emails)
     const btnNavAdmin = document.getElementById('btn-nav-admin');
     if (btnNavAdmin) {
-        const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-        const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-        
-        const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
-                                  userName.includes('zafione6119@gmail') ||
-                                  userEmail.includes('saadalimaxxup02@gmail') ||
-                                  userName.includes('saadalimaxxup02@gmail') ||
-                                  userEmail.includes('huzaifamushtaqahmed') ||
-                                  userName.includes('huzaifamushtaqahmed');
-
+        const isAuthorizedAdmin = window.isUserAdmin();
         btnNavAdmin.style.display = isAuthorizedAdmin ? 'inline-flex' : 'none';
     }
 
