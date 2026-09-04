@@ -935,6 +935,44 @@ window.reDownloadHistoricalMarksheet = function(index) {
     }
 };
 
+window.hasStudentSubmittedQuiz = function(quizIdOrCodeOrObj) {
+    if (window.isUserAdmin && window.isUserAdmin()) {
+        // Authorized admins can take tests unlimited times for testing
+        return false;
+    }
+    const history = AppState.studentHistory || [];
+    if (!history || history.length === 0) return false;
+
+    let targetCode = '';
+    let targetTitle = '';
+    let targetId = '';
+
+    if (typeof quizIdOrCodeOrObj === 'object' && quizIdOrCodeOrObj !== null) {
+        targetCode = (quizIdOrCodeOrObj.code || '').trim().toLowerCase();
+        targetTitle = (quizIdOrCodeOrObj.title || '').trim().toLowerCase();
+        targetId = (quizIdOrCodeOrObj.id || '').trim().toLowerCase();
+    } else if (typeof quizIdOrCodeOrObj === 'string') {
+        const foundQuiz = findQuizById(quizIdOrCodeOrObj);
+        if (foundQuiz) {
+            targetCode = (foundQuiz.code || '').trim().toLowerCase();
+            targetTitle = (foundQuiz.title || '').trim().toLowerCase();
+            targetId = (foundQuiz.id || '').trim().toLowerCase();
+        } else {
+            targetCode = quizIdOrCodeOrObj.trim().toLowerCase();
+        }
+    }
+
+    return history.some(item => {
+        const itemCode = (item.subjectCode || '').trim().toLowerCase();
+        const itemTitle = (item.subjectTitle || '').trim().toLowerCase();
+        
+        if (targetCode && itemCode && (itemCode === targetCode || itemCode.includes(targetCode) || targetCode.includes(itemCode))) return true;
+        if (targetId && itemCode && (itemCode === targetId || itemCode.includes(targetId) || targetId.includes(itemCode))) return true;
+        if (targetTitle && itemTitle && (itemTitle === targetTitle || itemTitle.includes(targetTitle) || targetTitle.includes(itemTitle))) return true;
+        return false;
+    });
+};
+
 function renderSubjects(semesterKey) {
     if (!elements.subjectsGrid) return;
     elements.subjectsGrid.innerHTML = '';
@@ -980,44 +1018,89 @@ function renderSubjects(semesterKey) {
     if (!subjects || subjects.length === 0) return;
 
     subjects.forEach(subject => {
+        const isSubmitted = window.hasStudentSubmittedQuiz(subject);
         const card = document.createElement('div');
         card.className = 'glass-card subject-card';
-        card.innerHTML = `
-            <div>
-                <div class="subject-header">
-                    <div class="subject-icon-box ${subject.badgeColor || 'rose'}">
-                        <i class="fa-solid ${subject.icon || 'fa-baby'}"></i>
-                    </div>
-                    <span class="subject-code-tag">${subject.code}</span>
-                </div>
-                <h4 class="subject-title">${escapeHtml(subject.title)}</h4>
-                <p class="subject-desc">${escapeHtml(subject.description)}</p>
-            </div>
 
-            <div>
-                <div class="subject-meta-row">
-                    <div class="meta-item">
-                        <i class="fa-regular fa-circle-question"></i>
-                        <span>${subject.questions.length} MCQs</span>
+        if (isSubmitted) {
+            card.innerHTML = `
+                <div>
+                    <div class="subject-header">
+                        <div class="subject-icon-box emerald" style="background:rgba(16,185,129,0.15); color:#10b981;">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <span class="subject-code-tag" style="background:rgba(16,185,129,0.2); color:#10b981; border-color:rgba(16,185,129,0.3);">${subject.code}</span>
                     </div>
-                    <div class="meta-item">
-                        <i class="fa-regular fa-clock"></i>
-                        <span>${subject.durationMinutes} Mins</span>
-                    </div>
+                    <h4 class="subject-title">${escapeHtml(subject.title)}</h4>
+                    <p class="subject-desc">${escapeHtml(subject.description)}</p>
                 </div>
 
-                <button class="btn-start-quiz" onclick="startQuiz('${subject.id}')" style="margin-top:16px;">
-                    <span>Start Assessment</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
-        `;
+                <div>
+                    <div class="subject-meta-row">
+                        <div class="meta-item">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span>${subject.questions.length} MCQs</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>${subject.durationMinutes} Mins</span>
+                        </div>
+                    </div>
+
+                    <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#10b981; font-size:12px; font-weight:700; border-radius:8px; padding:8px 12px; margin-top:14px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Single Attempt Completed • Locked</span>
+                    </div>
+
+                    <button class="btn-start-quiz" disabled style="margin-top:10px; width:100%; opacity:0.85; cursor:not-allowed; background:linear-gradient(135deg, #059669, #10b981); border:none; color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Under Review (Result Pending)</span>
+                    </button>
+                </div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div>
+                    <div class="subject-header">
+                        <div class="subject-icon-box ${subject.badgeColor || 'rose'}">
+                            <i class="fa-solid ${subject.icon || 'fa-baby'}"></i>
+                        </div>
+                        <span class="subject-code-tag">${subject.code}</span>
+                    </div>
+                    <h4 class="subject-title">${escapeHtml(subject.title)}</h4>
+                    <p class="subject-desc">${escapeHtml(subject.description)}</p>
+                </div>
+
+                <div>
+                    <div class="subject-meta-row">
+                        <div class="meta-item">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span>${subject.questions.length} MCQs</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>${subject.durationMinutes} Mins</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-start-quiz" id="btn-pediatric-exam-start" onclick="startQuiz('${subject.id}')" style="margin-top:16px;">
+                        <span>Start Assessment</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+        }
         elements.subjectsGrid.appendChild(card);
     });
 }
 
 // ----------------- QUIZ ENGINE -----------------
 function startQuiz(quizId) {
+    if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
+        alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
+        return;
+    }
+
     const quiz = findQuizById(quizId);
     if (!quiz) {
         alert("Assessment data could not be found!");
@@ -1122,6 +1205,12 @@ function restoreRunningQuizState() {
 }
 
 function startActualQuiz(quizId) {
+    if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
+        alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
+        switchView('dashboard');
+        return;
+    }
+
     const quiz = findQuizById(quizId);
     if (!quiz) return;
 
@@ -1315,6 +1404,11 @@ function initQuizControls() {
 
     elements.btnRetakeQuiz.addEventListener('click', () => {
         if (AppState.activeQuiz) {
+            if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(AppState.activeQuiz.id)) {
+                alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment. Re-attempting official exams is not allowed.\n\nYour paper is locked and under review by BSN Academy.");
+                switchView('dashboard');
+                return;
+            }
             startQuiz(AppState.activeQuiz.id);
         }
     });
