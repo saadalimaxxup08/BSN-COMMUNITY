@@ -163,10 +163,10 @@ function initAuth() {
     const assignmentCard = document.getElementById('assignment-landing-card');
     const fullPortalCard = document.getElementById('full-portal-login-card');
 
-    // Always enforce Assignment Landing Card as the default initial front page
+    // Default State: Full Portal Sign In / Sign Up Card is active
     if (assignmentCard && fullPortalCard) {
-        assignmentCard.style.display = 'block';
-        fullPortalCard.style.display = 'none';
+        assignmentCard.style.display = 'none';
+        fullPortalCard.style.display = 'block';
     }
 
     if (btnShowFullPortal && assignmentCard && fullPortalCard) {
@@ -444,7 +444,88 @@ window.switchSemester = function(semKey) {
     renderSubjects(semKey);
 };
 
+// Official Live Exam Access Window Configuration (4 Sep 6:00 PM PKT to 5 Sep 6:00 PM PKT)
+const EXAM_WINDOW = {
+    // 04 Sep 2026 18:00:00 PKT (UTC+5)
+    startTime: new Date('2026-09-04T18:00:00+05:00').getTime(),
+    // 05 Sep 2026 18:00:00 PKT (UTC+5)
+    endTime: new Date('2026-09-05T18:00:00+05:00').getTime()
+};
+
+function checkExamWindowStatus() {
+    const now = Date.now();
+    const elTimerText = document.getElementById('live-exam-timer-text');
+    const btnStart = document.getElementById('btn-pediatric-exam-start');
+
+    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
+    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
+    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
+                              userName.includes('zafione6119@gmail') ||
+                              userEmail.includes('saadalimaxxup02@gmail') ||
+                              userName.includes('saadalimaxxup02@gmail') ||
+                              userEmail.includes('huzaifamushtaqahmed') ||
+                              userName.includes('huzaifamushtaqahmed');
+
+    if (now < EXAM_WINDOW.startTime) {
+        const diff = EXAM_WINDOW.startTime - now;
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (elTimerText) elTimerText.innerHTML = `⏳ Exam Opens In: <strong style="color:var(--cyan-primary); font-size:13.5px;">${timeStr}</strong> (06:00 PM PKT)`;
+        
+        if (btnStart && !isAuthorizedAdmin) {
+            btnStart.disabled = true;
+            btnStart.style.opacity = '0.6';
+            btnStart.style.cursor = 'not-allowed';
+            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Opens Today at 6:00 PM PKT</span>`;
+        } else if (btnStart && isAuthorizedAdmin) {
+            btnStart.disabled = false;
+            btnStart.style.opacity = '1';
+            btnStart.style.cursor = 'pointer';
+            btnStart.innerHTML = `<i class="fa-solid fa-user-shield"></i> <span>Admin Test Access</span>`;
+        }
+        return { isAvailable: isAuthorizedAdmin, status: 'NOT_OPEN_YET' };
+    } else if (now >= EXAM_WINDOW.startTime && now <= EXAM_WINDOW.endTime) {
+        const diff = EXAM_WINDOW.endTime - now;
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (elTimerText) elTimerText.innerHTML = `🔥 LIVE ACTIVE | Closes In: <strong style="color:#25d366; font-size:13.5px;">${timeStr}</strong>`;
+        if (btnStart) {
+            btnStart.disabled = false;
+            btnStart.style.opacity = '1';
+            btnStart.style.cursor = 'pointer';
+            btnStart.innerHTML = `<span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>`;
+        }
+        return { isAvailable: true, status: 'ACTIVE' };
+    } else {
+        if (elTimerText) elTimerText.innerHTML = `<span style="color:#f43f5e; font-weight:800;">🔒 Examination Window Closed</span>`;
+        if (btnStart && !isAuthorizedAdmin) {
+            btnStart.disabled = true;
+            btnStart.style.opacity = '0.5';
+            btnStart.style.cursor = 'not-allowed';
+            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Assessment Deadline Ended</span>`;
+        } else if (btnStart && isAuthorizedAdmin) {
+            btnStart.disabled = false;
+            btnStart.style.opacity = '1';
+            btnStart.style.cursor = 'pointer';
+            btnStart.innerHTML = `<i class="fa-solid fa-user-shield"></i> <span>Admin Test Access</span>`;
+        }
+        return { isAvailable: isAuthorizedAdmin, status: 'CLOSED' };
+    }
+}
+
 window.startQuiz = function(quizId) {
+    const windowStatus = checkExamWindowStatus();
+    if (!windowStatus.isAvailable) {
+        alert("🔒 Official Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 06:00 PM PKT (Sep 4) and close tomorrow at 06:00 PM PKT (Sep 5).\n\nPlease return during the official examination window to submit your paper!");
+        return;
+    }
+
     const quiz = findQuizById(quizId);
     if (!quiz) {
         alert("Assessment data could not be found!");
@@ -538,28 +619,64 @@ function renderAssessmentHistory() {
 
     elements.historyEmptyMessage.style.display = 'none';
 
+    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
+    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
+    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
+                              userName.includes('zafione6119@gmail') ||
+                              userEmail.includes('saadalimaxxup02@gmail') ||
+                              userName.includes('saadalimaxxup02@gmail') ||
+                              userEmail.includes('huzaifamushtaqahmed') ||
+                              userName.includes('huzaifamushtaqahmed');
+
+    const isResultsReleased = localStorage.getItem('zafii_results_released') === 'true';
+
     history.forEach((record, index) => {
         const row = document.createElement('tr');
-        const statusBadge = record.isPassed 
-            ? '<span class="status-tag status-correct">✓ Passed</span>' 
-            : '<span class="status-tag status-incorrect">✗ Re-take</span>';
+        
+        if (isAuthorizedAdmin || isResultsReleased) {
+            // Full detailed view for Admins OR when results are released by Admin
+            const statusBadge = record.isPassed 
+                ? '<span class="status-tag status-correct">✓ Passed</span>' 
+                : '<span class="status-tag status-incorrect">✗ Re-take</span>';
 
-        row.innerHTML = `
-            <td style="font-weight:600; color:#fff;">${record.date}</td>
-            <td>
-                <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(record.semester)} • ${escapeHtml(record.subjectCode)}</div>
-            </td>
-            <td style="font-weight:700;">${record.score} / ${record.totalQuestions} (${record.percentage}%)</td>
-            <td><span class="subject-code-tag">${record.grade.split(' ')[0]}</span></td>
-            <td>${statusBadge}</td>
-            <td>
-                <button class="btn-table-action" onclick="reDownloadHistoricalMarksheet(${index})">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span>Marksheet</span>
-                </button>
-            </td>
-        `;
+            row.innerHTML = `
+                <td style="font-weight:600; color:#fff;">${record.date}</td>
+                <td>
+                    <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
+                    <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(record.semester)} • ${escapeHtml(record.subjectCode)}</div>
+                </td>
+                <td style="font-weight:700;">${record.score} / ${record.totalQuestions} (${record.percentage}%)</td>
+                <td><span class="subject-code-tag">${record.grade.split(' ')[0]}</span></td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn-table-action" onclick="reDownloadHistoricalMarksheet(${index})">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>Marksheet</span>
+                    </button>
+                </td>
+            `;
+        } else {
+            // Student View: Result Pending Notice (Redirects to WhatsApp Group)
+            const pendingBadge = `<span class="badge" style="background:rgba(245,158,11,0.15); color:var(--amber-warning); border:1px solid rgba(245,158,11,0.3); font-size:11px; padding:4px 10px; border-radius:12px;"><i class="fa-solid fa-clock"></i> Result Pending</span>`;
+
+            row.innerHTML = `
+                <td style="font-weight:600; color:#fff;">${record.date}</td>
+                <td>
+                    <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
+                    <div style="font-size:11px; color:var(--cyan-primary); font-weight:700;">${escapeHtml(record.subjectCode)} • ${escapeHtml(record.semester)}</div>
+                </td>
+                <td style="font-weight:700; color:var(--amber-warning); font-size:12.5px;">⏳ Pending Announcement</td>
+                <td><span class="subject-code-tag" style="background:rgba(255,255,255,0.08); color:var(--text-muted);">Under Review</span></td>
+                <td>${pendingBadge}</td>
+                <td>
+                    <a href="https://chat.whatsapp.com/EoHSF3h2DV02GvOErsPhoK" target="_blank" rel="noopener noreferrer" class="btn-table-action" style="background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>Join Group</span>
+                    </a>
+                </td>
+            `;
+        }
+
         elements.historyTableBody.appendChild(row);
     });
 }
@@ -1150,7 +1267,17 @@ async function submitQuiz(isAutoSubmit = false) {
 }
 
 function renderResultScreen(res) {
-    const isProtectedModelPaper = res.isModelPaper || !res.showAnswersImmediately;
+    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
+    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
+    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
+                              userName.includes('zafione6119@gmail') ||
+                              userEmail.includes('saadalimaxxup02@gmail') ||
+                              userName.includes('saadalimaxxup02@gmail') ||
+                              userEmail.includes('huzaifamushtaqahmed') ||
+                              userName.includes('huzaifamushtaqahmed');
+
+    // Force result protection for regular students (Results announced exclusively via Admin / WhatsApp)
+    const isProtectedModelPaper = !isAuthorizedAdmin || res.isModelPaper || !res.showAnswersImmediately;
 
     const elModelCard = document.getElementById('model-paper-result-card');
     const elStandardCard = document.getElementById('standard-result-card');
@@ -1244,6 +1371,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
     initDashboard();
     initQuizControls();
+
+    // Start Live Examination Access Window Countdown (04 Sep 6:00 PM - 05 Sep 6:00 PM PKT)
+    checkExamWindowStatus();
+    setInterval(checkExamWindowStatus, 1000);
 
     const runningQuizSaved = localStorage.getItem('zafii_running_quiz');
     const hasRunningQuiz = !!runningQuizSaved;
@@ -1383,6 +1514,40 @@ function initAdminModule() {
             switchView(AppState.currentUser ? 'dashboard' : 'login');
         });
     }
+
+    // Master Admin Result Release Toggle (Publishes scores & marksheets to student dashboards)
+    const btnPublishResults = document.getElementById('btn-admin-publish-results');
+    const lblPublish = document.getElementById('btn-publish-label');
+    const descPublish = document.getElementById('admin-results-status-desc');
+
+    function updatePublishUI() {
+        const released = localStorage.getItem('zafii_results_released') === 'true';
+        if (released) {
+            if (lblPublish) lblPublish.textContent = "✅ Marksheets Published to Students";
+            if (descPublish) descPublish.innerHTML = "<strong style='color:#34d399;'>Active:</strong> Marksheets are currently visible on student dashboards.";
+            if (btnPublishResults) btnPublishResults.style.background = "linear-gradient(135deg, #059669, #10b981)";
+        } else {
+            if (lblPublish) lblPublish.textContent = "Release Results to Student Dashboards";
+            if (descPublish) descPublish.innerHTML = "Currently: Results are Protected (Hidden from Student Dashboards).";
+            if (btnPublishResults) btnPublishResults.style.background = "linear-gradient(135deg, #10b981, #06b6d4)";
+        }
+    }
+
+    if (btnPublishResults) {
+        updatePublishUI();
+        btnPublishResults.addEventListener('click', () => {
+            const current = localStorage.getItem('zafii_results_released') === 'true';
+            const newState = !current;
+            localStorage.setItem('zafii_results_released', newState ? 'true' : 'false');
+            updatePublishUI();
+            
+            alert(newState 
+                ? "🎉 Results & Marksheets Released!\n\nAll student accounts can now view their official score breakdowns and PDF marksheets on their student dashboard!" 
+                : "🔒 Results Protected!\n\nStudent marksheets are now hidden. Scores are strictly accessible in the Admin Controller Panel.");
+            
+            renderAssessmentHistory();
+        });
+    }
 }
 
 async function loadAdminDashboardData() {
@@ -1486,16 +1651,139 @@ async function loadAdminDashboardData() {
                 tbodyResults.appendChild(tr);
             });
 
-            // Bind Marksheet Inspector buttons for Admin
-            tbodyResults.querySelectorAll('.btn-admin-view-marksheet').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.currentTarget.getAttribute('data-index');
-                    const targetResult = results[idx];
-                    if (targetResult) {
-                        generateMarksheetPDF(targetResult);
-                    }
-                });
+    // 4. Render Official BSN Semester 5 Master Merit List Table
+    const tbodyMasterMerit = document.getElementById('admin-master-merit-tbody');
+    if (tbodyMasterMerit) {
+        tbodyMasterMerit.innerHTML = '';
+        if (results.length === 0) {
+            tbodyMasterMerit.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">No exam submissions recorded yet to generate Master Merit List.</td></tr>`;
+        } else {
+            results.forEach((r) => {
+                const tr = document.createElement('tr');
+                const isPassed = r.percentage >= 40; // Rule: <40% is FAILED, >=40% is PASSED
+                const statusBadge = isPassed 
+                    ? '<span class="badge badge-passed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-check"></i> PASSED</span>' 
+                    : '<span class="badge badge-failed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-xmark"></i> FAILED</span>';
+
+                tr.innerHTML = `
+                    <td style="vertical-align:middle;">
+                        <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(r.rollNo)}</code>
+                    </td>
+                    <td style="vertical-align:middle; font-weight:800; color:#ffffff; font-size:13.5px;">${escapeHtml(r.studentName)}</td>
+                    <td style="vertical-align:middle; font-weight:800; color:#ffffff;">${r.score} / ${r.totalQuestions}</td>
+                    <td style="vertical-align:middle; font-weight:800; color:var(--cyan-primary);">${r.percentage}%</td>
+                    <td style="vertical-align:middle; font-weight:700; color:var(--amber-warning);">${escapeHtml(r.grade.split(' ')[0])}</td>
+                    <td style="vertical-align:middle;">${statusBadge}</td>
+                `;
+                tbodyMasterMerit.appendChild(tr);
             });
         }
     }
 }
+
+// ----------------- MASTER MERIT LIST PDF EXPORTER ENGINE -----------------
+window.exportMasterMeritListPDF = async function() {
+    const results = await SUPABASE_CONFIG.getAllQuizResults();
+    if (!results || results.length === 0) {
+        alert("⚠️ No student exam submissions found to generate Master Merit List!");
+        return;
+    }
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+        alert("Please allow popups in your browser to export the Master Merit List PDF.");
+        return;
+    }
+
+    const rowsHTML = results.map((r, idx) => {
+        const isPassed = r.percentage >= 40; // Rule: <40% is FAILED, >=40% is PASSED
+        const statusText = isPassed ? "PASSED" : "FAILED";
+        const statusColor = isPassed ? "#10b981" : "#f43f5e";
+        const statusBg = isPassed ? "rgba(16,185,129,0.12)" : "rgba(244,63,94,0.12)";
+
+        return `
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:10px 12px; font-weight:700; color:#0f172a; text-align:center;">${idx + 1}</td>
+                <td style="padding:10px 12px; font-family:monospace; font-weight:800; color:#0284c7;">${escapeHtml(r.rollNo)}</td>
+                <td style="padding:10px 12px; font-weight:700; color:#0f172a;">${escapeHtml(r.studentName)}</td>
+                <td style="padding:10px 12px; font-weight:800; text-align:center;">${r.score} / ${r.totalQuestions}</td>
+                <td style="padding:10px 12px; font-weight:800; text-align:center; color:#0284c7;">${r.percentage}%</td>
+                <td style="padding:10px 12px; font-weight:700; text-align:center; color:#d97706;">${escapeHtml(r.grade.split(' ')[0])}</td>
+                <td style="padding:10px 12px; text-align:center;">
+                    <span style="background:${statusBg}; color:${statusColor}; font-weight:800; font-size:11px; padding:4px 10px; border-radius:12px; border:1px solid ${statusColor};">
+                        ${statusText}
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Zafii BSN Academy - Master Merit List Report</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 24px; color: #0f172a; background: #ffffff; }
+                .header { text-align: center; border-bottom: 3px solid #0284c7; padding-bottom: 14px; margin-bottom: 20px; }
+                .header h1 { margin: 0; font-size: 22px; color: #0f172a; font-weight: 800; letter-spacing: 1px; }
+                .header h3 { margin: 6px 0 0 0; font-size: 14px; color: #0284c7; font-weight: 700; }
+                .meta-bar { display: flex; justify-content: space-between; font-size: 12px; color: #475569; margin-bottom: 18px; background: #f8fafc; padding: 10px 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
+                table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+                th { background: #0f172a; color: #ffffff; padding: 10px 12px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 11.5px; }
+                th.center { text-align: center; }
+                .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+                @media print {
+                    body { margin: 0; }
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>ZAFII BSN NURSING ACADEMY</h1>
+                <h3>OFFICIAL SEMESTER 5 ASSESSMENT MASTER MERIT LIST REPORT</h3>
+            </div>
+            
+            <div class="meta-bar">
+                <span><strong>Course:</strong> Pediatric Health Nursing (PED-501)</span>
+                <span><strong>Total Candidates:</strong> ${results.length} Candidates</span>
+                <span><strong>Generated:</strong> ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th class="center" style="width:40px;">#</th>
+                        <th>Roll Number</th>
+                        <th>Candidate Name</th>
+                        <th class="center">Score / 70</th>
+                        <th class="center">Percentage</th>
+                        <th class="center">Grade</th>
+                        <th class="center">Result Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rowsHTML}
+                </tbody>
+            </table>
+
+            <div class="footer">
+                <p><strong>Official Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
+                <p>© Zafii BSN Academy Medical Examination Board • Protected Official Record</p>
+            </div>
+
+            <script>
+                window.onload = function() {
+                    setTimeout(() => {
+                        window.print();
+                    }, 400);
+                }
+            </script>
+        </body>
+        </html>
+    `;
+
+    printWin.document.write(htmlContent);
+    printWin.document.close();
+};
