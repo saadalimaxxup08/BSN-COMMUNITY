@@ -161,8 +161,6 @@ function initAuth() {
             if (btnSubmitAuth) {
                 btnSubmitAuth.innerHTML = `<span>Sign In to Student Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
             }
-            if (groupFullName) groupFullName.style.display = 'none';
-            if (inputFullName) inputFullName.required = false;
             if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Account Password / PIN`;
             if (lblName) lblName.innerHTML = `<i class="fa-solid fa-envelope" style="color:var(--cyan-primary); margin-right:4px;"></i> Email Address`;
             if (elements.inputPassword) {
@@ -181,10 +179,8 @@ function initAuth() {
             tabSignIn.style.background = 'transparent';
             tabSignIn.style.color = 'var(--text-muted)';
             if (btnSubmitAuth) {
-                btnSubmitAuth.innerHTML = `<span>Save Profile & Register Account</span> <i class="fa-solid fa-user-plus"></i>`;
+                btnSubmitAuth.innerHTML = `<span>Create Account & Register</span> <i class="fa-solid fa-user-plus"></i>`;
             }
-            if (groupFullName) groupFullName.style.display = 'block';
-            if (inputFullName) inputFullName.required = true;
             if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Create Password / PIN <span style="color:#f43f5e; font-weight:800;">*</span>`;
             if (lblName) lblName.innerHTML = `<i class="fa-solid fa-envelope" style="color:var(--cyan-primary); margin-right:4px;"></i> Email Address <span style="color:#f43f5e; font-weight:800;">*</span>`;
             if (elements.inputPassword) {
@@ -199,39 +195,26 @@ function initAuth() {
     if (elements.loginForm) {
         elements.loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const fullName = inputFullName ? inputFullName.value.trim() : '';
             const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
-
-            if (currentAuthMode === 'signup' && !fullName) {
-                alert("Please enter your Full Student Name.");
-                return;
-            }
 
             if (!email) {
                 alert("Please enter your Email Address.");
                 return;
             }
 
-            await processStudentLogin(email, password, currentAuthMode, false, fullName);
+            await processStudentLogin(email, password, currentAuthMode, false);
         });
     }
 
     if (btnSubmitAuth) {
         btnSubmitAuth.addEventListener('click', async (e) => {
-            const fullName = inputFullName ? inputFullName.value.trim() : '';
             const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
 
-            if (currentAuthMode === 'signup' && !fullName) {
-                e.preventDefault();
-                alert("Please enter your Full Student Name.");
-                return;
-            }
-
             if (email) {
                 e.preventDefault();
-                await processStudentLogin(email, password, currentAuthMode, false, fullName);
+                await processStudentLogin(email, password, currentAuthMode, false);
             }
         });
     }
@@ -421,8 +404,16 @@ function openNameSetupModal(userObj, callback) {
             return;
         }
 
+        // Generate a new random roll number if missing
+        if (!userObj.rollNo || userObj.rollNo === 'BSN-2026-0000') {
+            userObj.rollNo = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+        }
+
         userObj.name = enteredName;
         userObj.needsNameSetup = false;
+        userObj.isNewStudent = true;
+
+        // Save permanently to Supabase and LocalStorage
         await SUPABASE_CONFIG.saveStudentProfile(userObj);
 
         try {
