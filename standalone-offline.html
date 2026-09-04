@@ -104,13 +104,24 @@
                             <label class="form-label" id="lbl-password-input" for="student-password-input">
                                 🔒 Account Password / PIN
                             </label>
-                            <input 
-                                type="password" 
-                                id="student-password-input" 
-                                class="input-glass" 
-                                placeholder="••••••••" 
-                                value=""
-                            >
+                            <div style="position: relative; display: flex; align-items: center;">
+                                <input 
+                                    type="password" 
+                                    id="student-password-input" 
+                                    class="input-glass" 
+                                    placeholder="••••••••" 
+                                    value=""
+                                    style="padding-right: 42px; width: 100%;"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="btn-toggle-student-password" 
+                                    title="Toggle password visibility"
+                                    style="position: absolute; right: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 2;"
+                                >
+                                    <span id="icon-student-password">👁️</span>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" id="btn-submit-auth" class="btn-primary">

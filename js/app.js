@@ -120,6 +120,32 @@ function initAuth() {
     const groupFullName = document.getElementById('student-fullname-group');
     const inputFullName = document.getElementById('student-fullname-input');
 
+    // Password Eye Visibility Toggle Listener
+    const toggles = [
+        { btnId: 'btn-toggle-student-password', inputId: 'student-password-input', iconId: 'icon-student-password' },
+        { btnId: 'btn-toggle-admin-passcode', inputId: 'admin-passcode-input', iconId: 'icon-admin-passcode' }
+    ];
+
+    toggles.forEach(({ btnId, inputId, iconId }) => {
+        const btn = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (btn && input && icon) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                if (icon.tagName === 'I') {
+                    icon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+                    icon.style.color = isPassword ? 'var(--cyan-primary)' : 'var(--text-muted)';
+                } else {
+                    icon.textContent = isPassword ? '🙈' : '👁️';
+                }
+            });
+        }
+    });
+
     if (tabSignIn && tabSignUp) {
         tabSignIn.addEventListener('click', () => {
             currentAuthMode = 'signin';

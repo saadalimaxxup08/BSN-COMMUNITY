@@ -158,13 +158,24 @@
                             <label class="form-label" id="lbl-password-input" for="student-password-input">
                                 <i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Account Password / PIN
                             </label>
-                            <input 
-                                type="password" 
-                                id="student-password-input" 
-                                class="input-glass" 
-                                placeholder="••••••••" 
-                                value=""
-                            >
+                            <div style="position: relative; display: flex; align-items: center;">
+                                <input 
+                                    type="password" 
+                                    id="student-password-input" 
+                                    class="input-glass" 
+                                    placeholder="••••••••" 
+                                    value=""
+                                    style="padding-right: 42px; width: 100%;"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="btn-toggle-student-password" 
+                                    title="Toggle password visibility"
+                                    style="position: absolute; right: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 2;"
+                                >
+                                    <i class="fa-solid fa-eye" id="icon-student-password"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" id="btn-submit-auth" class="btn-primary">
@@ -828,12 +839,23 @@
             
             <div class="form-group" style="text-align:left;">
                 <label class="form-label" for="admin-passcode-input">Master Passcode</label>
-                <input 
-                    type="password" 
-                    id="admin-passcode-input" 
-                    class="input-glass" 
-                    placeholder="••••••••"
-                >
+                <div style="position: relative; display: flex; align-items: center;">
+                    <input 
+                        type="password" 
+                        id="admin-passcode-input" 
+                        class="input-glass" 
+                        placeholder="••••••••"
+                        style="padding-right: 42px; width: 100%;"
+                    >
+                    <button 
+                        type="button" 
+                        id="btn-toggle-admin-passcode" 
+                        title="Toggle passcode visibility"
+                        style="position: absolute; right: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 2;"
+                    >
+                        <i class="fa-solid fa-eye" id="icon-admin-passcode"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="button" id="btn-submit-admin-passcode" class="btn-primary" style="margin-top:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow:0 4px 14px rgba(139,92,246,0.4);">
