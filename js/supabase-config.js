@@ -34,7 +34,7 @@ const SUPABASE_CONFIG = {
 
     // Fetch student profile by unique Gmail / Email account or name
     async getStudentProfile(identifier, email = '') {
-        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanEmail = (email || identifier || '').trim().toLowerCase();
         const cleanName = (identifier || '').trim().toLowerCase();
         const searchKey = cleanEmail || cleanName;
 
@@ -45,13 +45,15 @@ const SUPABASE_CONFIG = {
 
                 if (data && !error && data.length > 0) {
                     const match = data.find(s => {
-                        if (s.name === 'SYSTEM_SETTINGS_RESULTS_RELEASED') return false;
+                        if (!s || s.name === 'SYSTEM_SETTINGS_RESULTS_RELEASED') return false;
                         const sName = (s.name || '').trim().toLowerCase();
-                        const sRoll = (s.roll_no || '').trim().toLowerCase();
+                        const parts = (s.roll_no || '').split('|');
+                        const sEmail = (parts[2] || s.email || '').trim().toLowerCase();
                         
-                        if (cleanName && sName === cleanName) return true;
-                        if (cleanEmail && sRoll.includes(cleanEmail)) return true;
-                        if (cleanEmail && sName === cleanEmail.split('@')[0]) return true;
+                        // Strict email match first
+                        if (cleanEmail && sEmail && sEmail === cleanEmail) return true;
+                        // Name match only if email is absent
+                        if (!cleanEmail && cleanName && sName === cleanName) return true;
                         return false;
                     });
 
@@ -84,10 +86,12 @@ const SUPABASE_CONFIG = {
 
         // Fallback / Offline LocalStorage
         const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
-        if (localStudents[searchKey] || localStudents[cleanName]) {
-            const locProfile = localStudents[searchKey] || localStudents[cleanName];
-            if (!locProfile.accountId) locProfile.accountId = window.generateAccountId();
-            return { isNew: false, profile: locProfile };
+        if (localStudents[searchKey] || (cleanEmail && localStudents[cleanEmail])) {
+            const locProfile = localStudents[searchKey] || localStudents[cleanEmail];
+            if (locProfile) {
+                if (!locProfile.accountId) locProfile.accountId = window.generateAccountId();
+                return { isNew: false, profile: locProfile };
+            }
         }
 
         // Brand New Student

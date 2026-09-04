@@ -470,11 +470,15 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
     }
 
     // Check if student exists in Supabase or LocalStorage by unique email
-    const check = await SUPABASE_CONFIG.getStudentProfile(userEmail.split('@')[0], userEmail);
+    const check = await SUPABASE_CONFIG.getStudentProfile(userEmail, userEmail);
     let userData = null;
 
     if (check.isNew || !check.profile) {
         // NEW STUDENT REGISTRATION (Sign Up / Google OAuth / Direct Email)
+        if (authMode === 'signin' && password !== 'google_oauth_verified') {
+            alert(`⚠️ Account Not Found:\n\nNo account is registered with email '${userEmail}'. Please click the 'Sign Up' tab above to create your student account.`);
+            return;
+        }
         if (authMode === 'signup' && password !== 'google_oauth_verified') {
             if (!password || !password.trim()) {
                 alert("⚠️ Password Required:\n\nPlease create a password to complete your account registration.");
