@@ -801,15 +801,7 @@ function renderAssessmentHistory() {
     if (historySec) historySec.style.display = 'block';
     if (elements.historyEmptyMessage) elements.historyEmptyMessage.style.display = 'none';
 
-    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
-                              userName.includes('zafione6119@gmail') ||
-                              userEmail.includes('saadalimaxxup02@gmail') ||
-                              userName.includes('saadalimaxxup02@gmail') ||
-                              userEmail.includes('huzaifamushtaqahmed') ||
-                              userName.includes('huzaifamushtaqahmed');
-
+    const isAuthorizedAdmin = window.isUserAdmin();
     const isResultsReleased = localStorage.getItem('zafii_results_released') === 'true';
 
     history.forEach((record, index) => {
@@ -863,8 +855,29 @@ function renderAssessmentHistory() {
     });
 }
 
+// Global authorization helper functions
+window.isUserAdmin = function() {
+    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
+    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
+    return userEmail.includes('zafione6119@gmail') ||
+           userName.includes('zafione6119@gmail') ||
+           userEmail.includes('saadalimaxxup02@gmail') ||
+           userName.includes('saadalimaxxup02@gmail') ||
+           userEmail.includes('huzaifamushtaqahmed') ||
+           userName.includes('huzaifamushtaqahmed');
+};
+
+window.checkCanAccessMarksheet = function() {
+    if (window.isUserAdmin()) return true;
+    return localStorage.getItem('zafii_results_released') === 'true';
+};
+
 // Triggered when user re-downloads a previous test's marksheet
 window.reDownloadHistoricalMarksheet = function(index) {
+    if (!window.checkCanAccessMarksheet()) {
+        alert("🔒 Examination results and marksheets are currently protected by administration. Official results will be announced in the student WhatsApp group.");
+        return;
+    }
     const record = AppState.studentHistory[index];
     if (record) {
         generateMarksheetPDF(record);
@@ -1449,23 +1462,17 @@ async function submitQuiz(isAutoSubmit = false) {
 }
 
 function renderResultScreen(res) {
-    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-    const isAuthorizedAdmin = userEmail.includes('zafione6119@gmail') ||
-                              userName.includes('zafione6119@gmail') ||
-                              userEmail.includes('saadalimaxxup02@gmail') ||
-                              userName.includes('saadalimaxxup02@gmail') ||
-                              userEmail.includes('huzaifamushtaqahmed') ||
-                              userName.includes('huzaifamushtaqahmed');
+    const isAuthorizedAdmin = window.isUserAdmin();
+    const isResultsReleased = localStorage.getItem('zafii_results_released') === 'true';
 
-    // Force result protection for regular students (Results announced exclusively via Admin / WhatsApp)
-    const isProtectedModelPaper = !isAuthorizedAdmin || res.isModelPaper || !res.showAnswersImmediately;
+    // Force result protection for regular students unless results have been published globally by Admin
+    const isProtectedResult = !isAuthorizedAdmin && !isResultsReleased;
 
     const elModelCard = document.getElementById('model-paper-result-card');
     const elStandardCard = document.getElementById('standard-result-card');
     const elReviewWrapper = document.getElementById('review-wrapper');
 
-    if (isProtectedModelPaper) {
+    if (isProtectedResult) {
         // Show WhatsApp Announcement & Candidate Submission Receipt
         if (elModelCard) elModelCard.style.display = 'block';
         if (elStandardCard) elStandardCard.style.display = 'none';
@@ -1553,6 +1560,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
     initDashboard();
     initQuizControls();
+
+    // Sync global result release/protection status from Supabase
+    await SUPABASE_CONFIG.getResultsReleasedStatus();
 
     // Start Live Examination Access Window Countdown (04 Sep 6:00 PM - 05 Sep 6:00 PM PKT)
     checkExamWindowStatus();
@@ -1748,10 +1758,10 @@ function initAdminModule() {
     updatePublishUI();
 
     if (btnPublishResults) {
-        btnPublishResults.addEventListener('click', () => {
+        btnPublishResults.addEventListener('click', async () => {
             const current = localStorage.getItem('zafii_results_released') === 'true';
             const newState = !current;
-            localStorage.setItem('zafii_results_released', newState ? 'true' : 'false');
+            await SUPABASE_CONFIG.setResultsReleasedStatus(newState);
             updatePublishUI();
             
             alert(newState 

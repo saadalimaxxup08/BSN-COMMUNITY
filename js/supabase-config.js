@@ -399,6 +399,51 @@ const SUPABASE_CONFIG = {
         } catch (e) {
             return [];
         }
+    },
+
+    // ----------------- GLOBAL SYSTEM SETTINGS -----------------
+    async getResultsReleasedStatus() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .eq('name', 'SYSTEM_SETTINGS_RESULTS_RELEASED')
+                    .maybeSingle();
+
+                if (data && !error) {
+                    const isReleased = data.roll_no === 'true';
+                    localStorage.setItem('zafii_results_released', isReleased ? 'true' : 'false');
+                    return isReleased;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch results release status failed:", err);
+            }
+        }
+        return localStorage.getItem('zafii_results_released') === 'true';
+    },
+
+    async setResultsReleasedStatus(isReleased) {
+        const valueStr = isReleased ? 'true' : 'false';
+        localStorage.setItem('zafii_results_released', valueStr);
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: 'SYSTEM_SETTINGS_RESULTS_RELEASED',
+                            roll_no: valueStr,
+                            semester: 'SYSTEM_CONFIG',
+                            created_at: new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+            } catch (err) {
+                console.warn("Supabase save results release status failed:", err);
+            }
+        }
+        return isReleased;
     }
 };
 

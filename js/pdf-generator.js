@@ -87,6 +87,11 @@ function populateMarksheetDOM(resultData) {
 
 // Generates and downloads the PDF marksheet
 async function generateMarksheetPDF(resultData) {
+    if (typeof window.checkCanAccessMarksheet === 'function' && !window.checkCanAccessMarksheet()) {
+        alert("🔒 Examination results and marksheets are currently protected by administration. Official results will be announced in the student WhatsApp group.");
+        return;
+    }
+
     const marksheetElement = populateMarksheetDOM(resultData);
     if (!marksheetElement) {
         alert("Marksheet template error. Please refresh the page.");
@@ -169,12 +174,20 @@ async function generateMarksheetPDF(resultData) {
 
 // Direct Native Print / Save as PDF (Chrome Native)
 function printMarksheetDirectly(resultData) {
+    if (typeof window.checkCanAccessMarksheet === 'function' && !window.checkCanAccessMarksheet()) {
+        alert("🔒 Examination results and marksheets are currently protected by administration. Official results will be announced in the student WhatsApp group.");
+        return;
+    }
     populateMarksheetDOM(resultData);
     window.print();
 }
 
 // Opens the live on-screen marksheet preview modal
 function openMarksheetPreview(resultData) {
+    if (typeof window.checkCanAccessMarksheet === 'function' && !window.checkCanAccessMarksheet()) {
+        alert("🔒 Examination results and marksheets are currently protected by administration. Official results will be announced in the student WhatsApp group.");
+        return;
+    }
     populateMarksheetDOM(resultData);
     const modal = document.getElementById('marksheet-preview-modal');
     const previewContainer = document.getElementById('preview-marksheet-content');
