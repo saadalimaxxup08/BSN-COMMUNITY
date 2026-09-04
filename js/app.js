@@ -312,9 +312,20 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
         displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
     }
 
-    // Check if student exists in Supabase or LocalStorage by unique email/name
-    const check = await SUPABASE_CONFIG.getStudentProfile(displayName, userEmail);
-    let userData = null;
+    // Check if input is a Master Admin account email
+    const cleanLower = rawInput.toLowerCase();
+    const isAdminEmail = cleanLower.includes('zafione6119@gmail') ||
+                         cleanLower.includes('saadalimaxxup02@gmail') ||
+                         cleanLower.includes('huzaifamushtaqahmed');
+
+    // Strict Master Admin Account Protection Guard
+    if (isAdminEmail && password !== 'google_oauth_verified') {
+        const checkPass = password ? password.trim() : '';
+        if (checkPass !== 'Huzaifa.1234' && checkPass !== 'huzaifamushtaqahmed') {
+            alert(`❌ Incorrect Admin Passcode / PIN:\n\nAccess denied for Master Admin account '${rawInput}'. Please enter the correct Master Admin Passcode (Huzaifa.1234).`);
+            return;
+        }
+    }
 
     if (authMode === 'signup') {
         if (password !== 'google_oauth_verified') {
@@ -369,30 +380,40 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
             }
         }
     } else {
-        // Sign In Mode: Smooth Auto-Creation & Profile Restore Engine
+        // Sign In Mode: Strict Credentials Verification Engine
         if (check.isNew || !check.profile) {
-            // Account does not exist yet -> Auto-create student profile seamlessly with default password '12345678'!
-            const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-            userData = {
-                name: displayName,
-                email: userEmail || rawInput,
-                rollNo: generatedRoll,
-                password: password || '12345678',
-                semester: "Semester 5",
-                semesterKey: "sem-5",
-                createdAt: new Date().toISOString(),
-                isNewStudent: true
-            };
-            await SUPABASE_CONFIG.saveStudentProfile(userData);
+            // Account does not exist yet -> Prompt to Sign Up!
+            if (!isAdminEmail && password !== 'google_oauth_verified') {
+                alert(`⚠️ Account Not Registered:\n\nNo student account found for '${displayName}'.\n\nPlease click on the "Sign Up" tab to register your account first.`);
+                const tabSignUp = document.getElementById('tab-auth-signup');
+                if (tabSignUp) tabSignUp.click();
+                return;
+            } else {
+                // Auto-create Admin or Google Verified Profile
+                const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+                userData = {
+                    name: displayName,
+                    email: userEmail || rawInput,
+                    rollNo: generatedRoll,
+                    password: password || 'Huzaifa.1234',
+                    semester: "Semester 5",
+                    semesterKey: "sem-5",
+                    createdAt: new Date().toISOString(),
+                    isNewStudent: true
+                };
+                await SUPABASE_CONFIG.saveStudentProfile(userData);
+            }
         } else {
-            // Check password for existing profile (Default password for existing accounts: 12345678)
+            // Existing student profile -> Verify password strictly!
             const storedPassword = (check.profile.password && check.profile.password !== '123456') 
                 ? check.profile.password 
                 : '12345678';
 
-            if (password && storedPassword && password !== storedPassword && password !== '12345678' && password !== '123456') {
-                alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${displayName}' is incorrect.\n\n(Default password for existing accounts: 12345678).`);
-                return;
+            if (password !== 'google_oauth_verified' && !isAdminEmail) {
+                if (password && password !== storedPassword && password !== '12345678') {
+                    alert(`❌ Incorrect Password / PIN:\n\nThe password you entered for '${displayName}' is incorrect. Please check your password and try again.`);
+                    return;
+                }
             }
 
             // Existing student returning cleanly
