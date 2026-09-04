@@ -464,7 +464,8 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
 
         // Generate permanent unique roll number
         const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
-        const initialName = providedFullName ? providedFullName.trim() : userEmail.split('@')[0];
+        const isNameProvided = providedFullName && !providedFullName.includes('@') && password !== 'google_oauth_verified';
+        const initialName = isNameProvided ? providedFullName.trim() : '';
 
         userData = {
             name: initialName,
@@ -475,22 +476,20 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
             semesterKey: "sem-5",
             createdAt: new Date().toISOString(),
             isNewStudent: true,
-            needsNameSetup: !providedFullName || providedFullName.includes('@')
+            needsNameSetup: !isNameProvided || !initialName
         };
-
-        await SUPABASE_CONFIG.saveStudentProfile(userData);
-
-        try {
-            localStorage.setItem('zafii_active_session', JSON.stringify(userData));
-        } catch (e) {}
 
         updateUIWithUserData(userData);
 
-        if (!providedFullName || providedFullName.includes('@')) {
+        if (!isNameProvided || !initialName) {
             openNameSetupModal(userData, (updatedUser) => {
                 showRollNumberPopup(updatedUser);
             });
         } else {
+            await SUPABASE_CONFIG.saveStudentProfile(userData);
+            try {
+                localStorage.setItem('zafii_active_session', JSON.stringify(userData));
+            } catch (e) {}
             showRollNumberPopup(userData);
         }
         return;
@@ -1593,7 +1592,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     history.replaceState(null, document.title, window.location.pathname + window.location.search);
                 }
 
-                await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signin', false, googleName);
+                // Do not auto-trust parent Google account name; require student to type their own Full Name on first setup
+                await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signin', false, '');
             }
         } catch (e) {
             console.warn("Supabase auth session restore error:", e);
