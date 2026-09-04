@@ -663,12 +663,12 @@ window.switchSemester = function(semKey) {
     renderSubjects(semKey);
 };
 
-// Live Exam Access Window Configuration (4 Sep 8:00 PM PKT to 5 Sep 8:00 PM PKT)
+// Live Exam Access Window Configuration (4 Sep 10:00 PM PKT to 5 Sep 10:00 PM PKT)
 const EXAM_WINDOW = {
-    // 04 Sep 2026 20:00:00 PKT (UTC+5)
-    startTime: new Date('2026-09-04T20:00:00+05:00').getTime(),
-    // 05 Sep 2026 20:00:00 PKT (UTC+5)
-    endTime: new Date('2026-09-05T20:00:00+05:00').getTime()
+    // 04 Sep 2026 22:00:00 PKT (UTC+5)
+    startTime: new Date('2026-09-04T22:00:00+05:00').getTime(),
+    // 05 Sep 2026 22:00:00 PKT (UTC+5)
+    endTime: new Date('2026-09-05T22:00:00+05:00').getTime()
 };
 
 window.isUserAdmin = function() {
@@ -712,13 +712,13 @@ function checkExamWindowStatus() {
         const secs = Math.floor((diff % (1000 * 60)) / 1000);
         const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-        if (elTimerText) elTimerText.innerHTML = `⏳ Exam Opens In: <strong style="color:var(--cyan-primary); font-size:13.5px;">${timeStr}</strong> (08:00 PM PKT)`;
+        if (elTimerText) elTimerText.innerHTML = `⏳ Exam Opens In: <strong style="color:var(--cyan-primary); font-size:13.5px;">${timeStr}</strong> (10:00 PM PKT)`;
         
         if (btnStart && !isAuthorizedAdmin) {
             btnStart.disabled = true;
             btnStart.style.opacity = '0.6';
             btnStart.style.cursor = 'not-allowed';
-            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Opens Today at 8:00 PM PKT</span>`;
+            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Opens Today at 10:00 PM PKT</span>`;
         } else if (btnStart && isAuthorizedAdmin) {
             btnStart.disabled = false;
             btnStart.style.opacity = '1';
@@ -766,7 +766,7 @@ window.startQuiz = function(quizId) {
 
     const windowStatus = checkExamWindowStatus();
     if (!windowStatus.isAvailable) {
-        alert("🔒 Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 08:00 PM PKT (Sep 4) and close tomorrow at 08:00 PM PKT (Sep 5).\n\nPlease return during the examination window to submit your paper!");
+        alert("🔒 Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 10:00 PM PKT (Sep 4) and close tomorrow at 10:00 PM PKT (Sep 5).\n\nPlease return during the examination window to submit your paper!");
         return;
     }
 
