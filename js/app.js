@@ -105,6 +105,15 @@ function switchView(viewName) {
         if (adminView) adminView.classList.add('active');
     }
 
+    if (window.location.hash) {
+        try {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        } catch (e) {}
+    }
+    if (document.activeElement && document.activeElement !== document.body) {
+        try { document.activeElement.blur(); } catch (e) {}
+    }
+
     const resetScroll = () => {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         document.documentElement.scrollTop = 0;
@@ -115,6 +124,7 @@ function switchView(viewName) {
     requestAnimationFrame(resetScroll);
     setTimeout(resetScroll, 50);
     setTimeout(resetScroll, 150);
+    setTimeout(resetScroll, 300);
 }
 
 let currentAuthMode = 'signin'; // 'signin' or 'signup'
