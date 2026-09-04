@@ -1242,17 +1242,17 @@
             <div style="margin-bottom:18px;">
                 <label class="form-label" style="font-size:13px; margin-bottom:8px; color:#cbd5e1;">Select Support Category:</label>
                 <div style="display:flex; flex-direction:column; gap:8px;">
-                    <label class="support-cat-option" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer;">
+                    <label class="support-cat-option" onclick="selectSupportCategory('website_review')" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer; touch-action:manipulation;">
                         <input type="radio" name="support-category" value="website_review" checked style="accent-color:#f43f5e;">
                         <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
                         <span style="color:#fff; font-size:13px; font-weight:600;">Rate & Review Website</span>
                     </label>
-                    <label class="support-cat-option" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer;">
+                    <label class="support-cat-option" onclick="selectSupportCategory('portal_improvement')" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer; touch-action:manipulation;">
                         <input type="radio" name="support-category" value="portal_improvement" style="accent-color:#f43f5e;">
                         <i class="fa-solid fa-lightbulb" style="color:#06b6d4;"></i>
                         <span style="color:#fff; font-size:13px; font-weight:600;">Suggest Portal Improvements</span>
                     </label>
-                    <label class="support-cat-option" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer;">
+                    <label class="support-cat-option" onclick="selectSupportCategory('account_complaint')" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; border:1px solid var(--border-glass); cursor:pointer; touch-action:manipulation;">
                         <input type="radio" name="support-category" value="account_complaint" style="accent-color:#f43f5e;">
                         <i class="fa-solid fa-user-shield" style="color:#f43f5e;"></i>
                         <span style="color:#fff; font-size:13px; font-weight:600;">Account-Related Complaint / Issue</span>
@@ -1263,12 +1263,12 @@
             <!-- Website Star Rating Box (visible for website_review) -->
             <div id="support-rating-box" style="margin-bottom:16px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); padding:12px 16px; border-radius:12px;">
                 <label class="form-label" style="font-size:12.5px; color:#f59e0b; margin-bottom:6px;">Rate Your Experience (1 to 5 Stars):</label>
-                <div id="support-star-rating" style="display:flex; gap:8px; font-size:22px; color:#64748b; cursor:pointer;">
-                    <i class="fa-solid fa-star star-btn" data-rating="1"></i>
-                    <i class="fa-solid fa-star star-btn" data-rating="2"></i>
-                    <i class="fa-solid fa-star star-btn" data-rating="3"></i>
-                    <i class="fa-solid fa-star star-btn" data-rating="4"></i>
-                    <i class="fa-solid fa-star star-btn" data-rating="5"></i>
+                <div id="support-star-rating" style="display:flex; gap:12px; font-size:26px; color:#64748b; cursor:pointer; touch-action:manipulation; padding:4px 0;">
+                    <i class="fa-solid fa-star star-btn" data-rating="1" onclick="setSupportRating(1)" style="padding:4px; touch-action:manipulation;"></i>
+                    <i class="fa-solid fa-star star-btn" data-rating="2" onclick="setSupportRating(2)" style="padding:4px; touch-action:manipulation;"></i>
+                    <i class="fa-solid fa-star star-btn" data-rating="3" onclick="setSupportRating(3)" style="padding:4px; touch-action:manipulation;"></i>
+                    <i class="fa-solid fa-star star-btn" data-rating="4" onclick="setSupportRating(4)" style="padding:4px; touch-action:manipulation;"></i>
+                    <i class="fa-solid fa-star star-btn" data-rating="5" onclick="setSupportRating(5)" style="padding:4px; touch-action:manipulation;"></i>
                 </div>
             </div>
 
@@ -1296,7 +1296,7 @@
                 <textarea id="support-input-message" class="input-glass" rows="4" placeholder="Write your review, suggestion, or complaint details here..." style="width:100%; padding:10px 14px; font-size:13px; resize:vertical;"></textarea>
             </div>
 
-            <button type="button" id="btn-submit-support-ticket" class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f43f5e, #8b5cf6); padding:12px; font-size:14px; font-weight:800;">
+            <button type="button" id="btn-submit-support-ticket" onclick="submitSupportTicket(event)" class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f43f5e, #8b5cf6); padding:14px; font-size:15px; font-weight:800; cursor:pointer; touch-action:manipulation;">
                 <i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i>
                 <span>Submit Support Ticket</span>
             </button>
@@ -1327,10 +1327,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 10.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=10.0"></script>
-    <script src="js/quiz-data.js?v=10.0"></script>
-    <script src="js/pdf-generator.js?v=10.0"></script>
-    <script src="js/app.js?v=10.0"></script>
+    <!-- Application Scripts (Version 11.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=11.0"></script>
+    <script src="js/quiz-data.js?v=11.0"></script>
+    <script src="js/pdf-generator.js?v=11.0"></script>
+    <script src="js/app.js?v=11.0"></script>
 </body>
 </html>

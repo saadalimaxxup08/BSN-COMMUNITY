@@ -2393,6 +2393,112 @@ window.exportMasterMeritListPDF = async function() {
 // ----------------- CUSTOMER SUPPORT & TICKETS CONTROLLER -----------------
 let selectedSupportRating = 5;
 
+window.setSupportRating = function(rating) {
+    selectedSupportRating = parseInt(rating, 10);
+    const starContainer = document.getElementById('support-star-rating');
+    if (starContainer) {
+        const stars = starContainer.querySelectorAll('.star-btn');
+        stars.forEach(s => {
+            const r = parseInt(s.getAttribute('data-rating') || '0', 10);
+            s.style.color = (r <= selectedSupportRating) ? '#f59e0b' : '#64748b';
+        });
+    }
+};
+
+window.selectSupportCategory = function(catValue) {
+    const radio = document.querySelector(`input[name="support-category"][value="${catValue}"]`);
+    if (radio) radio.checked = true;
+
+    const ratingBox = document.getElementById('support-rating-box');
+    const verificationBox = document.getElementById('support-verification-box');
+
+    if (catValue === 'website_review') {
+        if (ratingBox) ratingBox.style.display = 'block';
+        if (verificationBox) verificationBox.style.display = 'none';
+    } else if (catValue === 'portal_improvement') {
+        if (ratingBox) ratingBox.style.display = 'none';
+        if (verificationBox) verificationBox.style.display = 'none';
+    } else if (catValue === 'account_complaint') {
+        if (ratingBox) ratingBox.style.display = 'none';
+        if (verificationBox) verificationBox.style.display = 'block';
+    }
+};
+
+window.submitSupportTicket = async function(e) {
+    if (e) {
+        try { e.preventDefault(); } catch(err) {}
+    }
+
+    const btnSubmitSupport = document.getElementById('btn-submit-support-ticket');
+    const selectedCatInput = document.querySelector('input[name="support-category"]:checked');
+    const category = selectedCatInput ? selectedCatInput.value : 'website_review';
+    const msgInput = document.getElementById('support-input-message');
+    const message = (msgInput ? msgInput.value : '').trim();
+
+    if (!message) {
+        alert("⚠️ Please enter details or description in the message field.");
+        return;
+    }
+
+    let studentName = AppState.currentUser ? AppState.currentUser.name : 'Guest Scholar';
+    let rollNo = AppState.currentUser ? AppState.currentUser.rollNo : 'BSN-2026-0000';
+    let accountId = AppState.currentUser ? AppState.currentUser.accountId : 'N/A';
+    let email = AppState.currentUser ? AppState.currentUser.email : 'N/A';
+
+    // IF ACCOUNT COMPLAINT, VERIFY NAME & ACCOUNT ID STRICTLY
+    if (category === 'account_complaint') {
+        const inputName = (document.getElementById('support-input-name')?.value || '').trim();
+        const inputAccountId = (document.getElementById('support-input-account-id')?.value || '').trim();
+
+        if (!inputName || !inputAccountId) {
+            alert("⚠️ Verification Failed: Please enter both Student Full Name and 8-Digit Account ID for account complaints.");
+            return;
+        }
+
+        if (AppState.currentUser) {
+            const currentName = (AppState.currentUser.name || '').trim().toLowerCase();
+            const currentAcc = (AppState.currentUser.accountId || '').trim();
+
+            if (inputName.toLowerCase() !== currentName || inputAccountId !== currentAcc) {
+                alert("⚠️ Verification Failed: Entered Student Name or 8-Digit Account ID does not match active logged-in profile!\n\nPlease check your Candidate Credentials on your dashboard.");
+                return;
+            }
+        }
+        studentName = inputName;
+        accountId = inputAccountId;
+    }
+
+    if (btnSubmitSupport) {
+        btnSubmitSupport.disabled = true;
+        btnSubmitSupport.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+    }
+
+    await SUPABASE_CONFIG.saveSupportTicket({
+        category,
+        studentName,
+        rollNo,
+        accountId,
+        email,
+        rating: category === 'website_review' ? selectedSupportRating : 0,
+        message,
+        createdAt: new Date().toISOString()
+    });
+
+    if (btnSubmitSupport) {
+        btnSubmitSupport.disabled = false;
+        btnSubmitSupport.innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i><span>Submit Support Ticket</span>';
+    }
+
+    alert("✅ Thank you! Your support ticket / feedback has been successfully submitted to ZAFII Administration.");
+    if (msgInput) msgInput.value = '';
+
+    window.closeSupportModal();
+
+    if (typeof updateAdminSupportBadge === 'function') {
+        updateAdminSupportBadge();
+    }
+};
+
 window.openSupportModal = function() {
     const modalSupport = document.getElementById('support-ticket-modal');
     if (modalSupport) {
@@ -2432,141 +2538,16 @@ window.closeAdminSupportInbox = function() {
 
 function initSupportTicketsUI() {
     const btnOpenSupport = document.getElementById('btn-open-support-modal');
-    const modalSupport = document.getElementById('support-ticket-modal');
     const btnCloseSupport = document.getElementById('btn-close-support-modal');
-    const btnSubmitSupport = document.getElementById('btn-submit-support-ticket');
-
-    const catRadios = document.querySelectorAll('input[name="support-category"]');
-    const ratingBox = document.getElementById('support-rating-box');
-    const verificationBox = document.getElementById('support-verification-box');
-    const starContainer = document.getElementById('support-star-rating');
 
     // Admin Inbox Elements
     const btnOpenAdminSupport = document.getElementById('btn-admin-open-support-inbox');
-    const modalAdminSupport = document.getElementById('admin-support-inbox-modal');
     const btnCloseAdminSupport = document.getElementById('btn-close-admin-support-modal');
 
-    // 1. Open Support Modal
-    if (btnOpenSupport) {
-        btnOpenSupport.onclick = window.openSupportModal;
-    }
-
-    // Close Support Modal
-    if (btnCloseSupport) {
-        btnCloseSupport.onclick = window.closeSupportModal;
-    }
-
-    // 2. Radio Category Change
-    catRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if (val === 'website_review') {
-                if (ratingBox) ratingBox.style.display = 'block';
-                if (verificationBox) verificationBox.style.display = 'none';
-            } else if (val === 'portal_improvement') {
-                if (ratingBox) ratingBox.style.display = 'none';
-                if (verificationBox) verificationBox.style.display = 'none';
-            } else if (val === 'account_complaint') {
-                if (ratingBox) ratingBox.style.display = 'none';
-                if (verificationBox) verificationBox.style.display = 'block';
-            }
-        });
-    });
-
-    // 3. Star Rating Handler
-    if (starContainer) {
-        const stars = starContainer.querySelectorAll('.star-btn');
-        stars.forEach(star => {
-            star.addEventListener('click', () => {
-                const rating = parseInt(star.getAttribute('data-rating') || '5', 10);
-                selectedSupportRating = rating;
-                stars.forEach(s => {
-                    const r = parseInt(s.getAttribute('data-rating') || '0', 10);
-                    if (r <= rating) {
-                        s.style.color = '#f59e0b';
-                    } else {
-                        s.style.color = '#64748b';
-                    }
-                });
-            });
-        });
-        stars.forEach(s => { s.style.color = '#f59e0b'; });
-    }
-
-    // 4. Submit Support Ticket
-    if (btnSubmitSupport) {
-        btnSubmitSupport.addEventListener('click', async () => {
-            const selectedCatInput = document.querySelector('input[name="support-category"]:checked');
-            const category = selectedCatInput ? selectedCatInput.value : 'website_review';
-            const msgInput = document.getElementById('support-input-message');
-            const message = (msgInput ? msgInput.value : '').trim();
-
-            if (!message) {
-                alert("⚠️ Please enter details or description in the message field.");
-                return;
-            }
-
-            let studentName = AppState.currentUser ? AppState.currentUser.name : 'Guest Scholar';
-            let rollNo = AppState.currentUser ? AppState.currentUser.rollNo : 'BSN-2026-0000';
-            let accountId = AppState.currentUser ? AppState.currentUser.accountId : 'N/A';
-            let email = AppState.currentUser ? AppState.currentUser.email : 'N/A';
-
-            // IF ACCOUNT COMPLAINT, VERIFY NAME & ACCOUNT ID STRICTLY
-            if (category === 'account_complaint') {
-                const inputName = (document.getElementById('support-input-name')?.value || '').trim();
-                const inputAccountId = (document.getElementById('support-input-account-id')?.value || '').trim();
-
-                if (!inputName || !inputAccountId) {
-                    alert("⚠️ Verification Failed: Please enter both Student Full Name and 8-Digit Account ID for account complaints.");
-                    return;
-                }
-
-                if (AppState.currentUser) {
-                    const currentName = (AppState.currentUser.name || '').trim().toLowerCase();
-                    const currentAcc = (AppState.currentUser.accountId || '').trim();
-
-                    if (inputName.toLowerCase() !== currentName || inputAccountId !== currentAcc) {
-                        alert("⚠️ Verification Failed: Entered Student Name or 8-Digit Account ID does not match active logged-in profile!\n\nPlease check your Candidate Credentials on your dashboard.");
-                        return;
-                    }
-                }
-                studentName = inputName;
-                accountId = inputAccountId;
-            }
-
-            btnSubmitSupport.disabled = true;
-            btnSubmitSupport.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
-
-            await SUPABASE_CONFIG.saveSupportTicket({
-                category,
-                studentName,
-                rollNo,
-                accountId,
-                email,
-                rating: category === 'website_review' ? selectedSupportRating : 0,
-                message,
-                createdAt: new Date().toISOString()
-            });
-
-            btnSubmitSupport.disabled = false;
-            btnSubmitSupport.innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i><span>Submit Support Ticket</span>';
-
-            alert("✅ Thank you! Your support ticket / feedback has been successfully submitted to ZAFII Administration.");
-            if (msgInput) msgInput.value = '';
-            if (modalSupport) modalSupport.classList.remove('active');
-
-            updateAdminSupportBadge();
-        });
-    }
-
-    // 5. Admin Open Support Inbox
-    if (btnOpenAdminSupport) {
-        btnOpenAdminSupport.onclick = window.openAdminSupportInbox;
-    }
-
-    if (btnCloseAdminSupport) {
-        btnCloseAdminSupport.onclick = window.closeAdminSupportInbox;
-    }
+    if (btnOpenSupport) btnOpenSupport.onclick = window.openSupportModal;
+    if (btnCloseSupport) btnCloseSupport.onclick = window.closeSupportModal;
+    if (btnOpenAdminSupport) btnOpenAdminSupport.onclick = window.openAdminSupportInbox;
+    if (btnCloseAdminSupport) btnCloseAdminSupport.onclick = window.closeAdminSupportInbox;
 
     updateAdminSupportBadge();
 }
