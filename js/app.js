@@ -91,7 +91,7 @@ function switchView(viewName) {
     const adminView = document.getElementById('admin-view');
     if (adminView) adminView.classList.remove('active');
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
 
     if (viewName === 'login') {
         elements.loginView.classList.add('active');
@@ -174,8 +174,13 @@ function initAuth() {
             const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
 
+            if (currentAuthMode === 'signup' && !fullName) {
+                alert("Please enter your Full Student Name.");
+                return;
+            }
+
             if (!email) {
-                alert("Bara-e-karam apna Email Address enter karein.");
+                alert("Please enter your Email Address.");
                 return;
             }
 
@@ -188,6 +193,13 @@ function initAuth() {
             const fullName = inputFullName ? inputFullName.value.trim() : '';
             const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
+
+            if (currentAuthMode === 'signup' && !fullName) {
+                e.preventDefault();
+                alert("Please enter your Full Student Name.");
+                return;
+            }
+
             if (email) {
                 e.preventDefault();
                 await processStudentLogin(email, password, currentAuthMode, false, fullName);
@@ -343,7 +355,7 @@ function openNameSetupModal(userObj, callback) {
     const saveHandler = async () => {
         const enteredName = input ? input.value.trim() : '';
         if (!enteredName) {
-            alert("Bara-e-karam apna Poora Naam (Full Student Name) darj karein.");
+            alert("Please enter your Full Student Name.");
             return;
         }
 
@@ -378,7 +390,7 @@ function openNameSetupModal(userObj, callback) {
 async function processStudentLogin(studentInput, password = '', authMode = 'signin', skipViewSwitch = false) {
     const rawInput = studentInput.trim();
     if (!rawInput) {
-        alert("Bara-e-karam apna Email Address enter karein.");
+        alert("Please enter your Email Address.");
         return;
     }
 
@@ -395,14 +407,14 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         if (password !== 'google_oauth_verified') {
             // Password validation
             if (!password || !password.trim()) {
-                alert("⚠️ Password Required:\n\nSign Up karne ke liye Password daalna lazmi hai.");
+                alert("⚠️ Password Required:\n\nPlease create a password to complete your account registration.");
                 return;
             }
         }
 
         // Check duplicate email registration
         if (!check.isNew && check.profile) {
-            alert(`⚠️ Account Already Registered:\n\n'${userEmail}' par pehle se account majood hai. Bara-e-karam "Sign In" tab par ja kar login karein.`);
+            alert(`⚠️ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered. Please switch to the "Sign In" tab to log in.`);
             const tabSignIn = document.getElementById('tab-auth-signin');
             if (tabSignIn) tabSignIn.click();
             return;
@@ -438,7 +450,7 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
     } else {
         // Sign In Mode: Check account existence
         if (check.isNew || !check.profile) {
-            alert(`⚠️ Account Not Found:\n\n'${userEmail}' ka koi account nahi mila.\n\nBara-e-karam "Sign Up" tab par click karke apna account banayein.`);
+            alert(`⚠️ Account Not Found:\n\nNo registered account found for '${userEmail}'. Please click on the "Sign Up" tab to create a new account.`);
             const tabSignUp = document.getElementById('tab-auth-signup');
             if (tabSignUp) tabSignUp.click();
             return;
@@ -448,7 +460,7 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         const storedPassword = check.profile.password || '12345678';
         if (password !== 'google_oauth_verified') {
             if (password && storedPassword && password !== storedPassword) {
-                alert(`❌ Incorrect Password:\n\n'${userEmail}' ke liye aapka password galat hai. Bara-e-karam sahi password enter karein.`);
+                alert(`❌ Incorrect Password:\n\nThe password entered for '${userEmail}' is incorrect. Please enter your correct password.`);
                 return;
             }
         }

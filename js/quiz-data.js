@@ -1,7 +1,7 @@
 // ==========================================
 // ZAFII MEDICAL PORTAL - BSN QUIZ DATA
 // ==========================================
-// Aap is file me asaani se naye semesters, subjects aur questions add kar sakte hain.
+// You can easily add new semesters, subjects, and questions in this file.
 
 const QUIZ_DATA = {
     // SEMESTER 1
