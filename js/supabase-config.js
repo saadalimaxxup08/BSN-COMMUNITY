@@ -670,6 +670,50 @@ const SUPABASE_CONFIG = {
         return isHidden;
     },
 
+    async getSupportWidgetHiddenStatus() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .eq('name', 'SYSTEM_SETTINGS_SUPPORT_WIDGET_HIDDEN')
+                    .maybeSingle();
+
+                if (data && !error) {
+                    const isHidden = data.roll_no === 'true';
+                    localStorage.setItem('zafii_support_widget_hidden', isHidden ? 'true' : 'false');
+                    return isHidden;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch support widget hidden status failed:", err);
+            }
+        }
+        return localStorage.getItem('zafii_support_widget_hidden') === 'true';
+    },
+
+    async setSupportWidgetHiddenStatus(isHidden) {
+        const valueStr = isHidden ? 'true' : 'false';
+        localStorage.setItem('zafii_support_widget_hidden', valueStr);
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: 'SYSTEM_SETTINGS_SUPPORT_WIDGET_HIDDEN',
+                            roll_no: valueStr,
+                            semester: 'SYSTEM_CONFIG',
+                            created_at: new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+            } catch (err) {
+                console.warn("Supabase save support widget hidden status failed:", err);
+            }
+        }
+        return isHidden;
+    },
+
     // ----------------- CUSTOMER SUPPORT & TICKETS -----------------
     async saveSupportTicket(ticketData) {
         const ticketId = ticketData.ticketId || (Date.now().toString());

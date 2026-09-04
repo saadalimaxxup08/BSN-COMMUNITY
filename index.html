@@ -737,6 +737,25 @@
                 </div>
             </div>
 
+            <!-- Master Admin Support Widget Global ON/OFF Toggle Card -->
+            <div class="glass-card" style="margin-bottom:16px; padding:18px 24px; border-left:4px solid #3b82f6; background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.08)); border-radius:16px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg, #3b82f6, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; box-shadow:0 0 16px rgba(59,130,246,0.4); flex-shrink:0;">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:15px; font-weight:800; color:#ffffff;">Customer Support Floating Widget Global ON / OFF Control</div>
+                            <div id="admin-support-widget-status-desc" style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">Currently: Customer Support Icon Widget is VISIBLE on Student Dashboards.</div>
+                        </div>
+                    </div>
+                    <button id="btn-admin-toggle-support-widget" class="btn-primary" style="background:linear-gradient(135deg, #f43f5e, #ec4899); font-size:13.5px; padding:12px 22px; border-radius:12px; font-weight:800; display:flex; align-items:center; gap:8px; cursor:pointer; touch-action:manipulation;">
+                        <i class="fa-solid fa-eye-slash"></i>
+                        <span id="btn-support-widget-toggle-label">Hide Customer Support Icon Widget</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Admin Overview Analytics Cards -->
             <div class="stats-grid">
                 <div class="glass-card stat-card">
@@ -1308,10 +1327,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 8.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=8.0"></script>
-    <script src="js/quiz-data.js?v=8.0"></script>
-    <script src="js/pdf-generator.js?v=8.0"></script>
-    <script src="js/app.js?v=8.0"></script>
+    <!-- Application Scripts (Version 9.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=9.0"></script>
+    <script src="js/quiz-data.js?v=9.0"></script>
+    <script src="js/pdf-generator.js?v=9.0"></script>
+    <script src="js/app.js?v=9.0"></script>
 </body>
 </html>

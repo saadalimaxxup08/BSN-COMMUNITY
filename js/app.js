@@ -1735,6 +1735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Sync global result release/protection status & timer hidden status from Supabase
     await SUPABASE_CONFIG.getResultsReleasedStatus();
     await SUPABASE_CONFIG.getExamTimerHiddenStatus();
+    await SUPABASE_CONFIG.getSupportWidgetHiddenStatus();
 
     // Start Live Examination Access Window Countdown (04 Sep 6:00 PM - 05 Sep 6:00 PM PKT)
     checkExamWindowStatus();
@@ -1998,6 +1999,50 @@ function initAdminModule() {
             alert(newState 
                 ? "👁️ Countdown Banner Hidden & Global Access Unlocked!\n\nThe countdown timer card is now hidden for ALL candidates across all devices. Every student can freely access and start their examination paper!" 
                 : "⏰ Countdown Banner Visible & Global Schedule Enforced!\n\nThe live examination schedule is now active globally across all devices. Countdown timer banner is visible and candidate access is strictly governed by the official time window.");
+        });
+    }
+
+    // Master Admin Support Widget Global ON/OFF Toggle
+    const btnToggleSupportWidget = document.getElementById('btn-admin-toggle-support-widget');
+    const lblSupportWidgetToggle = document.getElementById('btn-support-widget-toggle-label');
+    const descSupportWidgetStatus = document.getElementById('admin-support-widget-status-desc');
+
+    function updateSupportWidgetControlUI() {
+        const isHidden = localStorage.getItem('zafii_support_widget_hidden') === 'true';
+        if (lblSupportWidgetToggle) {
+            lblSupportWidgetToggle.textContent = isHidden 
+                ? "Show Customer Support Icon Widget" 
+                : "Hide Customer Support Icon Widget";
+        }
+        if (descSupportWidgetStatus) {
+            descSupportWidgetStatus.textContent = isHidden 
+                ? "Currently: Customer Support Icon Widget is HIDDEN globally for all students."
+                : "Currently: Customer Support Icon Widget is VISIBLE on Student Dashboards.";
+        }
+        if (btnToggleSupportWidget) {
+            btnToggleSupportWidget.style.background = isHidden 
+                ? "linear-gradient(135deg, #10b981, #06b6d4)" 
+                : "linear-gradient(135deg, #f43f5e, #ec4899)";
+        }
+    }
+
+    updateSupportWidgetControlUI();
+
+    if (btnToggleSupportWidget) {
+        btnToggleSupportWidget.addEventListener('click', async () => {
+            const current = localStorage.getItem('zafii_support_widget_hidden') === 'true';
+            const newState = !current;
+            await SUPABASE_CONFIG.setSupportWidgetHiddenStatus(newState);
+            updateSupportWidgetControlUI();
+            
+            const supportContainer = document.getElementById('floating-support-btn-container');
+            if (supportContainer) {
+                supportContainer.style.display = (newState || !elements.dashboardView.classList.contains('active')) ? 'none' : 'block';
+            }
+
+            alert(newState 
+                ? "👁️ Customer Support Widget Hidden!\n\nThe floating support icon has been hidden globally for all students across all devices." 
+                : "🔔 Customer Support Widget Restored!\n\nThe floating support icon is now visible on student dashboards globally.");
         });
     }
 }
