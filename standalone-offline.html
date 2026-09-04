@@ -72,19 +72,34 @@
 
                     <!-- Student Login / Registration Form -->
                     <form id="login-form">
-                        <div class="form-group">
-                            <label class="form-label" id="lbl-name-input" for="student-name-input">
-                                👤 Student Gmail Address / Name
+                        <!-- Student Full Name Field (Mandatory for Sign Up) -->
+                        <div class="form-group" id="student-fullname-group" style="display:none;">
+                            <label class="form-label" for="student-fullname-input">
+                                👤 Student Full Name <span style="color:#f43f5e; font-weight:800;">*</span>
                             </label>
                             <input 
                                 type="text" 
+                                id="student-fullname-input" 
+                                class="input-glass" 
+                                placeholder="e.g. Nurse Sarah Jenkins / Saadii"
+                            >
+                        </div>
+
+                        <!-- Email Address Field -->
+                        <div class="form-group">
+                            <label class="form-label" id="lbl-name-input" for="student-name-input">
+                                ✉️ Email Address
+                            </label>
+                            <input 
+                                type="email" 
                                 id="student-name-input" 
                                 class="input-glass" 
-                                placeholder="e.g. student@gmail.com / Saadii" 
+                                placeholder="e.g. student@gmail.com" 
                                 required
                             >
                         </div>
 
+                        <!-- Password Field -->
                         <div class="form-group">
                             <label class="form-label" id="lbl-password-input" for="student-password-input">
                                 🔒 Account Password / PIN

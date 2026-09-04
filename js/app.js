@@ -117,6 +117,8 @@ function initAuth() {
 
     const lblPassword = document.getElementById('lbl-password-input');
     const lblName = document.getElementById('lbl-name-input');
+    const groupFullName = document.getElementById('student-fullname-group');
+    const inputFullName = document.getElementById('student-fullname-input');
 
     if (tabSignIn && tabSignUp) {
         tabSignIn.addEventListener('click', () => {
@@ -130,13 +132,15 @@ function initAuth() {
             if (btnSubmitAuth) {
                 btnSubmitAuth.innerHTML = `<span>Sign In to Student Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
             }
+            if (groupFullName) groupFullName.style.display = 'none';
+            if (inputFullName) inputFullName.required = false;
             if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Account Password / PIN`;
-            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Student Gmail Address / Name`;
+            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-envelope" style="color:var(--cyan-primary); margin-right:4px;"></i> Email Address`;
             if (elements.inputPassword) {
                 elements.inputPassword.placeholder = "••••••••";
                 elements.inputPassword.required = false;
             }
-            if (elements.inputName) elements.inputName.placeholder = "e.g. student@gmail.com / Saadii";
+            if (elements.inputName) elements.inputName.placeholder = "e.g. student@gmail.com";
         });
 
         tabSignUp.addEventListener('click', () => {
@@ -148,15 +152,17 @@ function initAuth() {
             tabSignIn.style.background = 'transparent';
             tabSignIn.style.color = 'var(--text-muted)';
             if (btnSubmitAuth) {
-                btnSubmitAuth.innerHTML = `<span>Create New Account & Register</span> <i class="fa-solid fa-user-plus"></i>`;
+                btnSubmitAuth.innerHTML = `<span>Save Profile & Register Account</span> <i class="fa-solid fa-user-plus"></i>`;
             }
-            if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Create Password / PIN <span style="color:#f43f5e; font-weight:800;">* (Required)</span>`;
-            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Official Gmail Address <span style="color:#f43f5e; font-weight:800;">* (Ending with @gmail.com)</span>`;
+            if (groupFullName) groupFullName.style.display = 'block';
+            if (inputFullName) inputFullName.required = true;
+            if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Create Password / PIN <span style="color:#f43f5e; font-weight:800;">*</span>`;
+            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-envelope" style="color:var(--cyan-primary); margin-right:4px;"></i> Email Address <span style="color:#f43f5e; font-weight:800;">*</span>`;
             if (elements.inputPassword) {
-                elements.inputPassword.placeholder = "•••••••• (Required for Sign Up)";
+                elements.inputPassword.placeholder = "•••••••• (Create Password)";
                 elements.inputPassword.required = true;
             }
-            if (elements.inputName) elements.inputName.placeholder = "e.g. nurse.sarah@gmail.com";
+            if (elements.inputName) elements.inputName.placeholder = "e.g. student@gmail.com";
         });
     }
 
@@ -164,25 +170,27 @@ function initAuth() {
     if (elements.loginForm) {
         elements.loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = elements.inputName.value.trim();
+            const fullName = inputFullName ? inputFullName.value.trim() : '';
+            const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
 
-            if (!name) {
-                alert("Please enter your Student Full Name / Email to continue.");
+            if (!email) {
+                alert("Bara-e-karam apna Email Address enter karein.");
                 return;
             }
 
-            await processStudentLogin(name, password, currentAuthMode);
+            await processStudentLogin(email, password, currentAuthMode, false, fullName);
         });
     }
 
     if (btnSubmitAuth) {
         btnSubmitAuth.addEventListener('click', async (e) => {
-            const name = elements.inputName ? elements.inputName.value.trim() : '';
+            const fullName = inputFullName ? inputFullName.value.trim() : '';
+            const email = elements.inputName ? elements.inputName.value.trim() : '';
             const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
-            if (name) {
+            if (email) {
                 e.preventDefault();
-                await processStudentLogin(name, password, currentAuthMode);
+                await processStudentLogin(email, password, currentAuthMode, false, fullName);
             }
         });
     }
@@ -355,6 +363,8 @@ function openNameSetupModal(userObj, callback) {
         if (elements.navStudentName) elements.navStudentName.textContent = enteredName;
         if (elements.navStudentRoll) elements.navStudentRoll.textContent = userObj.rollNo;
         if (elements.bannerStudentName) elements.bannerStudentName.textContent = enteredName;
+        const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
+        if (elBannerRollBadge) elBannerRollBadge.textContent = userObj.rollNo;
 
         if (modal) modal.classList.remove('active');
 
@@ -463,6 +473,8 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         if (elements.navStudentName) elements.navStudentName.textContent = userData.name || userEmail;
         if (elements.navStudentRoll) elements.navStudentRoll.textContent = userData.rollNo;
         if (elements.bannerStudentName) elements.bannerStudentName.textContent = userData.name || userEmail;
+        const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
+        if (elBannerRollBadge) elBannerRollBadge.textContent = userData.rollNo;
 
         // Check if name setup is needed
         if (!userData.name || userData.name.includes('@') || userData.needsNameSetup) {
