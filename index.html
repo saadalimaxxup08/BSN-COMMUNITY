@@ -730,7 +730,7 @@
                             <div id="admin-support-status-desc" style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">Inspect candidate ratings, website reviews, feature suggestions & account complaints.</div>
                         </div>
                     </div>
-                    <button id="btn-admin-open-support-inbox" class="btn-primary" style="background:linear-gradient(135deg, #f43f5e, #8b5cf6); font-size:13.5px; padding:12px 22px; border-radius:12px; font-weight:800; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <button id="btn-admin-open-support-inbox" onclick="openAdminSupportInbox()" class="btn-primary" style="background:linear-gradient(135deg, #f43f5e, #8b5cf6); font-size:13.5px; padding:12px 22px; border-radius:12px; font-weight:800; display:flex; align-items:center; gap:8px; cursor:pointer; touch-action:manipulation;">
                         <i class="fa-solid fa-inbox"></i>
                         <span>Open Support Inbox</span>
                     </button>
@@ -1196,8 +1196,8 @@
     <!-- ==================================================== -->
     <!-- FLOATING CUSTOMER SUPPORT WIDGET BUTTON -->
     <!-- ==================================================== -->
-    <div id="floating-support-btn-container" style="position:fixed; bottom:24px; right:24px; z-index:9990;">
-        <button id="btn-open-support-modal" class="btn-primary" style="border-radius:50px; padding:12px 20px; font-size:14px; font-weight:800; background:linear-gradient(135deg, #f43f5e, #8b5cf6); box-shadow:0 8px 24px rgba(244,63,94,0.4); display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,0.2); cursor:pointer;">
+    <div id="floating-support-btn-container" style="position:fixed; bottom:24px; right:24px; z-index:99999;">
+        <button id="btn-open-support-modal" onclick="openSupportModal()" class="btn-primary" style="border-radius:50px; padding:12px 20px; font-size:14px; font-weight:800; background:linear-gradient(135deg, #f43f5e, #8b5cf6); box-shadow:0 8px 24px rgba(244,63,94,0.4); display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,0.2); cursor:pointer; touch-action:manipulation;">
             <i class="fa-solid fa-headset" style="font-size:18px;"></i>
             <span>Customer Support</span>
         </button>
@@ -1208,7 +1208,7 @@
     <!-- ==================================================== -->
     <div id="support-ticket-modal" class="modal-overlay">
         <div class="glass-card modal-card" style="max-width:520px; text-align:left; border-top:3px solid #f43f5e; position:relative;">
-            <button id="btn-close-support-modal" class="modal-close-btn">&times;</button>
+            <button id="btn-close-support-modal" onclick="closeSupportModal()" class="modal-close-btn">&times;</button>
             
             <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
                 <div class="modal-icon" style="background:rgba(244,63,94,0.15); color:#f43f5e; margin:0; width:44px; height:44px; font-size:20px; display:flex; align-items:center; justify-content:center; border-radius:12px;">
@@ -1300,7 +1300,7 @@
                         <p style="font-size:11.5px; color:var(--text-muted); margin:0;">View and manage feedback, rating reviews, and verified account complaints.</p>
                     </div>
                 </div>
-                <button id="btn-close-admin-support-modal" class="modal-close-btn" style="position:static;">&times;</button>
+                <button id="btn-close-admin-support-modal" onclick="closeAdminSupportInbox()" class="modal-close-btn" style="position:static;">&times;</button>
             </div>
 
             <div id="admin-support-tickets-list" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; padding-right:4px;">
@@ -1309,10 +1309,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 6.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=6.0"></script>
-    <script src="js/quiz-data.js?v=6.0"></script>
-    <script src="js/pdf-generator.js?v=6.0"></script>
-    <script src="js/app.js?v=6.0"></script>
+    <!-- Application Scripts (Version 7.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=7.0"></script>
+    <script src="js/quiz-data.js?v=7.0"></script>
+    <script src="js/pdf-generator.js?v=7.0"></script>
+    <script src="js/app.js?v=7.0"></script>
 </body>
 </html>

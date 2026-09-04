@@ -2330,6 +2330,43 @@ window.exportMasterMeritListPDF = async function() {
 // ----------------- CUSTOMER SUPPORT & TICKETS CONTROLLER -----------------
 let selectedSupportRating = 5;
 
+window.openSupportModal = function() {
+    const modalSupport = document.getElementById('support-ticket-modal');
+    if (modalSupport) {
+        if (AppState && AppState.currentUser) {
+            const inputName = document.getElementById('support-input-name');
+            const inputAccountId = document.getElementById('support-input-account-id');
+            if (inputName && !inputName.value) inputName.value = AppState.currentUser.name || '';
+            if (inputAccountId && !inputAccountId.value) inputAccountId.value = AppState.currentUser.accountId || '';
+        }
+        modalSupport.classList.add('active');
+        modalSupport.onclick = (e) => {
+            if (e.target === modalSupport) window.closeSupportModal();
+        };
+    }
+};
+
+window.closeSupportModal = function() {
+    const modalSupport = document.getElementById('support-ticket-modal');
+    if (modalSupport) modalSupport.classList.remove('active');
+};
+
+window.openAdminSupportInbox = function() {
+    const modalAdminSupport = document.getElementById('admin-support-inbox-modal');
+    if (modalAdminSupport) {
+        modalAdminSupport.classList.add('active');
+        modalAdminSupport.onclick = (e) => {
+            if (e.target === modalAdminSupport) window.closeAdminSupportInbox();
+        };
+        loadAdminSupportInbox();
+    }
+};
+
+window.closeAdminSupportInbox = function() {
+    const modalAdminSupport = document.getElementById('admin-support-inbox-modal');
+    if (modalAdminSupport) modalAdminSupport.classList.remove('active');
+};
+
 function initSupportTicketsUI() {
     const btnOpenSupport = document.getElementById('btn-open-support-modal');
     const modalSupport = document.getElementById('support-ticket-modal');
@@ -2347,23 +2384,13 @@ function initSupportTicketsUI() {
     const btnCloseAdminSupport = document.getElementById('btn-close-admin-support-modal');
 
     // 1. Open Support Modal
-    if (btnOpenSupport && modalSupport) {
-        btnOpenSupport.addEventListener('click', () => {
-            if (AppState.currentUser) {
-                const inputName = document.getElementById('support-input-name');
-                const inputAccountId = document.getElementById('support-input-account-id');
-                if (inputName && !inputName.value) inputName.value = AppState.currentUser.name || '';
-                if (inputAccountId && !inputAccountId.value) inputAccountId.value = AppState.currentUser.accountId || '';
-            }
-            modalSupport.classList.add('active');
-        });
+    if (btnOpenSupport) {
+        btnOpenSupport.onclick = window.openSupportModal;
     }
 
     // Close Support Modal
-    if (btnCloseSupport && modalSupport) {
-        btnCloseSupport.addEventListener('click', () => {
-            modalSupport.classList.remove('active');
-        });
+    if (btnCloseSupport) {
+        btnCloseSupport.onclick = window.closeSupportModal;
     }
 
     // 2. Radio Category Change
@@ -2470,17 +2497,12 @@ function initSupportTicketsUI() {
     }
 
     // 5. Admin Open Support Inbox
-    if (btnOpenAdminSupport && modalAdminSupport) {
-        btnOpenAdminSupport.addEventListener('click', () => {
-            modalAdminSupport.classList.add('active');
-            loadAdminSupportInbox();
-        });
+    if (btnOpenAdminSupport) {
+        btnOpenAdminSupport.onclick = window.openAdminSupportInbox;
     }
 
-    if (btnCloseAdminSupport && modalAdminSupport) {
-        btnCloseAdminSupport.addEventListener('click', () => {
-            modalAdminSupport.classList.remove('active');
-        });
+    if (btnCloseAdminSupport) {
+        btnCloseAdminSupport.onclick = window.closeAdminSupportInbox;
     }
 
     updateAdminSupportBadge();
