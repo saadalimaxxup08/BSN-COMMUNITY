@@ -1536,17 +1536,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 2. Auto-restore active student session on page refresh
+    // 2. Auto-restore active student session on page refresh (Strict Verification)
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
             const parsed = JSON.parse(savedSession);
-            if (parsed && parsed.name) {
-                await processStudentLogin(parsed.name, parsed.password || '123456', 'signin', hasRunningQuiz);
+            if (parsed && (parsed.email || parsed.name)) {
+                const identifier = parsed.email || parsed.name;
+                const check = await SUPABASE_CONFIG.getStudentProfile(identifier, parsed.email || '');
+                if (!check.isNew && check.profile) {
+                    AppState.currentUser = check.profile;
+                    switchView('dashboard');
+                } else {
+                    // Stale or deleted account session -> Purge local storage and force login view!
+                    localStorage.removeItem('zafii_active_session');
+                    switchView('login');
+                }
+            } else {
+                switchView('login');
             }
+        } else {
+            switchView('login');
         }
     } catch (e) {
         console.warn("Auto session restore failed:", e);
+        switchView('login');
     }
 
     // 3. Auto-resume active running exam if page was refreshed during assessment!
