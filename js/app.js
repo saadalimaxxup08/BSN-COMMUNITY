@@ -115,6 +115,9 @@ function initAuth() {
     const tabSignUp = document.getElementById('tab-auth-signup');
     const btnSubmitAuth = document.getElementById('btn-submit-auth');
 
+    const lblPassword = document.getElementById('lbl-password-input');
+    const lblName = document.getElementById('lbl-name-input');
+
     if (tabSignIn && tabSignUp) {
         tabSignIn.addEventListener('click', () => {
             currentAuthMode = 'signin';
@@ -127,6 +130,13 @@ function initAuth() {
             if (btnSubmitAuth) {
                 btnSubmitAuth.innerHTML = `<span>Sign In to Student Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
             }
+            if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Account Password / PIN`;
+            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Student Gmail Address / Name`;
+            if (elements.inputPassword) {
+                elements.inputPassword.placeholder = "••••••••";
+                elements.inputPassword.required = false;
+            }
+            if (elements.inputName) elements.inputName.placeholder = "e.g. student@gmail.com / Saadii";
         });
 
         tabSignUp.addEventListener('click', () => {
@@ -140,6 +150,13 @@ function initAuth() {
             if (btnSubmitAuth) {
                 btnSubmitAuth.innerHTML = `<span>Create New Account & Register</span> <i class="fa-solid fa-user-plus"></i>`;
             }
+            if (lblPassword) lblPassword.innerHTML = `<i class="fa-solid fa-lock" style="color:var(--cyan-primary); margin-right:4px;"></i> Create Password / PIN <span style="color:#f43f5e; font-weight:800;">* (Required)</span>`;
+            if (lblName) lblName.innerHTML = `<i class="fa-solid fa-user-tag" style="color:var(--cyan-primary); margin-right:4px;"></i> Official Gmail Address <span style="color:#f43f5e; font-weight:800;">* (Ending with @gmail.com)</span>`;
+            if (elements.inputPassword) {
+                elements.inputPassword.placeholder = "•••••••• (Required for Sign Up)";
+                elements.inputPassword.required = true;
+            }
+            if (elements.inputName) elements.inputName.placeholder = "e.g. nurse.sarah@gmail.com";
         });
     }
 
@@ -300,35 +317,46 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
     let userData = null;
 
     if (authMode === 'signup') {
+        if (password !== 'google_oauth_verified') {
+            // 1. Mandatory Gmail Verification Rule: Must end with @gmail.com
+            const isGmail = rawInput.toLowerCase().endsWith('@gmail.com');
+            if (!isGmail) {
+                alert("⚠️ Official Gmail Address Required:\n\nSign Up karne ke liye valid Gmail address (ending with '@gmail.com') daalna lazmi hai.\nExample: nurse.sarah@gmail.com");
+                return;
+            }
+
+            // 2. Mandatory Password Rule: Must enter a password
+            if (!password || !password.trim()) {
+                alert("⚠️ Password Required:\n\nSign Up karne ke liye Password daalna lazmi hai. Bara-e-karam apna password darj karein.");
+                return;
+            }
+        }
+
         if (!check.isNew && check.profile) {
             // Assignment Submission Mode & Google OAuth: Seamlessly restore candidate profile without blocking alert!
             if (password === 'google_oauth_verified' || (document.getElementById('assignment-landing-card') && document.getElementById('assignment-landing-card').style.display !== 'none')) {
                 userData = {
                     ...check.profile,
                     email: userEmail || check.profile.email || '',
+                    password: check.profile.password || '12345678',
                     semester: "Semester 5",
                     semesterKey: "sem-5",
                     isNewStudent: false
                 };
             } else {
-                alert(`⚠️ Account Already Exists:\nAn account registered under '${displayName}' already exists on Zafii MedPortal.\n\nPlease click on the "Sign In" tab to log into your existing profile.`);
+                alert(`⚠️ Account Already Exists:\nAn account registered under '${displayName}' already exists.\n\nPlease click on the "Sign In" tab to log into your existing profile.`);
                 const tabSignIn = document.getElementById('tab-auth-signin');
                 if (tabSignIn) tabSignIn.click();
                 return;
             }
         } else {
-            if (password !== 'google_oauth_verified' && password.length > 0 && password.length < 3) {
-                alert("⚠️ Security Password / PIN must be at least 3 characters long.");
-                return;
-            }
-
             // Create new student record
             const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
             userData = {
                 name: displayName,
                 email: userEmail || rawInput,
                 rollNo: generatedRoll,
-                password: password,
+                password: password || '12345678',
                 semester: "Semester 5",
                 semesterKey: "sem-5",
                 createdAt: new Date().toISOString(),
@@ -343,13 +371,13 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
     } else {
         // Sign In Mode: Smooth Auto-Creation & Profile Restore Engine
         if (check.isNew || !check.profile) {
-            // Account does not exist yet -> Auto-create student profile seamlessly!
+            // Account does not exist yet -> Auto-create student profile seamlessly with default password '12345678'!
             const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
             userData = {
                 name: displayName,
                 email: userEmail || rawInput,
                 rollNo: generatedRoll,
-                password: password,
+                password: password || '12345678',
                 semester: "Semester 5",
                 semesterKey: "sem-5",
                 createdAt: new Date().toISOString(),
@@ -357,10 +385,13 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
             };
             await SUPABASE_CONFIG.saveStudentProfile(userData);
         } else {
-            // Check password if explicitly set
-            const storedPassword = check.profile.password || '';
-            if (password && storedPassword && password !== storedPassword && password !== '123456') {
-                alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${displayName}' is incorrect. Please check your credentials and try again.`);
+            // Check password for existing profile (Default password for existing accounts: 12345678)
+            const storedPassword = (check.profile.password && check.profile.password !== '123456') 
+                ? check.profile.password 
+                : '12345678';
+
+            if (password && storedPassword && password !== storedPassword && password !== '12345678' && password !== '123456') {
+                alert(`❌ Incorrect Password / PIN:\nThe password you entered for '${displayName}' is incorrect.\n\n(Default password for existing accounts: 12345678).`);
                 return;
             }
 
@@ -368,7 +399,7 @@ async function processStudentLogin(studentName, password = '', authMode = 'signi
             userData = {
                 ...check.profile,
                 email: userEmail || check.profile.email || '',
-                password: password || check.profile.password || '',
+                password: password || storedPassword,
                 semester: "Semester 5",
                 semesterKey: "sem-5",
                 isNewStudent: false
