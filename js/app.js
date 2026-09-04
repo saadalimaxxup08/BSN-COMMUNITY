@@ -170,7 +170,8 @@ function initAuth() {
         });
     }
 
-    // Assignment Focus Mode Buttons (Default First Page)
+    // Unified Google / Gmail Sign-In Handler
+    const btnGoogleLogin = document.getElementById('btn-google-login');
     const btnAssignmentGoogle = document.getElementById('btn-assignment-google');
     const btnShowFullPortal = document.getElementById('btn-show-full-portal');
     const assignmentCard = document.getElementById('assignment-landing-card');
@@ -189,42 +190,51 @@ function initAuth() {
         });
     }
 
-    if (btnAssignmentGoogle) {
-        btnAssignmentGoogle.addEventListener('click', async () => {
-            if (SUPABASE_CONFIG.client) {
-                try {
-                    const { error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin + window.location.pathname
-                        }
-                    });
-                    if (error) {
-                        console.warn("Supabase Google OAuth initialization:", error.message);
-                    } else {
-                        return;
+    async function handleGoogleSignIn(isAssignmentMode = false) {
+        if (SUPABASE_CONFIG.client) {
+            try {
+                const { error } = await SUPABASE_CONFIG.client.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
                     }
-                } catch (e) {}
+                });
+                if (!error) return; // Supabase OAuth redirecting...
+                console.warn("Supabase Google OAuth notice:", error.message);
+            } catch (e) {
+                console.warn("Google OAuth exception:", e);
             }
+        }
 
-            // Interactive Google Candidate Prompt
-            const googleName = prompt("🌐 Pediatric Nursing Live Assignment Submission:\n\nEnter your Candidate Full Name / Email to verify your identity and start your 70-minute assessment:", "Nurse Zainab (Candidate)");
-            if (googleName && googleName.trim()) {
-                const cleanInput = googleName.trim().toLowerCase();
-                const isAdmin = cleanInput.includes('zafione6119@gmail') || 
-                                cleanInput.includes('saadalimaxxup02@gmail') || 
-                                cleanInput.includes('huzaifamushtaqahmed');
+        // Direct candidate prompt or use name typed in input box
+        let candidateInput = elements.inputName ? elements.inputName.value.trim() : '';
 
-                await processStudentLogin(googleName.trim(), 'google_oauth_verified', 'signup');
-                
-                if (!isAdmin) {
-                    // Automatically launch Pediatric Nursing assignment for students
-                    setTimeout(() => {
-                        startQuiz('PED-501-MODEL');
-                    }, 300);
-                }
+        if (!candidateInput) {
+            candidateInput = prompt("🌐 Sign in with Google / Gmail Account:\n\nEnter your Candidate Full Name or Gmail Address to verify identity and sign in:", "student@gmail.com");
+        }
+
+        if (candidateInput && candidateInput.trim()) {
+            const cleanInput = candidateInput.trim().toLowerCase();
+            const isAdmin = cleanInput.includes('zafione6119@gmail') || 
+                            cleanInput.includes('saadalimaxxup02@gmail') || 
+                            cleanInput.includes('huzaifamushtaqahmed');
+
+            await processStudentLogin(candidateInput.trim(), 'google_oauth_verified', 'signup');
+            
+            if (isAssignmentMode && !isAdmin) {
+                setTimeout(() => {
+                    startQuiz('PED-501-MODEL');
+                }, 300);
             }
-        });
+        }
+    }
+
+    if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', () => handleGoogleSignIn(false));
+    }
+
+    if (btnAssignmentGoogle) {
+        btnAssignmentGoogle.addEventListener('click', () => handleGoogleSignIn(true));
     }
 
     // Demo Modal Confirmation
