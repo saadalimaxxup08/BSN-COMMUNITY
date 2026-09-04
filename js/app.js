@@ -369,6 +369,9 @@ function updateUIWithUserData(userData) {
             ? "Fresh Account Created" 
             : "Returning Student (Records Restored)";
     }
+
+    const elBtnNavAdmin = document.getElementById('btn-nav-admin');
+    if (elBtnNavAdmin) elBtnNavAdmin.style.display = 'inline-flex';
 }
 
 // Function to show Roll Number & Verification Badge Popup with [X] close button
@@ -1745,6 +1748,12 @@ function initAdminModule() {
             if (inputPasscode) inputPasscode.value = '';
             adminModal.classList.add('active');
             if (inputPasscode) setTimeout(() => inputPasscode.focus(), 200);
+        });
+    }
+
+    if (adminModal) {
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) adminModal.classList.remove('active');
         });
     }
 
