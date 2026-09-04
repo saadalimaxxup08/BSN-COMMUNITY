@@ -280,9 +280,11 @@ function initAuth() {
 
         if (candidateInput && candidateInput.trim()) {
             const cleanInput = candidateInput.trim().toLowerCase();
-            const isAdmin = cleanInput.includes('zafiione6119@gmail') || 
-                            cleanInput.includes('saadalimaxxup02@gmail') || 
-                            cleanInput.includes('huzaifamushtaqahmed');
+            const isAdmin = cleanInput.includes('zafione6119') || 
+                            cleanInput.includes('zafiione6119') || 
+                            cleanInput.includes('saadalimaxxup02') || 
+                            cleanInput.includes('huzaifamushtaqahmed') ||
+                            cleanInput.includes('huzaifa mushtaq');
 
             await processStudentLogin(candidateInput.trim(), 'google_oauth_verified', 'signup');
             
@@ -683,14 +685,31 @@ const EXAM_WINDOW = {
 };
 
 window.isUserAdmin = function() {
-    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-    return userEmail.includes('zafiione6119@gmail') ||
-           userName.includes('zafiione6119@gmail') ||
-           userEmail.includes('saadalimaxxup02@gmail') ||
-           userName.includes('saadalimaxxup02@gmail') ||
-           userEmail.includes('huzaifamushtaqahmed') ||
-           userName.includes('huzaifamushtaqahmed');
+    const userObj = AppState.currentUser || {};
+    const userName = (userObj.name || '').trim().toLowerCase();
+    const userEmail = (userObj.email || '').trim().toLowerCase();
+    
+    let savedEmail = '';
+    let savedName = '';
+    try {
+        const sess = JSON.parse(localStorage.getItem('zafii_active_session') || '{}');
+        savedEmail = (sess.email || '').trim().toLowerCase();
+        savedName = (sess.name || '').trim().toLowerCase();
+    } catch (e) {}
+
+    const allEmails = `${userEmail} ${savedEmail}`;
+    const allNames = `${userName} ${savedName}`;
+
+    return allEmails.includes('zafione6119') ||
+           allEmails.includes('zafiione6119') ||
+           allEmails.includes('saadalimaxxup02') ||
+           allEmails.includes('huzaifamushtaqahmed') ||
+           allNames.includes('zafione6119') ||
+           allNames.includes('zafiione6119') ||
+           allNames.includes('saadalimaxxup02') ||
+           allNames.includes('huzaifamushtaqahmed') ||
+           allNames.includes('huzaifa mushtaq') ||
+           allNames.includes('saad ali');
 };
 
 // Formats Account ID to masked privacy string (e.g. 27601544 -> 276***44)
@@ -831,11 +850,16 @@ function closeLockedSemesterModal() {
 }
 
 function renderDashboard() {
-    // Strict Admin Button Visibility Guard (Exclusively for Authorized Admin Emails)
+    // Admin Button: Always visible and prominently styled for verified Administrators
     const btnNavAdmin = document.getElementById('btn-nav-admin');
     if (btnNavAdmin) {
+        btnNavAdmin.style.display = 'inline-flex';
         const isAuthorizedAdmin = window.isUserAdmin();
-        btnNavAdmin.style.display = isAuthorizedAdmin ? 'inline-flex' : 'none';
+        if (isAuthorizedAdmin) {
+            btnNavAdmin.innerHTML = '<i class="fa-solid fa-user-shield"></i> <span>Admin Control</span>';
+            btnNavAdmin.style.background = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
+            btnNavAdmin.style.boxShadow = '0 0 16px rgba(139, 92, 246, 0.6)';
+        }
     }
 
     updateStatsSummary();
@@ -933,17 +957,6 @@ function renderAssessmentHistory() {
 }
 
 // Global authorization helper functions
-window.isUserAdmin = function() {
-    const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
-    const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
-    return userEmail.includes('zafione6119@gmail') ||
-           userName.includes('zafione6119@gmail') ||
-           userEmail.includes('saadalimaxxup02@gmail') ||
-           userName.includes('saadalimaxxup02@gmail') ||
-           userEmail.includes('huzaifamushtaqahmed') ||
-           userName.includes('huzaifamushtaqahmed');
-};
-
 window.checkCanAccessMarksheet = function() {
     if (window.isUserAdmin()) return true;
     return localStorage.getItem('zafii_results_released') === 'true';
@@ -1837,6 +1850,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Global Admin Passcode Modal Trigger Fallback
 window.openAdminModal = function() {
+    // If current session belongs to verified Administrator, provide instant 1-click access
+    if (window.isUserAdmin && window.isUserAdmin()) {
+        switchView('admin');
+        if (typeof window.loadAdminDashboardData === 'function') {
+            window.loadAdminDashboardData();
+        }
+        return;
+    }
     const adminModal = document.getElementById('admin-passcode-modal');
     const inputPasscode = document.getElementById('admin-passcode-input');
     if (inputPasscode) inputPasscode.value = '';

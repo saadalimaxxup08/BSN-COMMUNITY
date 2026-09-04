@@ -394,6 +394,12 @@ body {
     gap: 14px;
 }
 
+.nav-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .user-profile-pill {
     display: flex;
     align-items: center;
@@ -1363,14 +1369,43 @@ body {
 
     .top-navbar {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-        padding: 16px;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px;
     }
 
     .user-badge-wrap {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .user-profile-pill {
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: flex-start;
+        padding: 8px 12px;
+    }
+
+    .nav-actions-group {
+        width: 100%;
+        display: flex;
+        align-items: center;
         justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .nav-actions-group > button {
+        flex: 1 1 auto;
+        min-width: 0;
+        justify-content: center;
+        text-align: center;
+        padding: 8px 10px;
+        font-size: 11.5px;
+        white-space: nowrap;
     }
 
     .stats-grid {

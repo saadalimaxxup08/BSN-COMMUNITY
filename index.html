@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" />
     
     <!-- Custom Glassmorphic Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=12.0">
 
     <!-- External Libraries (CDN) -->
     <!-- 1. html2pdf.js for direct Chrome PDF marksheet downloads -->
@@ -190,6 +190,14 @@
                         <span>Sign in with Google / Gmail</span>
                     </button>
 
+                    <!-- Direct Admin Portal Access Button -->
+                    <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); text-align: center;">
+                        <button type="button" onclick="openAdminModal()" style="background: rgba(139, 92, 246, 0.14); border: 1px solid rgba(139, 92, 246, 0.4); color: #c084fc; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: all 0.2s;">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span>Admin Portal Quick Access</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -213,16 +221,6 @@
                 </div>
 
                 <div class="user-badge-wrap">
-                    <button id="btn-nav-admin" onclick="openAdminModal()" class="btn-primary" style="display:inline-flex; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow:0 0 15px rgba(139,92,246,0.4); cursor:pointer; z-index:10;">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span>Admin Control</span>
-                    </button>
-
-                    <button id="btn-install-pwa" class="btn-primary" style="display:none; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #10b981, #06b6d4); box-shadow:0 0 15px rgba(16,185,129,0.4);">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                        <span>Install Phone App</span>
-                    </button>
-
                     <div class="user-profile-pill">
                         <div id="nav-user-avatar" class="user-avatar-circle">ST</div>
                         <div>
@@ -236,11 +234,23 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <button id="btn-logout" class="btn-icon-logout" title="Sign Out">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span style="margin-left:4px;">Sign Out</span>
-                    </button>
+
+                    <div class="nav-actions-group" style="display:flex; align-items:center; gap:8px;">
+                        <button id="btn-nav-admin" onclick="openAdminModal()" class="btn-primary" style="display:inline-flex; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow:0 0 15px rgba(139,92,246,0.4); cursor:pointer; z-index:10;">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span>Admin Control</span>
+                        </button>
+
+                        <button id="btn-install-pwa" class="btn-primary" style="display:none; padding:8px 14px; font-size:12px; border-radius:20px; background:linear-gradient(135deg, #10b981, #06b6d4); box-shadow:0 0 15px rgba(16,185,129,0.4);">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                            <span>Install Phone App</span>
+                        </button>
+                        
+                        <button id="btn-logout" class="btn-icon-logout" title="Sign Out">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span style="margin-left:4px;">Sign Out</span>
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -1327,10 +1337,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 11.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=11.0"></script>
-    <script src="js/quiz-data.js?v=11.0"></script>
-    <script src="js/pdf-generator.js?v=11.0"></script>
-    <script src="js/app.js?v=11.0"></script>
+    <!-- Application Scripts (Version 12.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=12.0"></script>
+    <script src="js/quiz-data.js?v=12.0"></script>
+    <script src="js/pdf-generator.js?v=12.0"></script>
+    <script src="js/app.js?v=12.0"></script>
 </body>
 </html>
