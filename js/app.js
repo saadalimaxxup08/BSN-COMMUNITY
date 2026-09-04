@@ -1848,16 +1848,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initSupportTicketsUI();
 });
 
-// Global Admin Passcode Modal Trigger Fallback
+// Global Admin Passcode Modal Trigger
 window.openAdminModal = function() {
-    // If current session belongs to verified Administrator, provide instant 1-click access
-    if (window.isUserAdmin && window.isUserAdmin()) {
-        switchView('admin');
-        if (typeof window.loadAdminDashboardData === 'function') {
-            window.loadAdminDashboardData();
-        }
-        return;
-    }
     const adminModal = document.getElementById('admin-passcode-modal');
     const inputPasscode = document.getElementById('admin-passcode-input');
     if (inputPasscode) inputPasscode.value = '';
