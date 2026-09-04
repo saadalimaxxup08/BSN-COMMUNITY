@@ -2074,10 +2074,16 @@ async function loadAdminDashboardData() {
                     <td style="vertical-align:middle;">${statusBadge}</td>
                     <td style="vertical-align:middle; color:var(--text-muted); font-size:12px; font-weight:600;">${escapeHtml(r.date)}<div style="font-size:10.5px; opacity:0.8;">${escapeHtml(r.timeTaken || '')}</div></td>
                     <td style="vertical-align:middle; text-align:right;">
-                        <button class="btn-table-action btn-admin-view-marksheet" data-index="${idx}" style="white-space:nowrap;">
-                            <i class="fa-solid fa-file-pdf"></i>
-                            <span>View Marksheet</span>
-                        </button>
+                        <div style="display:flex; gap:6px; justify-content:flex-end; align-items:center;">
+                            <button class="btn-table-action btn-admin-view-marksheet" data-index="${idx}" style="white-space:nowrap;">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>View</span>
+                            </button>
+                            <button class="btn-table-action btn-admin-delete-submission" data-index="${idx}" style="white-space:nowrap; background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.35); color:#f43f5e;" title="Delete Submission & Unlock Re-attempt for Student">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Reset Attempt</span>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbodyResults.appendChild(tr);
@@ -2090,6 +2096,23 @@ async function loadAdminDashboardData() {
                     const targetResult = results[idx];
                     if (targetResult) {
                         generateMarksheetPDF(targetResult);
+                    }
+                });
+            });
+
+            // Bind Reset Attempt / Delete Submission buttons for Admin
+            tbodyResults.querySelectorAll('.btn-admin-delete-submission').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const idx = e.currentTarget.getAttribute('data-index');
+                    const targetResult = results[idx];
+                    if (!targetResult) return;
+
+                    const confirmMsg = `⚠️ Delete Submission & Reset Candidate Attempt?\n\nCandidate: ${targetResult.studentName}\nRoll No: ${targetResult.rollNo} (ID: ${targetResult.accountId || 'N/A'})\nSubject: ${targetResult.subjectTitle}\n\nThis will permanently delete this submission record from database and restore exam re-attempt access for this student. Proceed?`;
+                    
+                    if (confirm(confirmMsg)) {
+                        await SUPABASE_CONFIG.deleteQuizSubmission(targetResult);
+                        alert(`✅ Submission deleted successfully!\nCandidate ${targetResult.studentName} can now re-attempt the assessment.`);
+                        await loadAdminDashboardData();
                     }
                 });
             });

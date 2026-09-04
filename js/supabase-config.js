@@ -449,6 +449,66 @@ const SUPABASE_CONFIG = {
         }
     },
 
+    // Delete student quiz submission (Admin Reset Attempt)
+    async deleteQuizSubmission(resultObj) {
+        if (!resultObj) return false;
+
+        const cleanName = (resultObj.studentName || '').trim();
+        const subCode = (resultObj.subjectCode || '').trim();
+        const subTitle = (resultObj.subjectTitle || '').trim();
+
+        // 1. Delete from Supabase quiz_results table
+        if (this.client) {
+            try {
+                // Delete by student_name and subject_code
+                const { error } = await this.client
+                    .from('quiz_results')
+                    .delete()
+                    .ilike('student_name', cleanName)
+                    .ilike('subject_code', subCode);
+
+                if (error) {
+                    console.warn("Supabase delete by subject_code failed, trying title match:", error);
+                    await this.client
+                        .from('quiz_results')
+                        .delete()
+                        .ilike('student_name', cleanName)
+                        .ilike('subject_title', subTitle);
+                }
+                console.log(`✅ Deleted submission from Supabase for candidate: ${cleanName}`);
+            } catch (err) {
+                console.error("Supabase delete submission error:", err);
+            }
+        }
+
+        // 2. Clean LocalStorage caches
+        try {
+            const cleanLower = cleanName.toLowerCase();
+            
+            // Clean zafii_all_results
+            const allResults = JSON.parse(localStorage.getItem('zafii_all_results') || '[]');
+            const filteredAll = allResults.filter(r => {
+                const rName = (r.studentName || '').trim().toLowerCase();
+                const rCode = (r.subjectCode || '').trim().toLowerCase();
+                return !(rName === cleanLower && rCode === subCode.toLowerCase());
+            });
+            localStorage.setItem('zafii_all_results', JSON.stringify(filteredAll));
+
+            // Clean student-specific history array
+            const key = `zafii_history_${cleanLower}`;
+            const studentResults = JSON.parse(localStorage.getItem(key) || '[]');
+            const filteredStudent = studentResults.filter(r => {
+                const rCode = (r.subjectCode || '').trim().toLowerCase();
+                return rCode !== subCode.toLowerCase();
+            });
+            localStorage.setItem(key, JSON.stringify(filteredStudent));
+        } catch (e) {
+            console.error("Local storage delete submission cleanup failed:", e);
+        }
+
+        return true;
+    },
+
     // ----------------- GLOBAL SYSTEM SETTINGS -----------------
     async getResultsReleasedStatus() {
         if (this.client) {
