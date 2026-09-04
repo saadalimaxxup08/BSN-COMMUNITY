@@ -148,6 +148,75 @@ const SUPABASE_CONFIG = {
         return profileData;
     },
 
+    // Delete student account & purge all history (Allows fresh re-registration)
+    async deleteStudentProfile(identifier, email = '') {
+        const cleanName = (identifier || '').trim();
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanLowerName = cleanName.toLowerCase();
+
+        if (!cleanName && !cleanEmail) return false;
+
+        // 1. Delete student profile from Supabase 'students' table
+        if (this.client) {
+            try {
+                if (cleanName) {
+                    await this.client
+                        .from('students')
+                        .delete()
+                        .ilike('name', cleanName);
+                }
+                if (cleanEmail) {
+                    await this.client
+                        .from('students')
+                        .delete()
+                        .ilike('email', cleanEmail);
+                }
+                console.log(`✅ Deleted student profile from Supabase for: ${cleanName || cleanEmail}`);
+            } catch (err) {
+                console.warn("Supabase delete student profile error:", err);
+            }
+
+            // 2. Delete all quiz submissions for this student from 'quiz_results' table
+            try {
+                if (cleanName) {
+                    await this.client
+                        .from('quiz_results')
+                        .delete()
+                        .ilike('student_name', cleanName);
+                }
+                console.log(`✅ Deleted all quiz history from Supabase for: ${cleanName}`);
+            } catch (err) {
+                console.warn("Supabase delete quiz history error:", err);
+            }
+        }
+
+        // 3. Purge LocalStorage Caches
+        try {
+            // Remove from zafii_students
+            const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
+            if (cleanLowerName && localStudents[cleanLowerName]) delete localStudents[cleanLowerName];
+            if (cleanEmail && localStudents[cleanEmail]) delete localStudents[cleanEmail];
+            localStorage.setItem('zafii_students', JSON.stringify(localStudents));
+
+            // Remove from zafii_all_results
+            const allResults = JSON.parse(localStorage.getItem('zafii_all_results') || '[]');
+            const filteredAll = allResults.filter(r => {
+                const rName = (r.studentName || '').trim().toLowerCase();
+                return rName !== cleanLowerName;
+            });
+            localStorage.setItem('zafii_all_results', JSON.stringify(filteredAll));
+
+            // Remove student history array
+            if (cleanLowerName) {
+                localStorage.removeItem(`zafii_history_${cleanLowerName}`);
+            }
+        } catch (e) {
+            console.error("Local storage delete student cleanup failed:", e);
+        }
+
+        return true;
+    },
+
     // ----------------- QUIZ RESULTS & HISTORY -----------------
 
     // Save Quiz Result to Supabase & LocalStorage (With Offline Resilience Queue)

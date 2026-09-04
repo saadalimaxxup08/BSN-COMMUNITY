@@ -2020,7 +2020,7 @@ async function loadAdminDashboardData() {
     if (tbodyStudents) {
         tbodyStudents.innerHTML = '';
         if (students.length === 0) {
-            tbodyStudents.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No registered student profiles found in database.</td></tr>`;
+            tbodyStudents.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">No registered student profiles found in database.</td></tr>`;
         } else {
             students.forEach(s => {
                 const tr = document.createElement('tr');
@@ -2043,8 +2043,31 @@ async function loadAdminDashboardData() {
                     </td>
                     <td style="vertical-align:middle; font-weight:600; color:#cbd5e1;">${escapeHtml(s.semester || 'Semester 5')}</td>
                     <td style="vertical-align:middle; color:var(--text-muted); font-size:12.5px;">${escapeHtml(s.createdAt)}</td>
+                    <td style="vertical-align:middle; text-align:right;">
+                        <button class="btn-table-action btn-admin-delete-student" data-name="${escapeHtml(s.name)}" data-email="${escapeHtml(s.email || '')}" style="white-space:nowrap; background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.35); color:#f43f5e;" title="Permanently Delete Student Account & Allow Fresh Re-Registration">
+                            <i class="fa-solid fa-user-xmark"></i>
+                            <span>Delete Account</span>
+                        </button>
+                    </td>
                 `;
                 tbodyStudents.appendChild(tr);
+            });
+
+            // Bind Delete Student Account buttons
+            tbodyStudents.querySelectorAll('.btn-admin-delete-student').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const sName = e.currentTarget.getAttribute('data-name');
+                    const sEmail = e.currentTarget.getAttribute('data-email');
+                    if (!sName && !sEmail) return;
+
+                    const confirmMsg = `⚠️ PERMANENTLY DELETE STUDENT ACCOUNT?\n\nCandidate Name: ${sName}\nEmail: ${sEmail || 'N/A'}\n\nThis will permanently delete this student's account profile and all quiz records from the database.\n\nThe student will be able to sign up cleanly again using the same email address! Proceed?`;
+
+                    if (confirm(confirmMsg)) {
+                        await SUPABASE_CONFIG.deleteStudentProfile(sName, sEmail);
+                        alert(`✅ Student account for '${sName}' has been permanently deleted!\n\nCandidate can now re-register with fresh details using the same email.`);
+                        await loadAdminDashboardData();
+                    }
+                });
             });
         }
     }
