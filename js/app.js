@@ -105,10 +105,15 @@ function switchView(viewName) {
         if (adminView) adminView.classList.add('active');
     }
 
-    // Support Widget Visibility: Exclusively visible on Student Dashboard view
+    // Support Widget Visibility: Exclusively visible on Student Dashboard view AND when not hidden by Admin
     const supportContainer = document.getElementById('floating-support-btn-container');
     if (supportContainer) {
-        supportContainer.style.display = (viewName === 'dashboard') ? 'block' : 'none';
+        const isHiddenByAdmin = localStorage.getItem('zafii_support_widget_hidden') === 'true';
+        if (viewName === 'dashboard' && !isHiddenByAdmin) {
+            supportContainer.style.display = 'block';
+        } else {
+            supportContainer.style.display = 'none';
+        }
     }
 
     if (window.location.hash) {
@@ -1745,6 +1750,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isHiddenNow = await SUPABASE_CONFIG.getExamTimerHiddenStatus();
         if (wasHidden !== isHiddenNow) {
             checkExamWindowStatus();
+        }
+
+        const isSupportHiddenNow = await SUPABASE_CONFIG.getSupportWidgetHiddenStatus();
+        const supportContainer = document.getElementById('floating-support-btn-container');
+        if (supportContainer) {
+            const isDashActive = elements.dashboardView && elements.dashboardView.classList.contains('active');
+            supportContainer.style.display = (isDashActive && !isSupportHiddenNow) ? 'block' : 'none';
         }
     }, 4000);
 
