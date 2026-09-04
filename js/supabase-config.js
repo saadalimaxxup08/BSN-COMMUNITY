@@ -29,11 +29,6 @@ const SUPABASE_CONFIG = {
 
     // ----------------- STUDENT PROFILES -----------------
 
-    // Fetch student profile by name (Checks if old student exists)
-    async getStudentProfile(studentName) {
-        const cleanName = (studentName || '').trim().toLowerCase();
-        
-        // Try Supabase first
     // Fetch student profile by unique Gmail / Email account or name
     async getStudentProfile(identifier, email = '') {
         const cleanEmail = (email || '').trim().toLowerCase();
