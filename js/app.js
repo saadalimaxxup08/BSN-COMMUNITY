@@ -634,9 +634,26 @@ const EXAM_WINDOW = {
 };
 
 function checkExamWindowStatus() {
+    const isTimerHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
+    const countdownCard = document.getElementById('exam-countdown-card');
+    const btnStart = document.getElementById('btn-pediatric-exam-start');
+
+    if (isTimerHidden) {
+        if (countdownCard) countdownCard.style.display = 'none';
+
+        if (btnStart) {
+            btnStart.disabled = false;
+            btnStart.style.opacity = '1';
+            btnStart.style.cursor = 'pointer';
+            btnStart.innerHTML = `<span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>`;
+        }
+        return { isAvailable: true, status: 'UNRESTRICTED' };
+    }
+
+    if (countdownCard) countdownCard.style.display = 'block';
+
     const now = Date.now();
     const elTimerText = document.getElementById('live-exam-timer-text');
-    const btnStart = document.getElementById('btn-pediatric-exam-start');
 
     const userName = (AppState.currentUser?.name || '').trim().toLowerCase();
     const userEmail = (AppState.currentUser?.email || '').trim().toLowerCase();
@@ -1756,6 +1773,46 @@ function initAdminModule() {
                 : "🔒 Results Protected!\n\nStudent marksheets are now hidden. Scores are strictly accessible in the Admin Controller Panel.");
             
             renderAssessmentHistory();
+        });
+    }
+
+    // Master Admin Exam Countdown Banner & Schedule Lock Toggle
+    const btnToggleTimer = document.getElementById('btn-admin-toggle-timer');
+    const lblTimerToggle = document.getElementById('btn-timer-toggle-label');
+    const descTimerStatus = document.getElementById('admin-timer-status-desc');
+
+    function updateExamTimerControlUI() {
+        const isHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
+        if (lblTimerToggle) {
+            lblTimerToggle.textContent = isHidden 
+                ? "Show Countdown Banner & Enforce Live Schedule" 
+                : "Hide Countdown Banner (Enable Open Exam Access)";
+        }
+        if (descTimerStatus) {
+            descTimerStatus.textContent = isHidden 
+                ? "Currently: Countdown Banner is HIDDEN (Exam is OPEN to all candidates anytime)."
+                : "Currently: Live Schedule Enforced & Countdown Banner Visible on Student Dashboards.";
+        }
+        if (btnToggleTimer) {
+            btnToggleTimer.style.background = isHidden 
+                ? "linear-gradient(135deg, #10b981, #06b6d4)" 
+                : "linear-gradient(135deg, #8b5cf6, #ec4899)";
+        }
+    }
+
+    updateExamTimerControlUI();
+
+    if (btnToggleTimer) {
+        btnToggleTimer.addEventListener('click', () => {
+            const current = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
+            const newState = !current;
+            localStorage.setItem('zafii_exam_timer_hidden', newState ? 'true' : 'false');
+            updateExamTimerControlUI();
+            checkExamWindowStatus();
+
+            alert(newState 
+                ? "👁️ Countdown Banner Hidden & Exam Access Open!\n\nThe countdown timer card is now hidden on student dashboards. Students can freely access and start their examination paper anytime!" 
+                : "⏰ Countdown Banner Visible & Schedule Enforced!\n\nThe live examination schedule is now active. Countdown timer banner is visible and candidate access is strictly governed by the official time window.");
         });
     }
 }
