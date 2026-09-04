@@ -105,9 +105,16 @@ function switchView(viewName) {
         if (adminView) adminView.classList.add('active');
     }
 
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    const resetScroll = () => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    };
+
+    resetScroll();
+    requestAnimationFrame(resetScroll);
+    setTimeout(resetScroll, 50);
+    setTimeout(resetScroll, 150);
 }
 
 let currentAuthMode = 'signin'; // 'signin' or 'signup'

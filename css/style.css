@@ -1810,13 +1810,13 @@ body {
    =================================================== */
 #admin-view {
     width: 100%;
-    margin-top: 0;
-    padding-top: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
     align-self: flex-start;
 }
 
 #admin-view .top-navbar {
-    margin-top: 0;
+    margin-top: 0 !important;
     margin-bottom: 20px;
 }
 
