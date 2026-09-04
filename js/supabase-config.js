@@ -42,33 +42,41 @@ const SUPABASE_CONFIG = {
         // Try Supabase first
         if (this.client) {
             try {
-                let query = this.client.from('students').select('*');
-                if (cleanEmail) {
-                    query = query.ilike('email', cleanEmail);
-                } else {
-                    query = query.ilike('name', cleanName);
-                }
-                const { data, error } = await query.maybeSingle();
+                const { data, error } = await this.client.from('students').select('*');
 
-                if (data && !error) {
-                    const rawRoll = data.roll_no || data.rollNo || '';
-                    const parts = rawRoll.split('|');
-                    const parsedRoll = parts[0] || 'BSN-2026-0000';
-                    const parsedAccountId = parts[1] || data.account_id || data.accountId || window.generateAccountId();
+                if (data && !error && data.length > 0) {
+                    const match = data.find(s => {
+                        if (s.name === 'SYSTEM_SETTINGS_RESULTS_RELEASED') return false;
+                        const sName = (s.name || '').trim().toLowerCase();
+                        const sRoll = (s.roll_no || '').trim().toLowerCase();
+                        
+                        if (cleanName && sName === cleanName) return true;
+                        if (cleanEmail && sRoll.includes(cleanEmail)) return true;
+                        if (cleanEmail && sName === cleanEmail.split('@')[0]) return true;
+                        return false;
+                    });
 
-                    return { 
-                        isNew: false, 
-                        profile: {
-                            name: data.name,
-                            email: data.email || cleanEmail,
-                            rollNo: parsedRoll,
-                            accountId: parsedAccountId,
-                            password: data.password || '',
-                            semester: data.semester || 'Semester 5',
-                            semesterKey: 'sem-5',
-                            createdAt: data.created_at || new Date().toISOString()
-                        }
-                    };
+                    if (match) {
+                        const parts = (match.roll_no || '').split('|');
+                        const parsedRoll = parts[0] || 'BSN-2026-0000';
+                        const parsedAccountId = parts[1] || match.account_id || window.generateAccountId();
+                        const parsedEmail = parts[2] || cleanEmail || match.email || '';
+                        const parsedPassword = parts[3] || match.password || '';
+
+                        return { 
+                            isNew: false, 
+                            profile: {
+                                name: match.name,
+                                email: parsedEmail,
+                                rollNo: parsedRoll,
+                                accountId: parsedAccountId,
+                                password: parsedPassword,
+                                semester: match.semester || 'Semester 5',
+                                semesterKey: 'sem-5',
+                                createdAt: match.created_at || new Date().toISOString()
+                            }
+                        };
+                    }
                 }
             } catch (err) {
                 console.warn("Supabase fetch student profile failed, trying local storage:", err);
@@ -89,6 +97,11 @@ const SUPABASE_CONFIG = {
 
     // Save or register student profile indexed by unique Gmail / Email account
     async saveStudentProfile(profileData) {
+        if (!profileData || !profileData.name || profileData.name.trim() === '') {
+            console.warn("Skipping profile save until student enters their Full Name.");
+            return profileData;
+        }
+
         const cleanEmail = (profileData.email || '').trim().toLowerCase();
         const cleanName = (profileData.name || '').trim().toLowerCase();
         const primaryKey = cleanEmail || cleanName;
@@ -97,7 +110,7 @@ const SUPABASE_CONFIG = {
             profileData.accountId = window.generateAccountId();
         }
 
-        const rollPayload = `${profileData.rollNo || 'BSN-2026-0000'}|${profileData.accountId}`;
+        const rollPayload = `${profileData.rollNo || 'BSN-2026-0000'}|${profileData.accountId}|${cleanEmail}|${profileData.password || ''}`;
 
         // Save to Supabase
         if (this.client) {
