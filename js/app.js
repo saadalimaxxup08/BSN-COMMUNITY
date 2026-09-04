@@ -1777,7 +1777,7 @@ window.exportMasterMeritListPDF = async function() {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Zafii BSN Academy - Master Merit List Report</title>
+            <title>ZAFII NURSING CARE - Master Merit List Report</title>
             <style>
                 @page { 
                     size: A4 portrait; 
@@ -1804,7 +1804,7 @@ window.exportMasterMeritListPDF = async function() {
         </head>
         <body>
             <div class="header">
-                <h1>ZAFII BSN NURSING ACADEMY</h1>
+                <h1>ZAFII NURSING CARE</h1>
                 <h3>OFFICIAL SEMESTER 5 ASSESSMENT MASTER MERIT LIST REPORT</h3>
             </div>
             
@@ -1834,7 +1834,7 @@ window.exportMasterMeritListPDF = async function() {
                         <td colspan="7" style="border:none; padding-top:14px;">
                             <div class="footer">
                                 <p><strong>Official Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
-                                <p>© Zafii BSN Academy Medical Examination Board • Protected Official Record</p>
+                                <p>© ZAFII NURSING CARE Examination Board • Protected Official Record</p>
                             </div>
                         </td>
                     </tr>
