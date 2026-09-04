@@ -42,12 +42,24 @@
     --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
 /* ----------------- BASE RESET & BODY ----------------- */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body, button, input, select, textarea, p, h1, h2, h3, h4, h5, h6, span, div, a, label, td, th {
     font-family: var(--font-family);
+}
+
+/* Ensure FontAwesome Icon Font Family is NEVER overridden by universal selectors */
+i.fa, i.fas, i.far, i.fab, i.fa-solid, i.fa-regular, i.fa-brands,
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands,
+[class*="fa-"], [class*="fa-"]::before, [class*="fa-"]::after {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
 }
 
 body {
