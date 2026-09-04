@@ -226,7 +226,10 @@
                     <div class="user-profile-pill">
                         <div id="nav-user-avatar" class="user-avatar-circle">ST</div>
                         <div>
-                            <div id="nav-student-name" style="font-size:14px; font-weight:700; color:#fff;">Medical Scholar</div>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span id="nav-student-name" style="font-size:14px; font-weight:700; color:#fff;">Medical Scholar</span>
+                                <span id="nav-student-email" style="font-size:11px; color:var(--text-muted); font-weight:600;">(student@gmail.com)</span>
+                            </div>
                             <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
                                 <code id="nav-student-roll" style="background:rgba(6,182,212,0.18); border:1px solid rgba(6,182,212,0.4); color:var(--cyan-primary); padding:2px 8px; border-radius:8px; font-weight:800; font-size:11.5px; font-family:monospace;">BSN-2026-0000</code>
                                 <code id="nav-student-account-id" style="background:rgba(236,72,153,0.18); border:1px solid rgba(236,72,153,0.4); color:#f472b6; padding:2px 8px; border-radius:8px; font-weight:800; font-size:11.5px; font-family:monospace;"><i class="fa-solid fa-key" style="font-size:10px; margin-right:3px;"></i> ID: 84920147</code>
@@ -246,7 +249,7 @@
                 <div class="welcome-header">
                     <h2>Welcome back, <span id="banner-student-name" style="color:var(--cyan-primary);">Scholar</span>! 👋</h2>
                     
-                    <!-- Prominent Student Roll Number & Account ID Badge Box -->
+                    <!-- Prominent Student Roll Number, Account ID & Email Badge Box -->
                     <div style="margin: 10px 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                         <span style="font-size:13px; color:var(--text-muted); font-weight:700;">Candidate Credentials:</span>
                         <span style="background:linear-gradient(135deg, rgba(6,182,212,0.2), rgba(37,211,102,0.2)); border:1.5px solid var(--cyan-primary); color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; font-family:monospace; letter-spacing:1px; box-shadow:0 0 12px rgba(6,182,212,0.3); display:inline-flex; align-items:center; gap:6px;">
@@ -257,6 +260,11 @@
                             <i class="fa-solid fa-key" style="color:#f472b6;"></i>
                             <span>Account ID: </span>
                             <span id="banner-student-account-id" style="color:#f472b6;">84920147</span>
+                        </span>
+                        <span style="background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2)); border:1.5px solid #10b981; color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; font-family:monospace; letter-spacing:0.5px; box-shadow:0 0 12px rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-envelope" style="color:#34d399;"></i>
+                            <span>Email: </span>
+                            <span id="banner-student-email" style="color:#34d399;">student@gmail.com</span>
                         </span>
                     </div>
 

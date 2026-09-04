@@ -341,6 +341,7 @@ function updateUIWithUserData(userData) {
     const name = userData.name || userData.email || 'Medical Scholar';
     const rollNo = userData.rollNo || 'BSN-2026-0000';
     const accountId = userData.accountId;
+    const email = userData.email || (userData.name && userData.name.includes('@') ? userData.name : '');
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || "ST";
 
     if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials;
@@ -350,6 +351,9 @@ function updateUIWithUserData(userData) {
     const elNavAccId = document.getElementById('nav-student-account-id');
     if (elNavAccId) elNavAccId.innerHTML = `<i class="fa-solid fa-key" style="font-size:10px; margin-right:3px;"></i> ID: ${accountId}`;
 
+    const elNavEmail = document.getElementById('nav-student-email');
+    if (elNavEmail) elNavEmail.textContent = email ? `(${email})` : '';
+
     if (elements.bannerStudentName) elements.bannerStudentName.textContent = name;
     
     const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
@@ -357,6 +361,9 @@ function updateUIWithUserData(userData) {
 
     const elBannerAccId = document.getElementById('banner-student-account-id');
     if (elBannerAccId) elBannerAccId.textContent = accountId;
+
+    const elBannerEmail = document.getElementById('banner-student-email');
+    if (elBannerEmail) elBannerEmail.textContent = email || 'N/A';
 
     if (elements.bannerSemesterBadge) {
         elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
