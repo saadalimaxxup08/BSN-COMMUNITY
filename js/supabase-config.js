@@ -45,7 +45,7 @@ const SUPABASE_CONFIG = {
 
                 if (data && !error && data.length > 0) {
                     const match = data.find(s => {
-                        if (!s || s.name === 'SYSTEM_SETTINGS_RESULTS_RELEASED') return false;
+                        if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_')) return false;
                         const sName = (s.name || '').trim().toLowerCase();
                         const parts = (s.roll_no || '').split('|');
                         const sEmail = (parts[2] || s.email || '').trim().toLowerCase();
@@ -668,6 +668,110 @@ const SUPABASE_CONFIG = {
             }
         }
         return isHidden;
+    },
+
+    // ----------------- CUSTOMER SUPPORT & TICKETS -----------------
+    async saveSupportTicket(ticketData) {
+        const ticketId = ticketData.ticketId || (Date.now().toString());
+        const recordName = `SUPPORT_TICKET_${ticketId}`;
+        const rollPayload = `${ticketData.studentName || ''}~|~${ticketData.rollNo || ''}~|~${ticketData.accountId || ''}~|~${ticketData.email || ''}~|~${ticketData.category || ''}~|~${ticketData.rating || 0}`;
+        const msgPayload = ticketData.message || '';
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: recordName,
+                            roll_no: rollPayload,
+                            semester: msgPayload,
+                            created_at: ticketData.createdAt || new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+                console.log("✅ Support ticket saved to Supabase successfully.");
+            } catch (err) {
+                console.warn("Supabase save support ticket error:", err);
+            }
+        }
+
+        // Cache in LocalStorage
+        try {
+            const tickets = JSON.parse(localStorage.getItem('zafii_support_tickets') || '[]');
+            tickets.unshift({
+                ticketId,
+                category: ticketData.category,
+                studentName: ticketData.studentName,
+                rollNo: ticketData.rollNo,
+                accountId: ticketData.accountId,
+                email: ticketData.email,
+                rating: ticketData.rating,
+                message: ticketData.message,
+                createdAt: ticketData.createdAt || new Date().toISOString()
+            });
+            localStorage.setItem('zafii_support_tickets', JSON.stringify(tickets));
+        } catch (e) {
+            console.error("Local storage save support ticket failed:", e);
+        }
+        return true;
+    },
+
+    async getAllSupportTickets() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .like('name', 'SUPPORT_TICKET_%');
+
+                if (data && !error) {
+                    const tickets = data.map(item => {
+                        const parts = (item.roll_no || '').split('~|~');
+                        const ticketId = item.name.replace('SUPPORT_TICKET_', '');
+                        return {
+                            ticketId: ticketId,
+                            studentName: parts[0] || 'Anonymous Scholar',
+                            rollNo: parts[1] || 'N/A',
+                            accountId: parts[2] || 'N/A',
+                            email: parts[3] || 'N/A',
+                            category: parts[4] || 'website_review',
+                            rating: parseInt(parts[5] || '0', 10),
+                            message: item.semester || '',
+                            createdAt: item.created_at || new Date().toISOString()
+                        };
+                    });
+                    tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    localStorage.setItem('zafii_support_tickets', JSON.stringify(tickets));
+                    return tickets;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch support tickets error:", err);
+            }
+        }
+        return JSON.parse(localStorage.getItem('zafii_support_tickets') || '[]');
+    },
+
+    async deleteSupportTicket(ticketId) {
+        const recordName = `SUPPORT_TICKET_${ticketId}`;
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .delete()
+                    .eq('name', recordName);
+                console.log(`✅ Support ticket ${ticketId} deleted from Supabase.`);
+            } catch (err) {
+                console.warn("Supabase delete support ticket error:", err);
+            }
+        }
+        try {
+            const tickets = JSON.parse(localStorage.getItem('zafii_support_tickets') || '[]');
+            const filtered = tickets.filter(t => t.ticketId !== ticketId);
+            localStorage.setItem('zafii_support_tickets', JSON.stringify(filtered));
+        } catch (e) {
+            console.error("Local storage delete support ticket error:", e);
+        }
+        return true;
     }
 };
 

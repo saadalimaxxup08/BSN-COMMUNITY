@@ -1812,6 +1812,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (hasRunningQuiz) {
         restoreRunningQuizState();
     }
+
+    initSupportTicketsUI();
 });
 
 // Global Admin Passcode Modal Trigger Fallback
@@ -2304,9 +2306,6 @@ window.exportMasterMeritListPDF = async function() {
                                 <p><strong>Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
                                 <p>© ZAFII NURSING CARE Examination Board • Protected Record</p>
                             </div>
-                                <p><strong>Verification Document:</strong> Passing Criteria: Minimum 40% (28/70) required for certification.</p>
-                                <p>© ZAFII NURSING CARE Examination Board • Protected Record</p>
-                            </div>
                         </td>
                     </tr>
                 </tfoot>
@@ -2326,3 +2325,256 @@ window.exportMasterMeritListPDF = async function() {
     printWin.document.write(htmlContent);
     printWin.document.close();
 };
+
+
+// ----------------- CUSTOMER SUPPORT & TICKETS CONTROLLER -----------------
+let selectedSupportRating = 5;
+
+function initSupportTicketsUI() {
+    const btnOpenSupport = document.getElementById('btn-open-support-modal');
+    const modalSupport = document.getElementById('support-ticket-modal');
+    const btnCloseSupport = document.getElementById('btn-close-support-modal');
+    const btnSubmitSupport = document.getElementById('btn-submit-support-ticket');
+
+    const catRadios = document.querySelectorAll('input[name="support-category"]');
+    const ratingBox = document.getElementById('support-rating-box');
+    const verificationBox = document.getElementById('support-verification-box');
+    const starContainer = document.getElementById('support-star-rating');
+
+    // Admin Inbox Elements
+    const btnOpenAdminSupport = document.getElementById('btn-admin-open-support-inbox');
+    const modalAdminSupport = document.getElementById('admin-support-inbox-modal');
+    const btnCloseAdminSupport = document.getElementById('btn-close-admin-support-modal');
+
+    // 1. Open Support Modal
+    if (btnOpenSupport && modalSupport) {
+        btnOpenSupport.addEventListener('click', () => {
+            if (AppState.currentUser) {
+                const inputName = document.getElementById('support-input-name');
+                const inputAccountId = document.getElementById('support-input-account-id');
+                if (inputName && !inputName.value) inputName.value = AppState.currentUser.name || '';
+                if (inputAccountId && !inputAccountId.value) inputAccountId.value = AppState.currentUser.accountId || '';
+            }
+            modalSupport.classList.add('active');
+        });
+    }
+
+    // Close Support Modal
+    if (btnCloseSupport && modalSupport) {
+        btnCloseSupport.addEventListener('click', () => {
+            modalSupport.classList.remove('active');
+        });
+    }
+
+    // 2. Radio Category Change
+    catRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'website_review') {
+                if (ratingBox) ratingBox.style.display = 'block';
+                if (verificationBox) verificationBox.style.display = 'none';
+            } else if (val === 'portal_improvement') {
+                if (ratingBox) ratingBox.style.display = 'none';
+                if (verificationBox) verificationBox.style.display = 'none';
+            } else if (val === 'account_complaint') {
+                if (ratingBox) ratingBox.style.display = 'none';
+                if (verificationBox) verificationBox.style.display = 'block';
+            }
+        });
+    });
+
+    // 3. Star Rating Handler
+    if (starContainer) {
+        const stars = starContainer.querySelectorAll('.star-btn');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-rating') || '5', 10);
+                selectedSupportRating = rating;
+                stars.forEach(s => {
+                    const r = parseInt(s.getAttribute('data-rating') || '0', 10);
+                    if (r <= rating) {
+                        s.style.color = '#f59e0b';
+                    } else {
+                        s.style.color = '#64748b';
+                    }
+                });
+            });
+        });
+        stars.forEach(s => { s.style.color = '#f59e0b'; });
+    }
+
+    // 4. Submit Support Ticket
+    if (btnSubmitSupport) {
+        btnSubmitSupport.addEventListener('click', async () => {
+            const selectedCatInput = document.querySelector('input[name="support-category"]:checked');
+            const category = selectedCatInput ? selectedCatInput.value : 'website_review';
+            const msgInput = document.getElementById('support-input-message');
+            const message = (msgInput ? msgInput.value : '').trim();
+
+            if (!message) {
+                alert("⚠️ Please enter details or description in the message field.");
+                return;
+            }
+
+            let studentName = AppState.currentUser ? AppState.currentUser.name : 'Guest Scholar';
+            let rollNo = AppState.currentUser ? AppState.currentUser.rollNo : 'BSN-2026-0000';
+            let accountId = AppState.currentUser ? AppState.currentUser.accountId : 'N/A';
+            let email = AppState.currentUser ? AppState.currentUser.email : 'N/A';
+
+            // IF ACCOUNT COMPLAINT, VERIFY NAME & ACCOUNT ID STRICTLY
+            if (category === 'account_complaint') {
+                const inputName = (document.getElementById('support-input-name')?.value || '').trim();
+                const inputAccountId = (document.getElementById('support-input-account-id')?.value || '').trim();
+
+                if (!inputName || !inputAccountId) {
+                    alert("⚠️ Verification Failed: Please enter both Student Full Name and 8-Digit Account ID for account complaints.");
+                    return;
+                }
+
+                if (AppState.currentUser) {
+                    const currentName = (AppState.currentUser.name || '').trim().toLowerCase();
+                    const currentAcc = (AppState.currentUser.accountId || '').trim();
+
+                    if (inputName.toLowerCase() !== currentName || inputAccountId !== currentAcc) {
+                        alert("⚠️ Verification Failed: Entered Student Name or 8-Digit Account ID does not match active logged-in profile!\n\nPlease check your Candidate Credentials on your dashboard.");
+                        return;
+                    }
+                }
+                studentName = inputName;
+                accountId = inputAccountId;
+            }
+
+            btnSubmitSupport.disabled = true;
+            btnSubmitSupport.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+            await SUPABASE_CONFIG.saveSupportTicket({
+                category,
+                studentName,
+                rollNo,
+                accountId,
+                email,
+                rating: category === 'website_review' ? selectedSupportRating : 0,
+                message,
+                createdAt: new Date().toISOString()
+            });
+
+            btnSubmitSupport.disabled = false;
+            btnSubmitSupport.innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i><span>Submit Support Ticket</span>';
+
+            alert("✅ Thank you! Your support ticket / feedback has been successfully submitted to ZAFII Administration.");
+            if (msgInput) msgInput.value = '';
+            if (modalSupport) modalSupport.classList.remove('active');
+
+            updateAdminSupportBadge();
+        });
+    }
+
+    // 5. Admin Open Support Inbox
+    if (btnOpenAdminSupport && modalAdminSupport) {
+        btnOpenAdminSupport.addEventListener('click', () => {
+            modalAdminSupport.classList.add('active');
+            loadAdminSupportInbox();
+        });
+    }
+
+    if (btnCloseAdminSupport && modalAdminSupport) {
+        btnCloseAdminSupport.addEventListener('click', () => {
+            modalAdminSupport.classList.remove('active');
+        });
+    }
+
+    updateAdminSupportBadge();
+}
+
+async function loadAdminSupportInbox() {
+    const container = document.getElementById('admin-support-tickets-list');
+    if (!container) return;
+
+    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Fetching student support tickets...</div>';
+
+    const tickets = await SUPABASE_CONFIG.getAllSupportTickets();
+
+    if (!tickets || tickets.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:var(--text-muted); background:rgba(255,255,255,0.02); border-radius:12px; border:1px dashed var(--border-glass);">
+                <i class="fa-solid fa-inbox" style="font-size:36px; color:#64748b; margin-bottom:10px;"></i>
+                <div style="font-size:15px; font-weight:700; color:#fff;">No Support Tickets Found</div>
+                <p style="font-size:12px; margin-top:4px;">No student complaints or reviews submitted yet.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const catBadge = (cat) => {
+        if (cat === 'website_review') return `<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; padding:3px 10px; border-radius:12px; font-weight:800;"><i class="fa-solid fa-star" style="margin-right:4px;"></i>Website Review</span>`;
+        if (cat === 'portal_improvement') return `<span style="background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.3); font-size:11px; padding:3px 10px; border-radius:12px; font-weight:800;"><i class="fa-solid fa-lightbulb" style="margin-right:4px;"></i>Improvement Suggestion</span>`;
+        return `<span style="background:rgba(244,63,94,0.15); color:#f43f5e; border:1px solid rgba(244,63,94,0.3); font-size:11px; padding:3px 10px; border-radius:12px; font-weight:800;"><i class="fa-solid fa-user-shield" style="margin-right:4px;"></i>Account Complaint</span>`;
+    };
+
+    const renderStars = (count) => {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            stars += `<i class="fa-solid fa-star" style="color:${i <= count ? '#f59e0b' : '#475569'}; font-size:13px; margin-right:2px;"></i>`;
+        }
+        return stars;
+    };
+
+    container.innerHTML = tickets.map(t => {
+        const maskedAcc = formatMaskedAccountId(t.accountId);
+        const dateStr = new Date(t.createdAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        return `
+            <div class="glass-card" style="padding:16px 18px; border-left:3px solid ${t.category === 'account_complaint' ? '#f43f5e' : t.category === 'website_review' ? '#f59e0b' : '#06b6d4'}; background:rgba(15,23,42,0.6);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        ${catBadge(t.category)}
+                        ${t.category === 'website_review' && t.rating > 0 ? `<div>${renderStars(t.rating)}</div>` : ''}
+                    </div>
+                    <span style="font-size:11.5px; color:var(--text-muted); font-weight:600;"><i class="fa-regular fa-clock" style="margin-right:4px;"></i>${dateStr}</span>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); font-size:13px; color:#e2e8f0; line-height:1.5; margin-bottom:12px; white-space:pre-wrap;">${escapeHtml(t.message)}</div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:12px;">
+                    <div style="display:flex; gap:14px; flex-wrap:wrap; color:var(--text-muted);">
+                        <span><strong style="color:#fff;">Scholar:</strong> ${escapeHtml(t.studentName)}</span>
+                        <span><strong style="color:#fff;">Roll:</strong> ${escapeHtml(t.rollNo)}</span>
+                        <span><strong style="color:#fff;">Account ID:</strong> <code style="color:#f472b6;">${maskedAcc}</code></span>
+                        ${t.email && t.email !== 'N/A' ? `<span><strong style="color:#fff;">Email:</strong> ${escapeHtml(t.email)}</span>` : ''}
+                    </div>
+                    <button onclick="adminDeleteSupportTicket('${t.ticketId}')" class="btn-secondary" style="padding:4px 12px; font-size:11.5px; background:rgba(244,63,94,0.15); border-color:rgba(244,63,94,0.3); color:#f43f5e; cursor:pointer;">
+                        <i class="fa-solid fa-trash-can" style="margin-right:4px;"></i>
+                        <span>Delete Ticket</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+window.adminDeleteSupportTicket = async function(ticketId) {
+    if (!confirm("Are you sure you want to delete this support ticket / complaint?")) return;
+    await SUPABASE_CONFIG.deleteSupportTicket(ticketId);
+    loadAdminSupportInbox();
+    updateAdminSupportBadge();
+};
+
+async function updateAdminSupportBadge() {
+    const badge = document.getElementById('admin-notif-badge');
+    const ping = document.getElementById('admin-notif-ping');
+    if (!badge && !ping) return;
+
+    const tickets = await SUPABASE_CONFIG.getAllSupportTickets();
+    const count = tickets ? tickets.length : 0;
+
+    if (count > 0) {
+        if (badge) {
+            badge.style.display = 'inline-block';
+            badge.textContent = `${count} Ticket${count > 1 ? 's' : ''}`;
+        }
+        if (ping) ping.style.display = 'block';
+    } else {
+        if (badge) badge.style.display = 'none';
+        if (ping) ping.style.display = 'none';
+    }
+}
