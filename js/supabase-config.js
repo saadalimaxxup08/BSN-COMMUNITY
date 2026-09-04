@@ -50,10 +50,13 @@ const SUPABASE_CONFIG = {
                         const parts = (s.roll_no || '').split('|');
                         const sEmail = (parts[2] || s.email || '').trim().toLowerCase();
                         
-                        // Strict email match first
+                        // 1. Strict email match
                         if (cleanEmail && sEmail && sEmail === cleanEmail) return true;
-                        // Name match only if email is absent
-                        if (!cleanEmail && cleanName && sName === cleanName) return true;
+                        // 2. Exact name match
+                        if (cleanName && sName && sName === cleanName) return true;
+                        // 3. Email username prefix match against candidate name
+                        const emailPrefix = cleanEmail ? cleanEmail.split('@')[0] : '';
+                        if (emailPrefix && sName && (sName === emailPrefix || sName.replace(/\s+/g, '') === emailPrefix.replace(/[\._\-]/g, ''))) return true;
                         return false;
                     });
 
@@ -86,12 +89,11 @@ const SUPABASE_CONFIG = {
 
         // Fallback / Offline LocalStorage
         const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
-        if (localStudents[searchKey] || (cleanEmail && localStudents[cleanEmail])) {
-            const locProfile = localStudents[searchKey] || localStudents[cleanEmail];
-            if (locProfile) {
-                if (!locProfile.accountId) locProfile.accountId = window.generateAccountId();
-                return { isNew: false, profile: locProfile };
-            }
+        const emailPrefix = cleanEmail ? cleanEmail.split('@')[0] : '';
+        const locProfile = localStudents[searchKey] || (cleanEmail && localStudents[cleanEmail]) || (emailPrefix && localStudents[emailPrefix]);
+        if (locProfile) {
+            if (!locProfile.accountId) locProfile.accountId = window.generateAccountId();
+            return { isNew: false, profile: locProfile };
         }
 
         // Brand New Student

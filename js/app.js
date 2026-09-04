@@ -191,7 +191,7 @@ function initAuth() {
         });
     }
 
-    // Normal form submit & direct button click backup
+    // Unified form submit handler (handles button click & Enter key submission without double firing)
     if (elements.loginForm) {
         elements.loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -204,18 +204,6 @@ function initAuth() {
             }
 
             await processStudentLogin(email, password, currentAuthMode, false);
-        });
-    }
-
-    if (btnSubmitAuth) {
-        btnSubmitAuth.addEventListener('click', async (e) => {
-            const email = elements.inputName ? elements.inputName.value.trim() : '';
-            const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
-
-            if (email) {
-                e.preventDefault();
-                await processStudentLogin(email, password, currentAuthMode, false);
-            }
         });
     }
 
@@ -396,7 +384,12 @@ function showRollNumberPopup(userObj, callback) {
     if (elAccId) elAccId.textContent = userObj.accountId;
     if (elEmail) elEmail.textContent = userObj.email || userObj.name || '-';
 
-    if (modal) modal.classList.add('active');
+    if (modal) {
+        modal.classList.add('active');
+        modal.onclick = (e) => {
+            if (e.target === modal) closeHandler();
+        };
+    }
 
     const closeHandler = async () => {
         if (modal) modal.classList.remove('active');
@@ -471,9 +464,11 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         return;
     }
 
-    let userEmail = rawInput.toLowerCase();
+    let userEmail = rawInput.toLowerCase().trim();
     if (!userEmail.includes('@')) {
-        userEmail = rawInput + '@gmail.com';
+        userEmail = userEmail.replace(/\s+/g, '.') + '@gmail.com';
+    } else {
+        userEmail = userEmail.replace(/\s+/g, '');
     }
 
     // Check if student exists in Supabase or LocalStorage by unique email
@@ -1634,6 +1629,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Do not auto-trust parent Google account name; require student to type their own Full Name on first setup
                 await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signin', false, '');
+                return;
             }
         } catch (e) {
             console.warn("Supabase auth session restore error:", e);
