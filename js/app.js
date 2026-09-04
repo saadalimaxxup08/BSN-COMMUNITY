@@ -92,8 +92,6 @@ function switchView(viewName) {
     const adminView = document.getElementById('admin-view');
     if (adminView) adminView.classList.remove('active');
 
-    window.scrollTo(0, 0);
-
     if (viewName === 'login') {
         elements.loginView.classList.add('active');
     } else if (viewName === 'dashboard') {
@@ -106,6 +104,10 @@ function switchView(viewName) {
     } else if (viewName === 'admin') {
         if (adminView) adminView.classList.add('active');
     }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
 }
 
 let currentAuthMode = 'signin'; // 'signin' or 'signup'
@@ -1694,8 +1696,8 @@ function initAdminModule() {
         const entered = inputPasscode ? inputPasscode.value.trim() : '';
         if (entered === 'Huzaifa.1234' || entered === 'huzaifamushtaqahmed') {
             adminModal.classList.remove('active');
-            await loadAdminDashboardData();
             switchView('admin');
+            await loadAdminDashboardData();
         } else {
             alert("❌ Unauthorized Access Denied:\nIncorrect Master Admin Passcode. Please check your admin credentials.");
             if (inputPasscode) inputPasscode.value = '';
