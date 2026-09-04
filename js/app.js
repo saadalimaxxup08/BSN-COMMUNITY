@@ -1610,6 +1610,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
     initDashboard();
     initQuizControls();
+    initPWAInstallation();
+    initAdminModule();
 
     // Sync global result release/protection status from Supabase
     await SUPABASE_CONFIG.getResultsReleasedStatus();
@@ -1689,13 +1691,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (hasRunningQuiz) {
         restoreRunningQuizState();
     }
-
-    // 4. Register PWA Service Worker & Phone App Install Prompt
-    initPWAInstallation();
-
-    // 5. Initialize Admin Controller Passcode Module
-    initAdminModule();
 });
+
+// Global Admin Passcode Modal Trigger Fallback
+window.openAdminModal = function() {
+    const adminModal = document.getElementById('admin-passcode-modal');
+    const inputPasscode = document.getElementById('admin-passcode-input');
+    if (inputPasscode) inputPasscode.value = '';
+    if (adminModal) adminModal.classList.add('active');
+    if (inputPasscode) setTimeout(() => inputPasscode.focus(), 200);
+};
 
 // ----------------- PWA INSTALLATION ENGINE -----------------
 let deferredPWAInstallPrompt = null;
@@ -1743,12 +1748,9 @@ function initAdminModule() {
     const btnSubmitPasscode = document.getElementById('btn-submit-admin-passcode');
     const btnAdminExit = document.getElementById('btn-admin-exit');
 
-    if (btnNavAdmin && adminModal) {
-        btnNavAdmin.addEventListener('click', () => {
-            if (inputPasscode) inputPasscode.value = '';
-            adminModal.classList.add('active');
-            if (inputPasscode) setTimeout(() => inputPasscode.focus(), 200);
-        });
+    if (btnNavAdmin) {
+        btnNavAdmin.onclick = window.openAdminModal;
+        btnNavAdmin.addEventListener('click', window.openAdminModal);
     }
 
     if (adminModal) {
