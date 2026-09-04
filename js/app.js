@@ -331,20 +331,25 @@ function closeDemoModal() {
 function updateUIWithUserData(userData) {
     if (!userData) return;
 
+    if (!userData.accountId) {
+        userData.accountId = window.generateAccountId ? window.generateAccountId() : "8A92F4K7";
+    }
+
     AppState.currentUser = userData;
     AppState.activeSemester = "sem-5";
 
     const name = userData.name || userData.email || 'Medical Scholar';
     const rollNo = userData.rollNo || 'BSN-2026-0000';
+    const accountId = userData.accountId;
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || "ST";
 
     if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials;
     if (elements.navStudentName) elements.navStudentName.textContent = name;
-    if (elements.navStudentRoll) elements.navStudentRoll.textContent = rollNo;
+    if (elements.navStudentRoll) elements.navStudentRoll.textContent = `${rollNo} • ID: ${accountId}`;
     if (elements.bannerStudentName) elements.bannerStudentName.textContent = name;
     
     const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
-    if (elBannerRollBadge) elBannerRollBadge.textContent = rollNo;
+    if (elBannerRollBadge) elBannerRollBadge.textContent = `Roll: ${rollNo} | ID: ${accountId}`;
 
     if (elements.bannerSemesterBadge) {
         elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
@@ -359,17 +364,22 @@ function updateUIWithUserData(userData) {
 
 // Function to show Roll Number & Verification Badge Popup with [X] close button
 function showRollNumberPopup(userObj, callback) {
+    if (!userObj.accountId) {
+        userObj.accountId = window.generateAccountId ? window.generateAccountId() : "8A92F4K7";
+    }
     updateUIWithUserData(userObj);
 
     const modal = document.getElementById('roll-number-popup-modal');
     const elName = document.getElementById('popup-student-name');
     const elRoll = document.getElementById('popup-student-roll');
+    const elAccId = document.getElementById('popup-student-account-id');
     const elEmail = document.getElementById('popup-student-email');
     const btnClose = document.getElementById('btn-close-roll-popup');
     const btnConfirm = document.getElementById('btn-confirm-roll-popup');
 
     if (elName) elName.textContent = userObj.name || 'Medical Scholar';
     if (elRoll) elRoll.textContent = userObj.rollNo || 'BSN-2026-0000';
+    if (elAccId) elAccId.textContent = userObj.accountId;
     if (elEmail) elEmail.textContent = userObj.email || userObj.name || '-';
 
     if (modal) modal.classList.add('active');
@@ -387,6 +397,9 @@ function showRollNumberPopup(userObj, callback) {
 
 // Function to open Student Full Name Setup Modal for new accounts
 function openNameSetupModal(userObj, callback) {
+    if (!userObj.accountId) {
+        userObj.accountId = window.generateAccountId ? window.generateAccountId() : "8A92F4K7";
+    }
     const modal = document.getElementById('student-name-setup-modal');
     const input = document.getElementById('setup-student-name-input');
     const btnSave = document.getElementById('btn-save-student-name');
@@ -471,6 +484,7 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
             name: initialName,
             email: userEmail,
             rollNo: generatedRoll,
+            accountId: window.generateAccountId ? window.generateAccountId() : "8A92F4K7",
             password: password || '12345678',
             semester: "Semester 5",
             semesterKey: "sem-5",
@@ -514,9 +528,14 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
             isNewStudent: false
         };
 
-        // If existing profile lacks rollNo or has default placeholder, assign a permanent unique one
-        if (!userData.rollNo || userData.rollNo === 'BSN-2026-0000') {
-            userData.rollNo = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+        // If existing profile lacks rollNo or accountId, assign permanent unique ones
+        if (!userData.rollNo || userData.rollNo === 'BSN-2026-0000' || !userData.accountId) {
+            if (!userData.rollNo || userData.rollNo === 'BSN-2026-0000') {
+                userData.rollNo = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+            }
+            if (!userData.accountId) {
+                userData.accountId = window.generateAccountId ? window.generateAccountId() : "8A92F4K7";
+            }
             await SUPABASE_CONFIG.saveStudentProfile(userData);
         }
 
@@ -1420,6 +1439,7 @@ async function submitQuiz(isAutoSubmit = false) {
     const resultData = {
         studentName: AppState.currentUser ? AppState.currentUser.name : "Medical Student",
         rollNo: AppState.currentUser ? AppState.currentUser.rollNo : "BSN-2026",
+        accountId: AppState.currentUser ? (AppState.currentUser.accountId || (window.generateAccountId ? window.generateAccountId() : "8A92F4K7")) : (window.generateAccountId ? window.generateAccountId() : "8A92F4K7"),
         semester: quiz.semester,
         subjectTitle: quiz.title,
         subjectCode: quiz.code,
@@ -1480,6 +1500,7 @@ function renderResultScreen(res) {
         // Populate receipt
         const recName = document.getElementById('receipt-student-name');
         const recRoll = document.getElementById('receipt-student-roll');
+        const recAccId = document.getElementById('receipt-student-account-id');
         const recExam = document.getElementById('receipt-exam-title');
         const recTime = document.getElementById('receipt-timestamp');
         const recToken = document.getElementById('receipt-token');
@@ -1487,6 +1508,7 @@ function renderResultScreen(res) {
 
         if (recName) recName.textContent = res.studentName;
         if (recRoll) recRoll.textContent = res.rollNo;
+        if (recAccId) recAccId.textContent = res.accountId || (AppState.currentUser?.accountId) || 'N/A';
         if (recExam) recExam.textContent = `${res.subjectTitle} (${res.subjectCode})`;
         if (recTime) recTime.textContent = new Date().toLocaleString();
         if (recToken) recToken.textContent = `BSN-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -1868,6 +1890,7 @@ async function loadAdminDashboardData() {
                     </td>
                     <td style="vertical-align:middle;">
                         <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(s.rollNo)}</code>
+                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:4px 10px; border-radius:12px; color:#f472b6; font-weight:800; font-size:12px; margin-left:4px;">ID: ${escapeHtml(s.accountId || 'N/A')}</code>
                     </td>
                     <td style="vertical-align:middle; font-weight:600; color:#cbd5e1;">${escapeHtml(s.semester || 'Semester 5')}</td>
                     <td style="vertical-align:middle; color:var(--text-muted); font-size:12.5px;">${escapeHtml(s.createdAt)}</td>
@@ -1892,7 +1915,9 @@ async function loadAdminDashboardData() {
                 tr.innerHTML = `
                     <td style="vertical-align:middle;">
                         <div style="font-weight:800; color:#ffffff; font-size:14px;">${escapeHtml(r.studentName)}</div>
-                        <div style="font-size:11px; color:var(--cyan-primary); font-weight:700; margin-top:2px;">${escapeHtml(r.rollNo)}</div>
+                        <div style="font-size:11px; color:var(--cyan-primary); font-weight:700; margin-top:2px;">
+                            ${escapeHtml(r.rollNo)} &bull; <span style="color:#f472b6; font-weight:800;">ID: ${escapeHtml(r.accountId || 'N/A')}</span>
+                        </div>
                     </td>
                     <td style="vertical-align:middle;">
                         <div style="font-weight:700; color:#fff; font-size:13px;">${escapeHtml(r.subjectTitle)}</div>
@@ -1944,6 +1969,7 @@ async function loadAdminDashboardData() {
                 tr.innerHTML = `
                     <td style="vertical-align:middle;">
                         <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(r.rollNo)}</code>
+                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:3px 8px; border-radius:8px; color:#f472b6; font-weight:800; font-size:11px; margin-left:4px;">ID: ${escapeHtml(r.accountId || 'N/A')}</code>
                     </td>
                     <td style="vertical-align:middle; font-weight:800; color:#ffffff; font-size:13.5px;">${escapeHtml(r.studentName)}</td>
                     <td style="vertical-align:middle; font-weight:800; color:#ffffff;">${r.score} / ${r.totalQuestions}</td>

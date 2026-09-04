@@ -1,8 +1,12 @@
-// ===================================================
-// ZAFII MEDICAL PORTAL - SUPABASE & LOCAL DATA SYNC
-// Handles New Student Registration, Existing Student Fetching,
-// and Historical Quiz Marksheet Persistence.
-// ===================================================
+// Global Unique 8-Character Alphanumeric Account ID Generator
+window.generateAccountId = function() {
+    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+};
 
 const SUPABASE_CONFIG = {
     // Active Supabase Credentials (Project: nzouoopsknvcwlhlxytz)
@@ -47,12 +51,18 @@ const SUPABASE_CONFIG = {
                 const { data, error } = await query.maybeSingle();
 
                 if (data && !error) {
+                    const rawRoll = data.roll_no || data.rollNo || '';
+                    const parts = rawRoll.split('|');
+                    const parsedRoll = parts[0] || 'BSN-2026-0000';
+                    const parsedAccountId = parts[1] || data.account_id || data.accountId || window.generateAccountId();
+
                     return { 
                         isNew: false, 
                         profile: {
                             name: data.name,
                             email: data.email || cleanEmail,
-                            rollNo: data.roll_no || data.rollNo,
+                            rollNo: parsedRoll,
+                            accountId: parsedAccountId,
                             password: data.password || '',
                             semester: data.semester || 'Semester 5',
                             semesterKey: 'sem-5',
@@ -68,7 +78,9 @@ const SUPABASE_CONFIG = {
         // Fallback / Offline LocalStorage
         const localStudents = JSON.parse(localStorage.getItem('zafii_students') || '{}');
         if (localStudents[searchKey] || localStudents[cleanName]) {
-            return { isNew: false, profile: localStudents[searchKey] || localStudents[cleanName] };
+            const locProfile = localStudents[searchKey] || localStudents[cleanName];
+            if (!locProfile.accountId) locProfile.accountId = window.generateAccountId();
+            return { isNew: false, profile: locProfile };
         }
 
         // Brand New Student
@@ -81,6 +93,12 @@ const SUPABASE_CONFIG = {
         const cleanName = (profileData.name || '').trim().toLowerCase();
         const primaryKey = cleanEmail || cleanName;
 
+        if (!profileData.accountId) {
+            profileData.accountId = window.generateAccountId();
+        }
+
+        const rollPayload = `${profileData.rollNo || 'BSN-2026-0000'}|${profileData.accountId}`;
+
         // Save to Supabase
         if (this.client) {
             try {
@@ -89,13 +107,11 @@ const SUPABASE_CONFIG = {
                     .upsert([
                         {
                             name: profileData.name,
-                            email: profileData.email || primaryKey,
-                            roll_no: profileData.rollNo,
-                            password: profileData.password || '',
+                            roll_no: rollPayload,
                             semester: profileData.semester || "Semester 5",
                             created_at: profileData.createdAt || new Date().toISOString()
                         }
-                    ], { onConflict: cleanEmail ? 'email' : 'name' });
+                    ], { onConflict: 'name' });
             } catch (err) {
                 console.warn("Supabase save profile failed:", err);
             }
@@ -300,11 +316,14 @@ const SUPABASE_CONFIG = {
                 if (data && !error && data.length > 0) {
                     data.forEach(s => {
                         const key = (s.email || s.name || '').trim().toLowerCase();
-                        if (key && !studentMap[key]) {
+                        if (key && !studentMap[key] && s.name !== 'SYSTEM_SETTINGS_RESULTS_RELEASED') {
+                            const rawRoll = s.roll_no || s.rollNo || '';
+                            const parts = rawRoll.split('|');
                             studentMap[key] = {
                                 name: s.name,
                                 email: s.email || '',
-                                rollNo: s.roll_no,
+                                rollNo: parts[0] || 'BSN-2026',
+                                accountId: parts[1] || s.accountId || s.account_id || 'N/A',
                                 password: s.password || '',
                                 semester: s.semester || 'Semester 5',
                                 createdAt: new Date(s.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -327,10 +346,13 @@ const SUPABASE_CONFIG = {
                     qData.forEach(item => {
                         const key = (item.student_name || '').trim().toLowerCase();
                         if (key && !studentMap[key]) {
+                            const rawRoll = item.roll_no || '';
+                            const parts = rawRoll.split('|');
                             studentMap[key] = {
                                 name: item.student_name,
                                 email: '',
-                                rollNo: item.roll_no || 'BSN-2026',
+                                rollNo: parts[0] || 'BSN-2026',
+                                accountId: parts[1] || item.account_id || 'N/A',
                                 password: '',
                                 semester: item.semester || 'Semester 5',
                                 createdAt: new Date(item.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -347,10 +369,13 @@ const SUPABASE_CONFIG = {
             Object.values(localMap).forEach(s => {
                 const key = (s.email || s.name || '').trim().toLowerCase();
                 if (key && !studentMap[key]) {
+                    const rawRoll = s.rollNo || s.roll_no || '';
+                    const parts = rawRoll.split('|');
                     studentMap[key] = {
                         name: s.name,
                         email: s.email || '',
-                        rollNo: s.rollNo || s.roll_no || 'BSN-2026',
+                        rollNo: parts[0] || 'BSN-2026',
+                        accountId: parts[1] || s.accountId || 'N/A',
                         password: s.password || '',
                         semester: s.semester || 'Semester 5',
                         createdAt: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'
@@ -372,21 +397,26 @@ const SUPABASE_CONFIG = {
                     .order('created_at', { ascending: false });
 
                 if (data && !error) {
-                    return data.map(item => ({
-                        studentName: item.student_name,
-                        rollNo: item.roll_no,
-                        semester: item.semester,
-                        subjectTitle: item.subject_title,
-                        subjectCode: item.subject_code,
-                        score: item.score,
-                        totalQuestions: item.total_questions,
-                        percentage: item.percentage,
-                        grade: item.grade,
-                        isPassed: item.passed,
-                        breakdown: item.breakdown || [],
-                        timeTaken: item.time_taken,
-                        date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-                    }));
+                    return data.map(item => {
+                        const rawRoll = item.roll_no || '';
+                        const parts = rawRoll.split('|');
+                        return {
+                            studentName: item.student_name,
+                            rollNo: parts[0] || 'BSN-2026',
+                            accountId: parts[1] || item.account_id || item.accountId || 'N/A',
+                            semester: item.semester,
+                            subjectTitle: item.subject_title,
+                            subjectCode: item.subject_code,
+                            score: item.score,
+                            totalQuestions: item.total_questions,
+                            percentage: item.percentage,
+                            grade: item.grade,
+                            isPassed: item.passed,
+                            breakdown: item.breakdown || [],
+                            timeTaken: item.time_taken,
+                            date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                        };
+                    });
                 }
             } catch (err) {
                 console.warn("Supabase fetch all results error, using local fallback:", err);
