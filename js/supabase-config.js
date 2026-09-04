@@ -406,12 +406,13 @@ const SUPABASE_CONFIG = {
                         if (key && !studentMap[key] && s.name !== 'SYSTEM_SETTINGS_RESULTS_RELEASED') {
                             const rawRoll = s.roll_no || s.rollNo || '';
                             const parts = rawRoll.split('|');
+                            const parsedEmail = s.email || parts[2] || (s.name && s.name.includes('@') ? s.name : '');
                             studentMap[key] = {
                                 name: s.name,
-                                email: s.email || '',
+                                email: parsedEmail,
                                 rollNo: parts[0] || 'BSN-2026',
                                 accountId: parts[1] || s.accountId || s.account_id || 'N/A',
-                                password: s.password || '',
+                                password: parts[3] || s.password || '',
                                 semester: s.semester || 'Semester 5',
                                 createdAt: new Date(s.created_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                             };
@@ -435,9 +436,10 @@ const SUPABASE_CONFIG = {
                         if (key && !studentMap[key]) {
                             const rawRoll = item.roll_no || '';
                             const parts = rawRoll.split('|');
+                            const parsedEmail = parts[2] || (item.student_name && item.student_name.includes('@') ? item.student_name : '');
                             studentMap[key] = {
                                 name: item.student_name,
-                                email: '',
+                                email: parsedEmail,
                                 rollNo: parts[0] || 'BSN-2026',
                                 accountId: parts[1] || item.account_id || 'N/A',
                                 password: '',
@@ -458,9 +460,10 @@ const SUPABASE_CONFIG = {
                 if (key && !studentMap[key]) {
                     const rawRoll = s.rollNo || s.roll_no || '';
                     const parts = rawRoll.split('|');
+                    const parsedEmail = s.email || parts[2] || (s.name && s.name.includes('@') ? s.name : '');
                     studentMap[key] = {
                         name: s.name,
-                        email: s.email || '',
+                        email: parsedEmail,
                         rollNo: parts[0] || 'BSN-2026',
                         accountId: parts[1] || s.accountId || 'N/A',
                         password: s.password || '',

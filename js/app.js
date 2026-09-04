@@ -2044,12 +2044,25 @@ async function loadAdminDashboardData() {
 
                 tr.innerHTML = `
                     <td style="vertical-align:middle;">
-                        <div style="font-weight:800; color:#ffffff; font-size:14px;">${escapeHtml(s.name)}</div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${examStatusBadge}</div>
+                        <div style="font-weight:800; color:#ffffff; font-size:14px; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-user-graduate" style="color:var(--cyan-primary); font-size:13px;"></i>
+                            <span>${escapeHtml(s.name)}</span>
+                        </div>
+                        <div style="font-size:11.5px; color:#cbd5e1; font-weight:600; margin-top:3px; display:flex; align-items:center; gap:5px;">
+                            <i class="fa-solid fa-envelope" style="color:var(--cyan-primary); font-size:10.5px;"></i>
+                            <span>${escapeHtml(s.email || (s.name.includes('@') ? s.name : 'No Email Linked'))}</span>
+                        </div>
+                        <div style="margin-top:4px;">${examStatusBadge}</div>
                     </td>
                     <td style="vertical-align:middle;">
-                        <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(s.rollNo)}</code>
-                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:4px 10px; border-radius:12px; color:#f472b6; font-weight:800; font-size:12px; margin-left:4px;">ID: ${escapeHtml(s.accountId || 'N/A')}</code>
+                        <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+                            <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:8px; color:var(--cyan-primary); font-weight:800; font-size:12px;">
+                                <i class="fa-solid fa-id-card" style="font-size:10px; margin-right:4px;"></i>${escapeHtml(s.rollNo)}
+                            </code>
+                            <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:4px 10px; border-radius:8px; color:#f472b6; font-weight:800; font-size:12px;">
+                                <i class="fa-solid fa-key" style="font-size:10px; margin-right:4px;"></i>ID: ${escapeHtml(s.accountId || 'N/A')}
+                            </code>
+                        </div>
                     </td>
                     <td style="vertical-align:middle; font-weight:600; color:#cbd5e1;">${escapeHtml(s.semester || 'Semester 5')}</td>
                     <td style="vertical-align:middle; color:var(--text-muted); font-size:12.5px;">${escapeHtml(s.createdAt)}</td>
