@@ -1,9 +1,8 @@
-// Global Unique 8-Character Alphanumeric Account ID Generator
+// Global Unique 8-Digit Pure Numeric Account ID Generator (Math Digits Only)
 window.generateAccountId = function() {
-    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
     let result = '';
     for (let i = 0; i < 8; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
+        result += Math.floor(Math.random() * 10).toString();
     }
     return result;
 };

@@ -331,8 +331,8 @@ function closeDemoModal() {
 function updateUIWithUserData(userData) {
     if (!userData) return;
 
-    if (!userData.accountId) {
-        userData.accountId = window.generateAccountId ? window.generateAccountId() : "8A92F4K7";
+    if (!userData.accountId || userData.accountId.length !== 8 || isNaN(userData.accountId)) {
+        userData.accountId = window.generateAccountId ? window.generateAccountId() : Math.floor(10000000 + Math.random() * 90000000).toString();
     }
 
     AppState.currentUser = userData;
@@ -345,11 +345,18 @@ function updateUIWithUserData(userData) {
 
     if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials;
     if (elements.navStudentName) elements.navStudentName.textContent = name;
-    if (elements.navStudentRoll) elements.navStudentRoll.textContent = `${rollNo} • ID: ${accountId}`;
+    if (elements.navStudentRoll) elements.navStudentRoll.textContent = rollNo;
+    
+    const elNavAccId = document.getElementById('nav-student-account-id');
+    if (elNavAccId) elNavAccId.innerHTML = `<i class="fa-solid fa-key" style="font-size:10px; margin-right:3px;"></i> ID: ${accountId}`;
+
     if (elements.bannerStudentName) elements.bannerStudentName.textContent = name;
     
     const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
-    if (elBannerRollBadge) elBannerRollBadge.textContent = `Roll: ${rollNo} | ID: ${accountId}`;
+    if (elBannerRollBadge) elBannerRollBadge.textContent = rollNo;
+
+    const elBannerAccId = document.getElementById('banner-student-account-id');
+    if (elBannerAccId) elBannerAccId.textContent = accountId;
 
     if (elements.bannerSemesterBadge) {
         elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
