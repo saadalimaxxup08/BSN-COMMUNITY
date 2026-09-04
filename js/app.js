@@ -143,19 +143,32 @@ function initAuth() {
         });
     }
 
-    // Normal form submit
-    elements.loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = elements.inputName.value.trim();
-        const password = elements.inputPassword ? elements.inputPassword.value.trim() : '123456';
+    // Normal form submit & direct button click backup
+    if (elements.loginForm) {
+        elements.loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = elements.inputName.value.trim();
+            const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
 
-        if (!name) {
-            alert("Please enter your Student Full Name to continue.");
-            return;
-        }
+            if (!name) {
+                alert("Please enter your Student Full Name / Email to continue.");
+                return;
+            }
 
-        await processStudentLogin(name, password, currentAuthMode);
-    });
+            await processStudentLogin(name, password, currentAuthMode);
+        });
+    }
+
+    if (btnSubmitAuth) {
+        btnSubmitAuth.addEventListener('click', async (e) => {
+            const name = elements.inputName ? elements.inputName.value.trim() : '';
+            const password = elements.inputPassword ? elements.inputPassword.value.trim() : '';
+            if (name) {
+                e.preventDefault();
+                await processStudentLogin(name, password, currentAuthMode);
+            }
+        });
+    }
 
     // Assignment Focus Mode Buttons (Default First Page)
     const btnAssignmentGoogle = document.getElementById('btn-assignment-google');
