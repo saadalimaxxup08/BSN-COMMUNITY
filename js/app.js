@@ -105,6 +105,12 @@ function switchView(viewName) {
         if (adminView) adminView.classList.add('active');
     }
 
+    // Support Widget Visibility: Exclusively visible on Student Dashboard view
+    const supportContainer = document.getElementById('floating-support-btn-container');
+    if (supportContainer) {
+        supportContainer.style.display = (viewName === 'dashboard') ? 'block' : 'none';
+    }
+
     if (window.location.hash) {
         try {
             history.replaceState(null, document.title, window.location.pathname + window.location.search);
