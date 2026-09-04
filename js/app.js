@@ -344,8 +344,40 @@ function closeDemoModal() {
     elements.demoModal.classList.remove('active');
 }
 
+// Helper function to update all Student UI Header & Banner elements
+function updateUIWithUserData(userData) {
+    if (!userData) return;
+
+    AppState.currentUser = userData;
+    AppState.activeSemester = "sem-5";
+
+    const name = userData.name || userData.email || 'Medical Scholar';
+    const rollNo = userData.rollNo || 'BSN-2026-0000';
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || "ST";
+
+    if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials;
+    if (elements.navStudentName) elements.navStudentName.textContent = name;
+    if (elements.navStudentRoll) elements.navStudentRoll.textContent = rollNo;
+    if (elements.bannerStudentName) elements.bannerStudentName.textContent = name;
+    
+    const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
+    if (elBannerRollBadge) elBannerRollBadge.textContent = rollNo;
+
+    if (elements.bannerSemesterBadge) {
+        elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
+    }
+
+    if (elements.bannerUserStatus) {
+        elements.bannerUserStatus.textContent = userData.isNewStudent 
+            ? "Fresh Account Created" 
+            : "Returning Student (Records Restored)";
+    }
+}
+
 // Function to show Roll Number & Verification Badge Popup with [X] close button
 function showRollNumberPopup(userObj, callback) {
+    updateUIWithUserData(userObj);
+
     const modal = document.getElementById('roll-number-popup-modal');
     const elName = document.getElementById('popup-student-name');
     const elRoll = document.getElementById('popup-student-roll');
@@ -359,8 +391,9 @@ function showRollNumberPopup(userObj, callback) {
 
     if (modal) modal.classList.add('active');
 
-    const closeHandler = () => {
+    const closeHandler = async () => {
         if (modal) modal.classList.remove('active');
+        AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(userObj.name);
         switchView('dashboard');
         if (callback) callback();
     };
@@ -396,16 +429,7 @@ function openNameSetupModal(userObj, callback) {
             localStorage.setItem('zafii_active_session', JSON.stringify(userObj));
         } catch (e) {}
 
-        AppState.currentUser = userObj;
-
-        // Set UI Elements
-        const initials = enteredName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials || "ST";
-        if (elements.navStudentName) elements.navStudentName.textContent = enteredName;
-        if (elements.navStudentRoll) elements.navStudentRoll.textContent = userObj.rollNo;
-        if (elements.bannerStudentName) elements.bannerStudentName.textContent = enteredName;
-        const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
-        if (elBannerRollBadge) elBannerRollBadge.textContent = userObj.rollNo;
+        updateUIWithUserData(userObj);
 
         if (modal) modal.classList.remove('active');
 
@@ -413,10 +437,16 @@ function openNameSetupModal(userObj, callback) {
     };
 
     if (btnSave) btnSave.onclick = saveHandler;
+
+    if (input) {
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') saveHandler();
+        };
+    }
 }
 
 // Handles New vs Existing Student Profiles with Unique Email Authentication
-async function processStudentLogin(studentInput, password = '', authMode = 'signin', skipViewSwitch = false) {
+async function processStudentLogin(studentInput, password = '', authMode = 'signin', skipViewSwitch = false, providedFullName = '') {
     const rawInput = studentInput.trim();
     if (!rawInput) {
         alert("Please enter your Email Address.");
@@ -432,27 +462,21 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
     const check = await SUPABASE_CONFIG.getStudentProfile(userEmail.split('@')[0], userEmail);
     let userData = null;
 
-    if (authMode === 'signup') {
-        if (password !== 'google_oauth_verified') {
-            // Password validation
+    if (check.isNew || !check.profile) {
+        // NEW STUDENT REGISTRATION (Sign Up / Google OAuth / Direct Email)
+        if (authMode === 'signup' && password !== 'google_oauth_verified') {
             if (!password || !password.trim()) {
                 alert("⚠️ Password Required:\n\nPlease create a password to complete your account registration.");
                 return;
             }
         }
 
-        // Check duplicate email registration
-        if (!check.isNew && check.profile) {
-            alert(`⚠️ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered. Please switch to the "Sign In" tab to log in.`);
-            const tabSignIn = document.getElementById('tab-auth-signin');
-            if (tabSignIn) tabSignIn.click();
-            return;
-        }
-
-        // Create new student record
+        // Generate permanent unique roll number
         const generatedRoll = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+        const initialName = providedFullName ? providedFullName.trim() : userEmail.split('@')[0];
+
         userData = {
-            name: userEmail.split('@')[0],
+            name: initialName,
             email: userEmail,
             rollNo: generatedRoll,
             password: password || '12345678',
@@ -460,34 +484,32 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
             semesterKey: "sem-5",
             createdAt: new Date().toISOString(),
             isNewStudent: true,
-            needsNameSetup: true
+            needsNameSetup: !providedFullName || providedFullName.includes('@')
         };
+
         await SUPABASE_CONFIG.saveStudentProfile(userData);
 
         try {
             localStorage.setItem('zafii_active_session', JSON.stringify(userData));
         } catch (e) {}
 
-        AppState.currentUser = userData;
+        updateUIWithUserData(userData);
 
-        // Prompt Student Name Setup Modal immediately after Sign Up!
-        openNameSetupModal(userData, (updatedUser) => {
-            showRollNumberPopup(updatedUser);
-        });
+        if (!providedFullName || providedFullName.includes('@')) {
+            openNameSetupModal(userData, (updatedUser) => {
+                showRollNumberPopup(updatedUser);
+            });
+        } else {
+            showRollNumberPopup(userData);
+        }
         return;
 
     } else {
-        // Sign In Mode: Check account existence
-        if (check.isNew || !check.profile) {
-            alert(`⚠️ Account Not Found:\n\nNo registered account found for '${userEmail}'. Please click on the "Sign Up" tab to create a new account.`);
-            const tabSignUp = document.getElementById('tab-auth-signup');
-            if (tabSignUp) tabSignUp.click();
-            return;
-        }
-
-        // Existing profile -> Verify password strictly
-        const storedPassword = check.profile.password || '12345678';
-        if (password !== 'google_oauth_verified') {
+        // EXISTING STUDENT (Returning Candidate)
+        if (authMode === 'signup' && password !== 'google_oauth_verified') {
+            alert(`⚠️ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered with Roll Number (${check.profile.rollNo}). Logging into existing profile...`);
+        } else if (authMode === 'signin' && password !== 'google_oauth_verified') {
+            const storedPassword = check.profile.password || '12345678';
             if (password && storedPassword && password !== storedPassword) {
                 alert(`❌ Incorrect Password:\n\nThe password entered for '${userEmail}' is incorrect. Please enter your correct password.`);
                 return;
@@ -502,20 +524,20 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
             isNewStudent: false
         };
 
+        // If existing profile lacks rollNo or has default placeholder, assign a permanent unique one
+        if (!userData.rollNo || userData.rollNo === 'BSN-2026-0000') {
+            userData.rollNo = "BSN-2026-" + Math.floor(1000 + Math.random() * 9000);
+            await SUPABASE_CONFIG.saveStudentProfile(userData);
+        }
+
         try {
             localStorage.setItem('zafii_active_session', JSON.stringify(userData));
         } catch (e) {}
 
-        AppState.currentUser = userData;
+        updateUIWithUserData(userData);
 
-        // Update UI
-        const initials = (userData.name || 'ST').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        if (elements.navUserAvatar) elements.navUserAvatar.textContent = initials || "ST";
-        if (elements.navStudentName) elements.navStudentName.textContent = userData.name || userEmail;
-        if (elements.navStudentRoll) elements.navStudentRoll.textContent = userData.rollNo;
-        if (elements.bannerStudentName) elements.bannerStudentName.textContent = userData.name || userEmail;
-        const elBannerRollBadge = document.getElementById('banner-student-roll-badge');
-        if (elBannerRollBadge) elBannerRollBadge.textContent = userData.rollNo;
+        // Fetch student's past quiz history from Supabase / LocalStorage
+        AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(userData.name);
 
         // Check if name setup is needed
         if (!userData.name || userData.name.includes('@') || userData.needsNameSetup) {
@@ -525,38 +547,6 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         } else {
             showRollNumberPopup(userData);
         }
-    }
-
-    // Save active session to LocalStorage so page refresh maintains student session
-    try {
-        localStorage.setItem('zafii_active_session', JSON.stringify(userData));
-    } catch (e) {
-        console.warn("Could not save session to localStorage:", e);
-    }
-
-    // Set Current User State
-    AppState.currentUser = userData;
-    AppState.activeSemester = "sem-5"; // Always default to active exam Semester 5
-
-    // Set Avatar initials
-    const initials = userData.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    elements.navUserAvatar.textContent = initials || "ST";
-    elements.navStudentName.textContent = userData.name;
-    elements.navStudentRoll.textContent = userData.rollNo;
-    elements.bannerStudentName.textContent = userData.name;
-    elements.bannerSemesterBadge.textContent = "Semester 5 (Active Exam)";
-
-    if (elements.bannerUserStatus) {
-        elements.bannerUserStatus.textContent = userData.isNewStudent 
-            ? "Fresh Account Created" 
-            : "Returning Student (Records Restored)";
-    }
-
-    // Fetch student's past quiz history from Supabase / LocalStorage
-    AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(userData.name);
-
-    if (!skipViewSwitch) {
-        switchView('dashboard');
     }
 }
 
@@ -1602,7 +1592,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     history.replaceState(null, document.title, window.location.pathname + window.location.search);
                 }
 
-                await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signup', false, googleName);
+                await processStudentLogin(googleUser.email, 'google_oauth_verified', 'signin', false, googleName);
             }
         } catch (e) {
             console.warn("Supabase auth session restore error:", e);
@@ -1619,7 +1609,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const identifier = parsed.email ? parsed.email.split('@')[0] : parsed.name;
                 const check = await SUPABASE_CONFIG.getStudentProfile(identifier, parsed.email || '');
                 if (!check.isNew && check.profile) {
-                    AppState.currentUser = check.profile;
+                    const activeProfile = {
+                        ...check.profile,
+                        rollNo: check.profile.rollNo || parsed.rollNo || ("BSN-2026-" + Math.floor(1000 + Math.random() * 9000))
+                    };
+                    updateUIWithUserData(activeProfile);
+                    AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(activeProfile.name);
                     switchView('dashboard');
                 } else {
                     // Stale or deleted account session -> Purge local storage and force login view!
