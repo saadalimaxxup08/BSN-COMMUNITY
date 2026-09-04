@@ -529,14 +529,20 @@ async function processStudentLogin(studentInput, password = '', authMode = 'sign
         return;
 
     } else {
-        // EXISTING STUDENT (Returning Candidate)
-        if (authMode === 'signup' && password !== 'google_oauth_verified') {
-            alert(`⚠️ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered with Roll Number (${check.profile.rollNo}). Logging into existing profile...`);
-        } else if (authMode === 'signin' && password !== 'google_oauth_verified') {
+        // EXISTING STUDENT (Returning Candidate - Strict Password Authentication Required)
+        if (password !== 'google_oauth_verified') {
             const storedPassword = check.profile.password || '12345678';
-            if (password && storedPassword && password !== storedPassword) {
-                alert(`❌ Incorrect Password:\n\nThe password entered for '${userEmail}' is incorrect. Please enter your correct password.`);
+            if (!password || (storedPassword && password !== storedPassword)) {
+                if (authMode === 'signup') {
+                    alert(`❌ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered.\n\nTo access this account, please click the 'Sign In' tab and enter your correct password.`);
+                } else {
+                    alert(`❌ Incorrect Password:\n\nThe password entered for '${userEmail}' is incorrect. Please enter your correct password to sign in.`);
+                }
                 return;
+            }
+
+            if (authMode === 'signup') {
+                alert(`ℹ️ Account Already Registered:\n\nAn account with email '${userEmail}' is already registered with Roll Number (${check.profile.rollNo}). Password verified cleanly, logging in...`);
             }
         }
 
