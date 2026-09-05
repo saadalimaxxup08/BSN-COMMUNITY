@@ -295,11 +295,9 @@ function initAuth() {
 
         if (candidateInput && candidateInput.trim()) {
             const cleanInput = candidateInput.trim().toLowerCase();
-            const isAdmin = cleanInput.includes('zafione6119') || 
-                            cleanInput.includes('zafiione6119') || 
+            const isAdmin = cleanInput.includes('pakhuzaifakhan') || 
                             cleanInput.includes('saadalimaxxup02') || 
-                            cleanInput.includes('huzaifamushtaqahmed') ||
-                            cleanInput.includes('huzaifa mushtaq');
+                            cleanInput.includes('huzaifamushtaqahmed');
 
             await processStudentLogin(candidateInput.trim(), 'google_oauth_verified', 'signup');
             
@@ -414,7 +412,9 @@ function updateUIWithUserData(userData) {
     }
 
     const elBtnNavAdmin = document.getElementById('btn-nav-admin');
-    if (elBtnNavAdmin) elBtnNavAdmin.style.display = 'inline-flex';
+    if (elBtnNavAdmin) {
+        elBtnNavAdmin.style.display = window.isUserAdmin() ? 'inline-flex' : 'none';
+    }
 }
 
 // Function to show Roll Number & Verification Badge Popup with [X] close button
@@ -706,30 +706,48 @@ const EXAM_WINDOW = {
 
 window.isUserAdmin = function() {
     const userObj = AppState.currentUser || {};
-    const userName = (userObj.name || '').trim().toLowerCase();
     const userEmail = (userObj.email || '').trim().toLowerCase();
+    const userRoll = (userObj.rollNumber || userObj.roll || userObj.rollNo || '').trim().toUpperCase();
+    const userAccId = (userObj.accountId || '').toString().trim();
     
     let savedEmail = '';
-    let savedName = '';
+    let savedRoll = '';
+    let savedAccId = '';
     try {
         const sess = JSON.parse(localStorage.getItem('zafii_active_session') || '{}');
         savedEmail = (sess.email || '').trim().toLowerCase();
-        savedName = (sess.name || '').trim().toLowerCase();
+        savedRoll = (sess.rollNumber || sess.roll || sess.rollNo || '').trim().toUpperCase();
+        savedAccId = (sess.accountId || '').toString().trim();
     } catch (e) {}
 
-    const allEmails = `${userEmail} ${savedEmail}`;
-    const allNames = `${userName} ${savedName}`;
+    const email = (userEmail || savedEmail).toLowerCase();
+    const roll = (userRoll || savedRoll).toUpperCase();
+    const accId = (userAccId || savedAccId).replace(/[^0-9]/g, '');
 
-    return allEmails.includes('zafione6119') ||
-           allEmails.includes('zafiione6119') ||
-           allEmails.includes('saadalimaxxup02') ||
-           allEmails.includes('huzaifamushtaqahmed') ||
-           allNames.includes('zafione6119') ||
-           allNames.includes('zafiione6119') ||
-           allNames.includes('saadalimaxxup02') ||
-           allNames.includes('huzaifamushtaqahmed') ||
-           allNames.includes('huzaifa mushtaq') ||
-           allNames.includes('saad ali');
+    // Strictly designated Administrator Accounts:
+    // 1. Huzaifa (pakhuzaifakhan@gmail.com, BSN-2026-7789, ID: 28831844)
+    // 2. Saleem (saadalimaxxup02@gmail.com, BSN-2026-5623, ID: 27601544)
+    // 3. Huzaifa Mushtaq (huzaifamushtaqahmed@gmail.com, BSN-2026-1076)
+    const authorizedEmails = [
+        'pakhuzaifakhan@gmail.com',
+        'saadalimaxxup02@gmail.com',
+        'huzaifamushtaqahmed@gmail.com'
+    ];
+    const authorizedRolls = [
+        'BSN-2026-7789',
+        'BSN-2026-5623',
+        'BSN-2026-1076'
+    ];
+    const authorizedAccIds = [
+        '28831844',
+        '27601544'
+    ];
+
+    if (authorizedEmails.some(ae => email && email.includes(ae))) return true;
+    if (authorizedRolls.some(ar => roll && roll === ar)) return true;
+    if (authorizedAccIds.some(aid => accId && accId === aid)) return true;
+
+    return false;
 };
 
 // Formats Account ID to masked privacy string e.g. (214***321)
@@ -881,12 +899,14 @@ function renderDashboard() {
     // Admin Button: Always visible and prominently styled for verified Administrators
     const btnNavAdmin = document.getElementById('btn-nav-admin');
     if (btnNavAdmin) {
-        btnNavAdmin.style.display = 'inline-flex';
         const isAuthorizedAdmin = window.isUserAdmin();
         if (isAuthorizedAdmin) {
+            btnNavAdmin.style.display = 'inline-flex';
             btnNavAdmin.innerHTML = '<i class="fa-solid fa-user-shield"></i> <span>Admin Control</span>';
             btnNavAdmin.style.background = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
             btnNavAdmin.style.boxShadow = '0 0 16px rgba(139, 92, 246, 0.6)';
+        } else {
+            btnNavAdmin.style.display = 'none';
         }
     }
 
@@ -1859,19 +1879,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        const isAdminSessionActive = sessionStorage.getItem('zafii_admin_session_active') === 'true' || 
-                                     localStorage.getItem('zafii_active_view') === 'admin' ||
-                                     window.location.hash === '#admin';
+        const hasActiveAdminSession = sessionStorage.getItem('zafii_admin_session_active') === 'true';
 
-        if (isAdminSessionActive && !hasRunningQuiz) {
+        if (hasActiveAdminSession && !hasRunningQuiz) {
             switchView('admin');
             if (typeof loadAdminDashboardData === 'function') {
                 await loadAdminDashboardData();
             }
         } else if (AppState.currentUser) {
             switchView('dashboard');
+            if (window.location.hash === '#admin') {
+                window.openAdminModal();
+            }
         } else {
             switchView('login');
+            if (window.location.hash === '#admin') {
+                window.openAdminModal();
+            }
         }
     } catch (e) {
         console.warn("Auto session restore failed:", e);
