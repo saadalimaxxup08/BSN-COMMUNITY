@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" />
     
     <!-- Custom Glassmorphic Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=15.0">
+    <link rel="stylesheet" href="css/style.css?v=19.0">
 
     <!-- External Libraries (CDN) -->
     <!-- 1. html2pdf.js for direct Chrome PDF marksheet downloads -->
@@ -1227,8 +1227,9 @@
     <!-- FLOATING CUSTOMER SUPPORT WIDGET BUTTON (CIRCULAR ICON ONLY) -->
     <!-- ==================================================== -->
     <div id="floating-support-btn-container" style="position:fixed; bottom:24px; right:24px; z-index:99999; display:none;">
-        <button id="btn-open-support-modal" onclick="openSupportModal()" class="btn-primary" style="width:48px; height:48px; border-radius:50%; padding:0; font-size:20px; font-weight:800; background:linear-gradient(135deg, #f43f5e, #8b5cf6); box-shadow:0 6px 20px rgba(244,63,94,0.45); display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,0.25); cursor:pointer; touch-action:manipulation;" title="Customer Support & Feedback">
+        <button id="btn-open-support-modal" onclick="openSupportModal()" class="btn-primary" style="position:relative; width:50px; height:50px; border-radius:50%; padding:0; font-size:20px; font-weight:800; background:linear-gradient(135deg, #f43f5e, #8b5cf6); box-shadow:0 6px 20px rgba(244,63,94,0.45); display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,0.25); cursor:pointer; touch-action:manipulation;" title="Customer Support & Feedback">
             <i class="fa-solid fa-headset"></i>
+            <span id="student-support-notif-badge" style="position:absolute; top:-4px; right:-4px; background:#ef4444; color:#ffffff; font-size:11px; font-weight:800; min-width:20px; height:20px; padding:0 4px; border-radius:10px; display:none; align-items:center; justify-content:center; border:2px solid #0f172a; box-shadow:0 0 10px rgba(239,68,68,0.9); z-index:10;">1</span>
         </button>
     </div>
 
@@ -1248,6 +1249,9 @@
                     <p class="modal-desc" style="font-size:12px; color:var(--text-muted); margin:2px 0 0 0;">Select options below to share feedback, suggestions, or account issues.</p>
                 </div>
             </div>
+
+            <!-- Official Responses from Customer Services (Shown when admin has replied) -->
+            <div id="student-support-replies-container" style="display:none; margin-bottom:18px; max-height:220px; overflow-y:auto;"></div>
 
             <!-- Category Radio Options -->
             <div style="margin-bottom:18px;">
@@ -1338,10 +1342,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 18.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=18.0"></script>
-    <script src="js/quiz-data.js?v=18.0"></script>
-    <script src="js/pdf-generator.js?v=18.0"></script>
-    <script src="js/app.js?v=18.0"></script>
+    <!-- Application Scripts (Version 19.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=19.0"></script>
+    <script src="js/quiz-data.js?v=19.0"></script>
+    <script src="js/pdf-generator.js?v=19.0"></script>
+    <script src="js/app.js?v=19.0"></script>
 </body>
 </html>

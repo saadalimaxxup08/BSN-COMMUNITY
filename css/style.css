@@ -1982,3 +1982,31 @@ body {
     background: #f43f5e;
     color: #fff;
 }
+
+/* Floating Customer Support Widget Notification Pulsing Glow */
+@keyframes support-pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 6px 20px rgba(244, 63, 94, 0.45);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 25px 8px rgba(239, 68, 68, 0.85), 0 8px 28px rgba(244, 63, 94, 0.65);
+        transform: scale(1.08);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 6px 20px rgba(244, 63, 94, 0.45);
+        transform: scale(1);
+    }
+}
+
+.support-btn-glow {
+    animation: support-pulse-glow 1.5s infinite ease-in-out !important;
+}
+
+.support-reply-bubble {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}

@@ -348,6 +348,7 @@ function initAuth() {
             } catch (e) {}
             AppState.currentUser = null;
             AppState.studentHistory = [];
+            if (window.checkStudentSupportNotifications) window.checkStudentSupportNotifications();
             elements.loginForm.reset();
             switchView('login');
         }
@@ -913,6 +914,7 @@ function renderDashboard() {
     }
 
     updateStatsSummary();
+    if (window.checkStudentSupportNotifications) window.checkStudentSupportNotifications();
     switchSemester(AppState.activeSemester || 'sem-5');
     renderAssessmentHistory();
 
@@ -2716,7 +2718,7 @@ window.submitSupportTicket = async function(e) {
     }
 };
 
-window.openSupportModal = function() {
+window.openSupportModal = async function() {
     const modalSupport = document.getElementById('support-ticket-modal');
     if (modalSupport) {
         if (AppState && AppState.currentUser) {
@@ -2725,6 +2727,49 @@ window.openSupportModal = function() {
             if (inputName && !inputName.value) inputName.value = AppState.currentUser.name || '';
             if (inputAccountId && !inputAccountId.value) inputAccountId.value = AppState.currentUser.accountId || '';
         }
+
+        // Render official replies if present for the current scholar
+        const repliesContainer = document.getElementById('student-support-replies-container');
+        if (repliesContainer && AppState && AppState.currentUser) {
+            const replies = await SUPABASE_CONFIG.getSupportRepliesForStudent(AppState.currentUser);
+            if (replies && replies.length > 0) {
+                repliesContainer.innerHTML = `
+                    <div style="font-size:12.5px; font-weight:700; color:#10b981; margin-bottom:10px; display:flex; align-items:center; gap:6px; border-bottom:1px solid rgba(16,185,129,0.25); padding-bottom:6px;">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Official Response from Customer Services (${replies.length})</span>
+                    </div>
+                    ${replies.map(r => `
+                        <div class="support-reply-bubble">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-size:11.5px; font-weight:700; color:#34d399;"><i class="fa-solid fa-headset" style="margin-right:4px;"></i>ZAFII Support Desk</span>
+                                <span style="font-size:10.5px; color:var(--text-muted);">${new Date(r.createdAt).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</span>
+                            </div>
+                            <div style="font-size:12.5px; color:#f1f5f9; line-height:1.5; white-space:pre-wrap;">${escapeHtml(r.replyMessage)}</div>
+                        </div>
+                    `).join('')}
+                `;
+                repliesContainer.style.display = 'block';
+
+                // Mark all retrieved replies as read
+                try {
+                    const existingRead = JSON.parse(localStorage.getItem('zafii_read_replies') || '[]');
+                    const updatedRead = Array.from(new Set([...existingRead, ...replies.map(r => r.replyId)]));
+                    localStorage.setItem('zafii_read_replies', JSON.stringify(updatedRead));
+                } catch (e) {
+                    console.warn("Error marking replies as read:", e);
+                }
+
+                // Extinguish notification glow and counter badge
+                const badge = document.getElementById('student-support-notif-badge');
+                const btn = document.getElementById('btn-open-support-modal');
+                if (badge) badge.style.display = 'none';
+                if (btn) btn.classList.remove('support-btn-glow');
+            } else {
+                repliesContainer.innerHTML = '';
+                repliesContainer.style.display = 'none';
+            }
+        }
+
         modalSupport.classList.add('active');
         modalSupport.onclick = (e) => {
             if (e.target === modalSupport) window.closeSupportModal();
@@ -2767,7 +2812,53 @@ function initSupportTicketsUI() {
     if (btnCloseAdminSupport) btnCloseAdminSupport.onclick = window.closeAdminSupportInbox;
 
     updateAdminSupportBadge();
+    checkStudentSupportNotifications();
+
+    // Periodic check every 30 seconds for live reply notifications
+    setInterval(() => {
+        if (AppState && AppState.currentUser) {
+            checkStudentSupportNotifications();
+        }
+    }, 30000);
 }
+
+window.checkStudentSupportNotifications = async function() {
+    const badge = document.getElementById('student-support-notif-badge');
+    const btn = document.getElementById('btn-open-support-modal');
+    if (!badge || !btn) return;
+
+    if (!AppState || !AppState.currentUser) {
+        badge.style.display = 'none';
+        btn.classList.remove('support-btn-glow');
+        return;
+    }
+
+    const replies = await SUPABASE_CONFIG.getSupportRepliesForStudent(AppState.currentUser);
+    if (!replies || replies.length === 0) {
+        badge.style.display = 'none';
+        btn.classList.remove('support-btn-glow');
+        return;
+    }
+
+    let readReplyIds = [];
+    try {
+        readReplyIds = JSON.parse(localStorage.getItem('zafii_read_replies') || '[]');
+    } catch (e) {
+        readReplyIds = [];
+    }
+
+    const unreadReplies = replies.filter(r => !readReplyIds.includes(r.replyId));
+    const unreadCount = unreadReplies.length;
+
+    if (unreadCount > 0) {
+        btn.classList.add('support-btn-glow');
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount.toString();
+    } else {
+        btn.classList.remove('support-btn-glow');
+        badge.style.display = 'none';
+    }
+};
 
 async function loadAdminSupportInbox() {
     const container = document.getElementById('admin-support-tickets-list');
@@ -2775,7 +2866,10 @@ async function loadAdminSupportInbox() {
 
     container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Fetching student support tickets...</div>';
 
-    const tickets = await SUPABASE_CONFIG.getAllSupportTickets();
+    const [tickets, allReplies] = await Promise.all([
+        SUPABASE_CONFIG.getAllSupportTickets(),
+        SUPABASE_CONFIG.getAllSupportReplies()
+    ]);
 
     if (!tickets || tickets.length === 0) {
         container.innerHTML = `
@@ -2806,6 +2900,17 @@ async function loadAdminSupportInbox() {
         const maskedAcc = formatMaskedAccountId(t.accountId);
         const dateStr = new Date(t.createdAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+        const ticketReplies = (allReplies || []).filter(r => 
+            (r.ticketId && r.ticketId === t.ticketId) ||
+            (r.accountId && t.accountId && r.accountId.toLowerCase() === t.accountId.toLowerCase() && r.accountId !== 'N/A') ||
+            (r.email && t.email && r.email.toLowerCase() === t.email.toLowerCase() && r.email !== 'N/A')
+        );
+
+        const safeStudentName = escapeHtml(t.studentName || 'Scholar').replace(/'/g, "\\'");
+        const safeRollNo = escapeHtml(t.rollNo || 'N/A').replace(/'/g, "\\'");
+        const safeEmail = escapeHtml(t.email || 'N/A').replace(/'/g, "\\'");
+        const safeAccId = escapeHtml(t.accountId || 'N/A').replace(/'/g, "\\'");
+
         return `
             <div class="glass-card" style="padding:16px 18px; border-left:3px solid ${t.category === 'account_complaint' ? '#f43f5e' : t.category === 'website_review' ? '#f59e0b' : '#06b6d4'}; background:rgba(15,23,42,0.6);">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
@@ -2818,6 +2923,27 @@ async function loadAdminSupportInbox() {
 
                 <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); font-size:13px; color:#e2e8f0; line-height:1.5; margin-bottom:12px; white-space:pre-wrap;">${escapeHtml(t.message)}</div>
 
+                <!-- Existing Official Responses if any -->
+                ${ticketReplies.length > 0 ? `
+                    <div style="margin-bottom:12px; padding:10px 14px; background:rgba(16, 185, 129, 0.06); border:1px solid rgba(16, 185, 129, 0.2); border-radius:8px;">
+                        <div style="font-size:11.5px; font-weight:700; color:#10b981; margin-bottom:6px;">
+                            <i class="fa-solid fa-reply-all" style="margin-right:5px;"></i>Official Responses Dispatched (${ticketReplies.length}):
+                        </div>
+                        ${ticketReplies.map(tr => `
+                            <div style="border-top:1px dashed rgba(16, 185, 129, 0.2); padding-top:6px; margin-top:6px; font-size:12px; color:#cbd5e1;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                                    <span style="font-size:10.5px; color:#34d399; font-weight:700;">Support Desk Response</span>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="font-size:10.5px; color:var(--text-muted);">${new Date(tr.createdAt).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</span>
+                                        <button onclick="adminDeleteSupportReply('${tr.replyId}')" title="Delete Response" style="background:none; border:none; color:#f43f5e; cursor:pointer; font-size:11px; padding:0 2px;"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                                <div style="white-space:pre-wrap; line-height:1.4;">${escapeHtml(tr.replyMessage)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:12px;">
                     <div style="display:flex; gap:14px; flex-wrap:wrap; color:var(--text-muted);">
                         <span><strong style="color:#fff;">Scholar:</strong> ${escapeHtml(t.studentName)}</span>
@@ -2825,15 +2951,84 @@ async function loadAdminSupportInbox() {
                         <span><strong style="color:#fff;">Account ID:</strong> <code style="color:#f472b6;">${maskedAcc}</code></span>
                         ${t.email && t.email !== 'N/A' ? `<span><strong style="color:#fff;">Email:</strong> ${escapeHtml(t.email)}</span>` : ''}
                     </div>
-                    <button onclick="adminDeleteSupportTicket('${t.ticketId}')" class="btn-secondary" style="padding:4px 12px; font-size:11.5px; background:rgba(244,63,94,0.15); border-color:rgba(244,63,94,0.3); color:#f43f5e; cursor:pointer;">
-                        <i class="fa-solid fa-trash-can" style="margin-right:4px;"></i>
-                        <span>Delete Ticket</span>
-                    </button>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button onclick="toggleAdminReplyBox('${t.ticketId}')" class="btn-primary" style="padding:4px 12px; font-size:11.5px; background:linear-gradient(135deg, #0ea5e9, #6366f1); border:none; color:#fff; cursor:pointer; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
+                            <i class="fa-solid fa-reply"></i>
+                            <span>Reply to Student</span>
+                        </button>
+                        <button onclick="adminDeleteSupportTicket('${t.ticketId}')" class="btn-secondary" style="padding:4px 12px; font-size:11.5px; background:rgba(244,63,94,0.15); border-color:rgba(244,63,94,0.3); color:#f43f5e; cursor:pointer; border-radius:6px;">
+                            <i class="fa-solid fa-trash-can" style="margin-right:4px;"></i>
+                            <span>Delete Ticket</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible Inline Reply Form -->
+                <div id="admin-reply-box-${t.ticketId}" style="display:none; margin-top:12px; padding:12px; background:rgba(15, 23, 42, 0.85); border:1px solid rgba(56, 189, 248, 0.3); border-radius:8px;">
+                    <label style="display:block; font-size:11.5px; font-weight:700; color:#38bdf8; margin-bottom:6px;">
+                        <i class="fa-solid fa-pen-to-square" style="margin-right:4px;"></i>Compose Response for ${escapeHtml(t.studentName)}:
+                    </label>
+                    <textarea id="admin-reply-text-${t.ticketId}" rows="3" class="form-control" style="width:100%; font-size:12.5px; padding:8px 10px; resize:vertical; margin-bottom:8px; border-radius:6px; background:rgba(0,0,0,0.3); color:#fff; border:1px solid var(--border-glass);" placeholder="Type official response or solution here..."></textarea>
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <button onclick="toggleAdminReplyBox('${t.ticketId}')" class="btn-secondary" style="padding:4px 12px; font-size:11px; cursor:pointer; border-radius:6px;">Cancel</button>
+                        <button onclick="adminSendTicketReply('${t.ticketId}', '${safeStudentName}', '${safeRollNo}', '${safeEmail}', '${safeAccId}')" class="btn-primary" style="padding:4px 14px; font-size:11px; background:linear-gradient(135deg, #10b981, #059669); border:none; cursor:pointer; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Send Official Response</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
 }
+
+window.toggleAdminReplyBox = function(ticketId) {
+    const box = document.getElementById(`admin-reply-box-${ticketId}`);
+    if (!box) return;
+    if (box.style.display === 'none' || !box.style.display) {
+        box.style.display = 'block';
+        const txt = document.getElementById(`admin-reply-text-${ticketId}`);
+        if (txt) txt.focus();
+    } else {
+        box.style.display = 'none';
+    }
+};
+
+window.adminSendTicketReply = async function(ticketId, studentName, rollNo, email, accountId) {
+    const txtArea = document.getElementById(`admin-reply-text-${ticketId}`);
+    if (!txtArea) return;
+    const msg = txtArea.value.trim();
+    if (!msg) {
+        alert("Please enter a response message before sending.");
+        return;
+    }
+
+    const replyData = {
+        replyId: Date.now().toString(),
+        ticketId: ticketId,
+        studentName: studentName,
+        rollNo: rollNo,
+        accountId: accountId,
+        email: email,
+        replyMessage: msg,
+        createdAt: new Date().toISOString()
+    };
+
+    const success = await SUPABASE_CONFIG.saveSupportReply(replyData);
+    if (success) {
+        alert(`Official response successfully dispatched to ${studentName}. The student's customer support icon will glow and display a notification badge.`);
+        txtArea.value = '';
+        loadAdminSupportInbox();
+    } else {
+        alert("Failed to send official response. Please check network connection.");
+    }
+};
+
+window.adminDeleteSupportReply = async function(replyId) {
+    if (!confirm("Are you sure you want to delete this official response?")) return;
+    await SUPABASE_CONFIG.deleteSupportReply(replyId);
+    loadAdminSupportInbox();
+};
 
 window.adminDeleteSupportTicket = async function(ticketId) {
     if (!confirm("Are you sure you want to delete this support ticket / complaint?")) return;

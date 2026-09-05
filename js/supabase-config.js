@@ -45,7 +45,7 @@ const SUPABASE_CONFIG = {
 
                 if (data && !error && data.length > 0) {
                     const match = data.find(s => {
-                        if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_')) return false;
+                        if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_')) return false;
                         const sName = (s.name || '').trim().toLowerCase();
                         const parts = (s.roll_no || '').split('|');
                         const sEmail = (parts[2] || s.email || '').trim().toLowerCase();
@@ -443,7 +443,7 @@ const SUPABASE_CONFIG = {
                 if (data && !error && data.length > 0) {
                     data.forEach(s => {
                         const key = (s.email || s.name || '').trim().toLowerCase();
-                        if (key && !studentMap[key] && s.name !== 'SYSTEM_SETTINGS_RESULTS_RELEASED') {
+                        if (key && !studentMap[key] && !s.name.startsWith('SYSTEM_SETTINGS_') && !s.name.startsWith('SUPPORT_TICKET_') && !s.name.startsWith('SUPPORT_REPLY_')) {
                             const rawRoll = s.roll_no || s.rollNo || '';
                             const parts = rawRoll.split('|');
                             const parsedEmail = s.email || parts[2] || (s.name && s.name.includes('@') ? s.name : '');
@@ -528,6 +528,7 @@ const SUPABASE_CONFIG = {
                     const { data: studentsData } = await this.client.from('students').select('*');
                     if (studentsData) {
                         studentsData.forEach(s => {
+                            if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_')) return;
                             const parts = (s.roll_no || '').split('|');
                             const roll = parts[0] ? parts[0].trim().toUpperCase() : '';
                             const accId = parts[1] ? parts[1].trim() : (s.account_id || '');
@@ -902,6 +903,132 @@ const SUPABASE_CONFIG = {
             localStorage.setItem('zafii_support_tickets', JSON.stringify(filtered));
         } catch (e) {
             console.error("Local storage delete support ticket error:", e);
+        }
+        return true;
+    },
+
+    // ----------------- CUSTOMER SUPPORT REPLIES -----------------
+    async saveSupportReply(replyData) {
+        const replyId = replyData.replyId || (Date.now().toString());
+        const recordName = `SUPPORT_REPLY_${replyId}`;
+        const rollPayload = `${replyData.studentName || ''}~|~${replyData.rollNo || ''}~|~${replyData.accountId || ''}~|~${replyData.email || ''}~|~${replyData.ticketId || ''}`;
+        const msgPayload = replyData.replyMessage || '';
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: recordName,
+                            roll_no: rollPayload,
+                            semester: msgPayload,
+                            created_at: replyData.createdAt || new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+                console.log("✅ Support reply saved to Supabase successfully.");
+            } catch (err) {
+                console.warn("Supabase save support reply error:", err);
+            }
+        }
+
+        // Cache in LocalStorage
+        try {
+            const replies = JSON.parse(localStorage.getItem('zafii_support_replies') || '[]');
+            replies.unshift({
+                replyId,
+                ticketId: replyData.ticketId || '',
+                studentName: replyData.studentName || '',
+                rollNo: replyData.rollNo || '',
+                accountId: replyData.accountId || '',
+                email: replyData.email || '',
+                replyMessage: replyData.replyMessage || '',
+                createdAt: replyData.createdAt || new Date().toISOString()
+            });
+            localStorage.setItem('zafii_support_replies', JSON.stringify(replies));
+        } catch (e) {
+            console.error("Local storage save support reply failed:", e);
+        }
+        return true;
+    },
+
+    async getAllSupportReplies() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .like('name', 'SUPPORT_REPLY_%');
+
+                if (data && !error) {
+                    const replies = data.map(item => {
+                        const parts = (item.roll_no || '').split('~|~');
+                        const replyId = item.name.replace('SUPPORT_REPLY_', '');
+                        return {
+                            replyId: replyId,
+                            studentName: parts[0] || '',
+                            rollNo: parts[1] || '',
+                            accountId: parts[2] || '',
+                            email: parts[3] || '',
+                            ticketId: parts[4] || '',
+                            replyMessage: item.semester || '',
+                            createdAt: item.created_at || new Date().toISOString()
+                        };
+                    });
+                    replies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    localStorage.setItem('zafii_support_replies', JSON.stringify(replies));
+                    return replies;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch support replies error:", err);
+            }
+        }
+        return JSON.parse(localStorage.getItem('zafii_support_replies') || '[]');
+    },
+
+    async getSupportRepliesForStudent(studentObj) {
+        if (!studentObj) return [];
+        const allReplies = await this.getAllSupportReplies();
+        if (!allReplies || allReplies.length === 0) return [];
+
+        const targetAccId = (studentObj.accountId || '').trim().toLowerCase();
+        const targetEmail = (studentObj.email || '').trim().toLowerCase();
+        const targetRoll = (studentObj.rollNo || '').trim().toUpperCase();
+        const targetName = (studentObj.name || '').trim().toLowerCase();
+
+        return allReplies.filter(r => {
+            const rAccId = (r.accountId || '').trim().toLowerCase();
+            const rEmail = (r.email || '').trim().toLowerCase();
+            const rRoll = (r.rollNo || '').trim().toUpperCase();
+            const rName = (r.studentName || '').trim().toLowerCase();
+
+            if (targetAccId && targetAccId !== 'n/a' && rAccId && rAccId === targetAccId) return true;
+            if (targetEmail && targetEmail !== 'n/a' && rEmail && rEmail === targetEmail) return true;
+            if (targetRoll && targetRoll !== 'n/a' && targetRoll.includes('BSN-') && rRoll === targetRoll) return true;
+            if (targetName && rName && rName === targetName) return true;
+            return false;
+        });
+    },
+
+    async deleteSupportReply(replyId) {
+        const recordName = `SUPPORT_REPLY_${replyId}`;
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .delete()
+                    .eq('name', recordName);
+                console.log(`✅ Support reply ${replyId} deleted from Supabase.`);
+            } catch (err) {
+                console.warn("Supabase delete support reply error:", err);
+            }
+        }
+        try {
+            const replies = JSON.parse(localStorage.getItem('zafii_support_replies') || '[]');
+            const filtered = replies.filter(r => r.replyId !== replyId);
+            localStorage.setItem('zafii_support_replies', JSON.stringify(filtered));
+        } catch (e) {
+            console.error("Local storage delete support reply error:", e);
         }
         return true;
     }
