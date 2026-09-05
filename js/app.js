@@ -103,6 +103,21 @@ function switchView(viewName) {
         elements.resultView.classList.add('active');
     } else if (viewName === 'admin') {
         if (adminView) adminView.classList.add('active');
+        sessionStorage.setItem('zafii_admin_session_active', 'true');
+        localStorage.setItem('zafii_active_view', 'admin');
+        try {
+            history.replaceState(null, document.title, window.location.pathname + '#admin');
+        } catch (e) {}
+    }
+
+    if (viewName !== 'admin') {
+        sessionStorage.removeItem('zafii_admin_session_active');
+        localStorage.removeItem('zafii_active_view');
+        try {
+            if (window.location.hash === '#admin') {
+                history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            }
+        } catch (e) {}
     }
 
     // Support Widget Visibility: Exclusively visible on Student Dashboard view AND when not hidden by Admin
@@ -116,7 +131,7 @@ function switchView(viewName) {
         }
     }
 
-    if (window.location.hash) {
+    if (window.location.hash && window.location.hash !== '#admin') {
         try {
             history.replaceState(null, document.title, window.location.pathname + window.location.search);
         } catch (e) {}
@@ -325,8 +340,13 @@ function initAuth() {
     elements.btnLogout.addEventListener('click', () => {
         if (confirm("Are you sure you want to sign out from your student portal?")) {
             clearInterval(AppState.timerInterval);
+            sessionStorage.removeItem('zafii_admin_session_active');
+            localStorage.removeItem('zafii_active_view');
             try {
                 localStorage.removeItem('zafii_active_session');
+                if (window.location.hash === '#admin') {
+                    history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                }
             } catch (e) {}
             AppState.currentUser = null;
             AppState.studentHistory = [];
@@ -1820,27 +1840,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const savedSession = localStorage.getItem('zafii_active_session');
         if (savedSession) {
-            const parsed = JSON.parse(savedSession);
-            if (parsed && (parsed.email || parsed.name)) {
-                // Double check if account profile still exists in Supabase
-                const identifier = parsed.email ? parsed.email.split('@')[0] : parsed.name;
-                const check = await SUPABASE_CONFIG.getStudentProfile(identifier, parsed.email || '');
-                if (!check.isNew && check.profile) {
-                    const activeProfile = {
-                        ...check.profile,
-                        rollNo: check.profile.rollNo || parsed.rollNo || ("BSN-2026-" + Math.floor(1000 + Math.random() * 9000))
-                    };
-                    updateUIWithUserData(activeProfile);
-                    AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(activeProfile.name);
-                    switchView('dashboard');
-                } else {
-                    // Stale or deleted account session -> Purge local storage and force login view!
-                    localStorage.removeItem('zafii_active_session');
-                    switchView('login');
+            try {
+                const parsed = JSON.parse(savedSession);
+                if (parsed && (parsed.email || parsed.name)) {
+                    const identifier = parsed.email ? parsed.email.split('@')[0] : parsed.name;
+                    const check = await SUPABASE_CONFIG.getStudentProfile(identifier, parsed.email || '');
+                    if (!check.isNew && check.profile) {
+                        const activeProfile = {
+                            ...check.profile,
+                            rollNo: check.profile.rollNo || parsed.rollNo || ("BSN-2026-" + Math.floor(1000 + Math.random() * 9000))
+                        };
+                        updateUIWithUserData(activeProfile);
+                        AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(activeProfile.name);
+                    }
                 }
-            } else {
-                switchView('login');
+            } catch (err) {
+                console.warn("Auto profile restore error:", err);
             }
+        }
+
+        const isAdminSessionActive = sessionStorage.getItem('zafii_admin_session_active') === 'true' || 
+                                     localStorage.getItem('zafii_active_view') === 'admin' ||
+                                     window.location.hash === '#admin';
+
+        if (isAdminSessionActive && !hasRunningQuiz) {
+            switchView('admin');
+            if (typeof loadAdminDashboardData === 'function') {
+                await loadAdminDashboardData();
+            }
+        } else if (AppState.currentUser) {
+            switchView('dashboard');
         } else {
             switchView('login');
         }
@@ -1953,6 +1982,13 @@ function initAdminModule() {
 
     if (btnAdminExit) {
         btnAdminExit.addEventListener('click', () => {
+            sessionStorage.removeItem('zafii_admin_session_active');
+            localStorage.removeItem('zafii_active_view');
+            try {
+                if (window.location.hash === '#admin') {
+                    history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                }
+            } catch (e) {}
             switchView(AppState.currentUser ? 'dashboard' : 'login');
         });
     }
