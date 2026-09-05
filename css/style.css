@@ -1892,5 +1892,93 @@ body {
     font-weight: 500;
 }
 
+/* ===================================================
+   10. ADMIN DASHBOARD SCROLLABLE TABLES & MERIT VISIBILITY
+   =================================================== */
+.admin-table-scroll-container {
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(15, 23, 42, 0.45);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.25);
+    -webkit-overflow-scrolling: touch;
+}
 
+.admin-table-scroll-container::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
 
+.admin-table-scroll-container::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.7);
+    border-radius: 6px;
+}
+
+.admin-table-scroll-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5cf6, #ec4899);
+    border-radius: 6px;
+}
+
+.admin-table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #a855f7, #f43f5e);
+}
+
+/* Specific heights tailored to requested rows */
+.admin-table-scroll-5 {
+    max-height: 380px; /* Accommodates approx. 5 rows with instant scrolling */
+}
+
+.admin-table-scroll-10 {
+    max-height: 560px; /* Accommodates approx. 10 rows with instant scrolling */
+}
+
+/* Sticky Header so column titles stay visible when scrolling */
+.admin-table-scroll-container .history-table thead th {
+    position: sticky;
+    top: 0;
+    background: #0f172a;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.btn-toggle-merit-visibility {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-toggle-merit-visibility:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-merit-visible {
+    background: rgba(16, 185, 129, 0.16);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #10b981;
+}
+
+.btn-merit-visible:hover {
+    background: #10b981;
+    color: #000;
+}
+
+.btn-merit-hidden {
+    background: rgba(244, 63, 94, 0.16);
+    border-color: rgba(244, 63, 94, 0.4);
+    color: #f43f5e;
+}
+
+.btn-merit-hidden:hover {
+    background: #f43f5e;
+    color: #fff;
+}

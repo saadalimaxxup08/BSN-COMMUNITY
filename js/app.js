@@ -2341,41 +2341,148 @@ async function loadAdminDashboardData() {
     }
 
     // 4. Render BSN Semester 5 Master Merit List Table
-    const tbodyMasterMerit = document.getElementById('admin-master-merit-tbody');
-    if (tbodyMasterMerit) {
-        tbodyMasterMerit.innerHTML = '';
-        if (results.length === 0) {
-            tbodyMasterMerit.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">No exam submissions recorded yet to generate Master Merit List.</td></tr>`;
-        } else {
-            results.forEach((r) => {
-                const tr = document.createElement('tr');
-                const isPassed = Number(r.percentage) >= 60; // Rule: >=60% is PASSED, <60% is FAILED
-                const statusBadge = isPassed 
-                    ? '<span class="badge badge-passed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-check"></i> PASSED</span>' 
-                    : '<span class="badge badge-failed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-xmark"></i> FAILED</span>';
+    renderAdminMasterMeritList(results);
+}
 
-                tr.innerHTML = `
-                    <td style="vertical-align:middle;">
-                        <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(r.rollNo)}</code>
-                        <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:3px 8px; border-radius:8px; color:#f472b6; font-weight:800; font-size:11px; margin-left:4px;">ID: ${formatMaskedAccountId(r.accountId, r.rollNo || r.studentName)}</code>
-                    </td>
-                    <td style="vertical-align:middle; font-weight:800; color:#ffffff; font-size:13.5px;">${escapeHtml(r.studentName)}</td>
-                    <td style="vertical-align:middle; font-weight:800; color:#ffffff;">${r.score} / ${r.totalQuestions}</td>
-                    <td style="vertical-align:middle; font-weight:800; color:var(--cyan-primary);">${r.percentage}%</td>
-                    <td style="vertical-align:middle; font-weight:700; color:var(--amber-warning);">${escapeHtml(r.grade.split(' ')[0])}</td>
-                    <td style="vertical-align:middle;">${statusBadge}</td>
-                `;
-                tbodyMasterMerit.appendChild(tr);
-            });
-        }
+// ----------------- MASTER MERIT LIST VISIBILITY & EXCLUSION CONTROLLER -----------------
+function getCandidateMeritKey(r) {
+    if (r.id) return String(r.id);
+    if (r.rollNo && r.rollNo.trim()) return r.rollNo.trim();
+    return (r.studentName || '').toLowerCase().trim();
+}
+
+window.getMeritHiddenCandidates = function() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('zafii_merit_hidden_candidates') || '[]');
+        return new Set(stored);
+    } catch (e) {
+        return new Set();
     }
+};
+
+window.toggleMeritCandidateVisibility = function(key) {
+    if (!key) return;
+    const hiddenSet = window.getMeritHiddenCandidates();
+    if (hiddenSet.has(key)) {
+        hiddenSet.delete(key);
+    } else {
+        hiddenSet.add(key);
+    }
+    localStorage.setItem('zafii_merit_hidden_candidates', JSON.stringify(Array.from(hiddenSet)));
+    
+    // Re-render Master Merit Table
+    if (AppState.adminMasterMeritResults) {
+        renderAdminMasterMeritList(AppState.adminMasterMeritResults);
+    }
+};
+
+function renderAdminMasterMeritList(results) {
+    AppState.adminMasterMeritResults = results;
+    const tbodyMasterMerit = document.getElementById('admin-master-merit-tbody');
+    const btnExportMerit = document.getElementById('btn-export-master-merit-pdf');
+    if (!tbodyMasterMerit) return;
+
+    tbodyMasterMerit.innerHTML = '';
+    if (!results || results.length === 0) {
+        tbodyMasterMerit.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">No exam submissions recorded yet to generate Master Merit List.</td></tr>`;
+        return;
+    }
+
+    // Sort by Merit: Highest percentage and highest score first
+    const meritSorted = [...results].sort((a, b) => {
+        const pctA = Number(a.percentage) || 0;
+        const pctB = Number(b.percentage) || 0;
+        if (pctB !== pctA) return pctB - pctA;
+        const scoreA = Number(a.score) || 0;
+        const scoreB = Number(b.score) || 0;
+        return scoreB - scoreA;
+    });
+
+    const hiddenSet = window.getMeritHiddenCandidates();
+    let visibleCount = 0;
+
+    meritSorted.forEach((r) => {
+        const tr = document.createElement('tr');
+        const candKey = getCandidateMeritKey(r);
+        const isHidden = hiddenSet.has(candKey);
+
+        if (!isHidden) visibleCount++;
+
+        const isPassed = Number(r.percentage) >= 60; // Rule: >=60% is PASSED, <60% is FAILED
+        const statusBadge = isPassed 
+            ? '<span class="badge badge-passed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-check"></i> PASSED</span>' 
+            : '<span class="badge badge-failed" style="font-size:11.5px; padding:4px 10px;"><i class="fa-solid fa-xmark"></i> FAILED</span>';
+
+        if (isHidden) {
+            tr.style.opacity = '0.55';
+            tr.style.background = 'rgba(244, 63, 94, 0.05)';
+        }
+
+        const eyeBtnHTML = isHidden
+            ? `<button type="button" class="btn-toggle-merit-visibility btn-merit-hidden" data-key="${escapeHtml(candKey)}" title="Currently Excluded from PDF. Click to Include in PDF export.">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span>Hidden</span>
+               </button>`
+            : `<button type="button" class="btn-toggle-merit-visibility btn-merit-visible" data-key="${escapeHtml(candKey)}" title="Currently Included in PDF. Click to Hide from PDF export.">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Visible</span>
+               </button>`;
+
+        tr.innerHTML = `
+            <td style="vertical-align:middle;">
+                <code style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:4px 10px; border-radius:12px; color:var(--cyan-primary); font-weight:800; font-size:12px;">${escapeHtml(r.rollNo)}</code>
+                <code style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3); padding:3px 8px; border-radius:8px; color:#f472b6; font-weight:800; font-size:11px; margin-left:4px;">ID: ${formatMaskedAccountId(r.accountId, r.rollNo || r.studentName)}</code>
+            </td>
+            <td style="vertical-align:middle; font-weight:800; color:#ffffff; font-size:13.5px;">
+                ${escapeHtml(r.studentName)}
+                ${isHidden ? '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10px; background:#f43f5e; color:#fff; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:800;"><i class="fa-solid fa-eye-slash"></i> PDF EXCLUDED</span>' : ''}
+            </td>
+            <td style="vertical-align:middle; font-weight:800; color:#ffffff;">${r.score} / ${r.totalQuestions}</td>
+            <td style="vertical-align:middle; font-weight:800; color:var(--cyan-primary);">${r.percentage}%</td>
+            <td style="vertical-align:middle; font-weight:700; color:var(--amber-warning);">${escapeHtml(r.grade.split(' ')[0])}</td>
+            <td style="vertical-align:middle;">${statusBadge}</td>
+            <td style="vertical-align:middle; text-align:center;">${eyeBtnHTML}</td>
+        `;
+        tbodyMasterMerit.appendChild(tr);
+    });
+
+    if (btnExportMerit) {
+        btnExportMerit.innerHTML = `<i class="fa-solid fa-file-pdf"></i> <span>Export Master Merit List PDF (${visibleCount}/${meritSorted.length})</span>`;
+    }
+
+    // Bind click events on all eye buttons
+    tbodyMasterMerit.querySelectorAll('.btn-toggle-merit-visibility').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const key = e.currentTarget.getAttribute('data-key');
+            window.toggleMeritCandidateVisibility(key);
+        });
+    });
 }
 
 // ----------------- MASTER MERIT LIST PDF EXPORTER ENGINE -----------------
 window.exportMasterMeritListPDF = async function() {
-    const results = await SUPABASE_CONFIG.getAllQuizResults();
-    if (!results || results.length === 0) {
+    const allResults = await SUPABASE_CONFIG.getAllQuizResults();
+    if (!allResults || allResults.length === 0) {
         alert("⚠️ No student exam submissions found to generate Master Merit List!");
+        return;
+    }
+
+    // Sort by Merit: Highest percentage and highest score first
+    const meritSorted = [...allResults].sort((a, b) => {
+        const pctA = Number(a.percentage) || 0;
+        const pctB = Number(b.percentage) || 0;
+        if (pctB !== pctA) return pctB - pctA;
+        const scoreA = Number(a.score) || 0;
+        const scoreB = Number(b.score) || 0;
+        return scoreB - scoreA;
+    });
+
+    const hiddenSet = window.getMeritHiddenCandidates();
+    // Exclude any candidates marked as hidden:
+    const exportResults = meritSorted.filter(r => !hiddenSet.has(getCandidateMeritKey(r)));
+
+    if (exportResults.length === 0) {
+        alert("⚠️ All candidates are currently marked as Hidden! Please make at least one candidate visible on the dashboard to export the Master Merit List PDF.");
         return;
     }
 
@@ -2385,7 +2492,7 @@ window.exportMasterMeritListPDF = async function() {
         return;
     }
 
-    const rowsHTML = results.map((r, idx) => {
+    const rowsHTML = exportResults.map((r, idx) => {
         const isPassed = Number(r.percentage) >= 60; // Rule: >=60% is PASSED, <60% is FAILED
         const statusText = isPassed ? "PASSED" : "FAILED";
         const statusColor = isPassed ? "#10b981" : "#f43f5e";
@@ -2409,6 +2516,11 @@ window.exportMasterMeritListPDF = async function() {
             </tr>
         `;
     }).join('');
+
+    const excludedCount = allResults.length - exportResults.length;
+    const filterNote = excludedCount > 0 
+        ? `<span><strong>Candidates Included:</strong> ${exportResults.length} Qualified Candidates (${excludedCount} Excluded by Administrator)</span>`
+        : `<span><strong>Total Candidates:</strong> ${exportResults.length} Candidates</span>`;
 
     const htmlContent = `
         <!DOCTYPE html>
@@ -2447,7 +2559,7 @@ window.exportMasterMeritListPDF = async function() {
             
             <div class="meta-bar">
                 <span><strong>Course:</strong> Pediatric Health Nursing (PED-501)</span>
-                <span><strong>Total Candidates:</strong> ${results.length} Candidates</span>
+                ${filterNote}
                 <span><strong>Generated:</strong> ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
             </div>
 

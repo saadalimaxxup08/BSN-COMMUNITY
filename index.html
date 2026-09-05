@@ -796,20 +796,22 @@
                     </h3>
                 </div>
 
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Candidate Profile & Email</th>
-                            <th>Roll Number & Account ID</th>
-                            <th>Semester</th>
-                            <th>Registration Date</th>
-                            <th style="text-align:right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-students-tbody">
-                        <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading registered student database...</td></tr>
-                    </tbody>
-                </table>
+                <div class="admin-table-scroll-container admin-table-scroll-5">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate Profile & Email</th>
+                                <th>Roll Number & Account ID</th>
+                                <th>Semester</th>
+                                <th>Registration Date</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-students-tbody">
+                            <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading registered student database...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- All Quiz Submissions Table -->
@@ -821,21 +823,23 @@
                     </h3>
                 </div>
 
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Student Candidate</th>
-                            <th>Subject & Code</th>
-                            <th>Score & Grade</th>
-                            <th>Status</th>
-                            <th>Date Completed</th>
-                            <th style="text-align:right;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-results-tbody">
-                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading student exam submission history...</td></tr>
-                    </tbody>
-                </table>
+                <div class="admin-table-scroll-container admin-table-scroll-5">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Student Candidate</th>
+                                <th>Subject & Code</th>
+                                <th>Score & Grade</th>
+                                <th>Status</th>
+                                <th>Date Completed</th>
+                                <th style="text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-results-tbody">
+                            <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading student exam submission history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- BSN Semester 5 Master Merit List Table & PDF Exporter -->
@@ -851,21 +855,24 @@
                     </button>
                 </div>
 
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Roll Number</th>
-                            <th>Candidate Name</th>
-                            <th>Score (Out of 70)</th>
-                            <th>Percentage</th>
-                            <th>Grade</th>
-                            <th>Result Status (&lt;40% Fail)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-master-merit-tbody">
-                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Generating Master Merit List...</td></tr>
-                    </tbody>
-                </table>
+                <div class="admin-table-scroll-container admin-table-scroll-10">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Roll Number</th>
+                                <th>Candidate Name</th>
+                                <th>Score (Out of 70)</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                                <th>Result Status (&lt;60% Fail)</th>
+                                <th style="text-align:center;">PDF Export Visibility</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-master-merit-tbody">
+                            <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Generating Master Merit List...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -1331,10 +1338,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 17.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=17.0"></script>
-    <script src="js/quiz-data.js?v=17.0"></script>
-    <script src="js/pdf-generator.js?v=17.0"></script>
-    <script src="js/app.js?v=17.0"></script>
+    <!-- Application Scripts (Version 18.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=18.0"></script>
+    <script src="js/quiz-data.js?v=18.0"></script>
+    <script src="js/pdf-generator.js?v=18.0"></script>
+    <script src="js/app.js?v=18.0"></script>
 </body>
 </html>
