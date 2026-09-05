@@ -15,9 +15,15 @@ function populateMarksheetDOM(resultData) {
     const elSub = document.getElementById('pdf-exam-subject');
     const elDate = document.getElementById('pdf-exam-date');
     const elTime = document.getElementById('pdf-time-taken');
+    const elAccId = document.getElementById('pdf-student-account-id');
 
     if (elName) elName.textContent = resultData.studentName || "Medical Scholar";
     if (elRoll) elRoll.textContent = resultData.rollNo || "BSN-2026-001";
+    if (elAccId) {
+        elAccId.textContent = window.formatMaskedAccountId 
+            ? window.formatMaskedAccountId(resultData.accountId, resultData.rollNo || resultData.studentName)
+            : `(${resultData.accountId || '214***321'})`;
+    }
     if (elSem) elSem.textContent = resultData.semester || "Semester 1";
     if (elSub) elSub.textContent = `${resultData.subjectTitle} (${resultData.subjectCode})`;
     if (elDate) elDate.textContent = resultData.date || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -34,11 +40,12 @@ function populateMarksheetDOM(resultData) {
     if (elGrade) elGrade.textContent = (resultData.grade || "A").split(' ')[0];
     
     if (statusBadge) {
-        if (resultData.isPassed) {
+        const isPassedScore = resultData.percentage !== undefined ? Number(resultData.percentage) >= 60 : resultData.isPassed;
+        if (isPassedScore) {
             statusBadge.textContent = "PASSED (VERIFIED)";
             statusBadge.className = "marksheet-badge badge-passed";
         } else {
-            statusBadge.textContent = "RE-ATTEMPT REQUIRED";
+            statusBadge.textContent = "FAILED (RE-ATTEMPT REQUIRED)";
             statusBadge.className = "marksheet-badge badge-failed";
         }
     }

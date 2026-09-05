@@ -226,12 +226,15 @@ const SUPABASE_CONFIG = {
         // Try saving to Supabase first
         if (this.client && navigator.onLine) {
             try {
+                const combinedRoll = resultData.accountId ? `${resultData.rollNo}|${resultData.accountId}` : resultData.rollNo;
+                const isPassedScore = Number(resultData.percentage) >= 60;
+
                 const { data, error } = await this.client
                     .from('quiz_results')
                     .insert([
                         {
                             student_name: resultData.studentName,
-                            roll_no: resultData.rollNo,
+                            roll_no: combinedRoll,
                             semester: resultData.semester,
                             subject_title: resultData.subjectTitle,
                             subject_code: resultData.subjectCode,
@@ -239,7 +242,7 @@ const SUPABASE_CONFIG = {
                             total_questions: resultData.totalQuestions,
                             percentage: resultData.percentage,
                             grade: resultData.grade,
-                            passed: resultData.isPassed,
+                            passed: isPassedScore,
                             breakdown: resultData.breakdown,
                             time_taken: resultData.timeTaken,
                             created_at: new Date().toISOString()
@@ -351,21 +354,35 @@ const SUPABASE_CONFIG = {
                     .order('created_at', { ascending: false });
 
                 if (data && !error && data.length > 0) {
-                    return data.map(item => ({
-                        studentName: item.student_name,
-                        rollNo: item.roll_no,
-                        semester: item.semester,
-                        subjectTitle: item.subject_title,
-                        subjectCode: item.subject_code,
-                        score: item.score,
-                        totalQuestions: item.total_questions,
-                        percentage: item.percentage,
-                        grade: item.grade,
-                        isPassed: item.passed,
-                        breakdown: item.breakdown || [],
-                        timeTaken: item.time_taken,
-                        date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                    }));
+                    return data.map(item => {
+                        const rawRoll = item.roll_no || '';
+                        const parts = rawRoll.split('|');
+                        const pct = Number(item.percentage) || 0;
+                        const isPassed = pct >= 60; // 60% passing rule
+                        let grade = item.grade || '';
+                        if (pct >= 85) grade = "A+ (Distinction)";
+                        else if (pct >= 75) grade = "A (Excellent)";
+                        else if (pct >= 65) grade = "B (Good)";
+                        else if (pct >= 60) grade = "C (Satisfactory)";
+                        else grade = "F (Failed)";
+
+                        return {
+                            studentName: item.student_name,
+                            rollNo: parts[0] || 'BSN-2026',
+                            accountId: parts[1] || item.account_id || '',
+                            semester: item.semester,
+                            subjectTitle: item.subject_title,
+                            subjectCode: item.subject_code,
+                            score: item.score,
+                            totalQuestions: item.total_questions,
+                            percentage: pct,
+                            grade: grade,
+                            isPassed: isPassed,
+                            breakdown: item.breakdown || [],
+                            timeTaken: item.time_taken,
+                            date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                        };
+                    });
                 }
             } catch (err) {
                 console.warn("Supabase fetch history error, using local fallback:", err);
@@ -481,6 +498,22 @@ const SUPABASE_CONFIG = {
     async getAllQuizResults() {
         if (this.client) {
             try {
+                // Fetch student profiles to map genuine Account IDs by roll number or name
+                const accountIdMapByRoll = {};
+                const accountIdMapByName = {};
+                try {
+                    const { data: studentsData } = await this.client.from('students').select('*');
+                    if (studentsData) {
+                        studentsData.forEach(s => {
+                            const parts = (s.roll_no || '').split('|');
+                            const roll = parts[0] ? parts[0].trim().toUpperCase() : '';
+                            const accId = parts[1] ? parts[1].trim() : (s.account_id || '');
+                            if (roll && accId) accountIdMapByRoll[roll] = accId;
+                            if (s.name && accId) accountIdMapByName[s.name.trim().toLowerCase()] = accId;
+                        });
+                    }
+                } catch (e) {}
+
                 const { data, error } = await this.client
                     .from('quiz_results')
                     .select('*')
@@ -490,18 +523,41 @@ const SUPABASE_CONFIG = {
                     return data.map(item => {
                         const rawRoll = item.roll_no || '';
                         const parts = rawRoll.split('|');
+                        const cleanRoll = (parts[0] || 'BSN-2026').trim().toUpperCase();
+                        const cleanName = (item.student_name || '').trim().toLowerCase();
+
+                        let resolvedAccId = parts[1] || item.account_id || item.accountId;
+                        if (!resolvedAccId || resolvedAccId === 'N/A') {
+                            resolvedAccId = accountIdMapByRoll[cleanRoll] || accountIdMapByName[cleanName];
+                        }
+                        if (!resolvedAccId || resolvedAccId === 'N/A') {
+                            let hash = 0;
+                            const seed = cleanRoll || cleanName;
+                            for (let i = 0; i < seed.length; i++) hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                            resolvedAccId = (Math.abs(hash % 90000000) + 10000000).toString();
+                        }
+
+                        const pct = Number(item.percentage) || 0;
+                        const isPassed = pct >= 60; // 60% Passing Rule
+                        let grade = item.grade || '';
+                        if (pct >= 85) grade = "A+ (Distinction)";
+                        else if (pct >= 75) grade = "A (Excellent)";
+                        else if (pct >= 65) grade = "B (Good)";
+                        else if (pct >= 60) grade = "C (Satisfactory)";
+                        else grade = "F (Failed)";
+
                         return {
                             studentName: item.student_name,
                             rollNo: parts[0] || 'BSN-2026',
-                            accountId: parts[1] || item.account_id || item.accountId || 'N/A',
+                            accountId: resolvedAccId,
                             semester: item.semester,
                             subjectTitle: item.subject_title,
                             subjectCode: item.subject_code,
                             score: item.score,
                             totalQuestions: item.total_questions,
-                            percentage: item.percentage,
-                            grade: item.grade,
-                            isPassed: item.passed,
+                            percentage: pct,
+                            grade: grade,
+                            isPassed: isPassed,
                             breakdown: item.breakdown || [],
                             timeTaken: item.time_taken,
                             date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })

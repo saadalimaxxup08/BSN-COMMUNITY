@@ -3,7 +3,7 @@
 // Caches core portal assets for instant native app loading
 // ===================================================
 
-const CACHE_NAME = 'zafii-medportal-v13';
+const CACHE_NAME = 'zafii-medportal-v14';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
