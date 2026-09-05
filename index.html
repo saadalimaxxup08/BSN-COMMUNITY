@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" />
     
     <!-- Custom Glassmorphic Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=19.0">
+    <link rel="stylesheet" href="css/style.css?v=20.0">
 
     <!-- External Libraries (CDN) -->
     <!-- 1. html2pdf.js for direct Chrome PDF marksheet downloads -->
@@ -787,6 +787,69 @@
                 </div>
             </div>
 
+            <!-- Administrator Access Delegation & Security Control -->
+            <div class="glass-card history-card" style="margin-top:24px; border-top:3px solid #8b5cf6;">
+                <div class="section-title-row" style="margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                    <h3 style="color:#fff; font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-user-shield" style="color:#8b5cf6;"></i>
+                        <span>Administrator Access Delegation & Security Control</span>
+                    </h3>
+                    <span class="badge" style="background:rgba(139,92,246,0.15); color:#c084fc; border:1px solid rgba(139,92,246,0.3); font-size:12px; padding:4px 10px;">
+                        <i class="fa-solid fa-shield-halved" style="margin-right:4px;"></i>Master Admin Console
+                    </span>
+                </div>
+
+                <!-- Grant Admin Access Form Card -->
+                <div style="background:rgba(15, 23, 42, 0.6); border:1px solid rgba(139, 92, 246, 0.3); border-radius:12px; padding:18px; margin-bottom:20px;">
+                    <div style="font-size:13.5px; font-weight:700; color:#c084fc; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Assign New Administrator Privileges</span>
+                    </div>
+                    <form id="form-add-admin" onsubmit="window.handleAddNewAdmin(event)" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; align-items:flex-end;">
+                        <div>
+                            <label class="form-label" style="font-size:11.5px; color:#cbd5e1; margin-bottom:4px;">Full Name *</label>
+                            <input type="text" id="admin-input-name" class="input-glass" style="width:100%; font-size:13px; padding:8px 12px;" placeholder="e.g. Dr. Ayesha Khan" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size:11.5px; color:#cbd5e1; margin-bottom:4px;">Email Address *</label>
+                            <input type="email" id="admin-input-email" class="input-glass" style="width:100%; font-size:13px; padding:8px 12px;" placeholder="e.g. ayesha@gmail.com" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size:11.5px; color:#cbd5e1; margin-bottom:4px;">Roll Number *</label>
+                            <input type="text" id="admin-input-roll" class="input-glass" style="width:100%; font-size:13px; padding:8px 12px;" placeholder="e.g. BSN-2026-8899" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size:11.5px; color:#cbd5e1; margin-bottom:4px;">Account ID *</label>
+                            <input type="text" id="admin-input-account-id" class="input-glass" style="width:100%; font-size:13px; padding:8px 12px;" placeholder="e.g. 84920194" required>
+                        </div>
+                        <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end; margin-top:4px;">
+                            <button type="submit" class="btn-primary" style="background:linear-gradient(135deg, #8b5cf6, #ec4899); font-size:13px; padding:9px 20px; border-radius:8px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Grant Administrator Access</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Authorized Administrators Table -->
+                <div class="admin-table-scroll-container admin-table-scroll-5">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Administrator Profile & Email</th>
+                                <th>Roll Number & Account ID</th>
+                                <th>Access Role</th>
+                                <th>Status & Verification</th>
+                                <th style="text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-members-tbody">
+                            <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">Loading authorized administrator roster...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Live Student Roster Directory Table -->
             <div class="glass-card history-card" style="margin-top:24px;">
                 <div class="section-title-row" style="margin-bottom:16px;">
@@ -1342,10 +1405,10 @@
         </div>
     </div>
 
-    <!-- Application Scripts (Version 19.0 Cache-Buster) -->
-    <script src="js/supabase-config.js?v=19.0"></script>
-    <script src="js/quiz-data.js?v=19.0"></script>
-    <script src="js/pdf-generator.js?v=19.0"></script>
-    <script src="js/app.js?v=19.0"></script>
+    <!-- Application Scripts (Version 20.0 Cache-Buster) -->
+    <script src="js/supabase-config.js?v=20.0"></script>
+    <script src="js/quiz-data.js?v=20.0"></script>
+    <script src="js/pdf-generator.js?v=20.0"></script>
+    <script src="js/app.js?v=20.0"></script>
 </body>
 </html>

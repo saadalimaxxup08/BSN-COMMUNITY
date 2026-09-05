@@ -20,6 +20,7 @@ const SUPABASE_CONFIG = {
             try {
                 this.client = supabase.createClient(this.url, this.anonKey);
                 console.log("✅ Supabase successfully connected!");
+                this.getAllDelegatedAdmins().catch(() => {});
                 return true;
             } catch (err) {
                 console.warn("⚠️ Supabase initialization failed:", err);
@@ -45,7 +46,7 @@ const SUPABASE_CONFIG = {
 
                 if (data && !error && data.length > 0) {
                     const match = data.find(s => {
-                        if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_')) return false;
+                        if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_') || s.name.startsWith('ADMIN_DELEGATED_')) return false;
                         const sName = (s.name || '').trim().toLowerCase();
                         const parts = (s.roll_no || '').split('|');
                         const sEmail = (parts[2] || s.email || '').trim().toLowerCase();
@@ -443,7 +444,7 @@ const SUPABASE_CONFIG = {
                 if (data && !error && data.length > 0) {
                     data.forEach(s => {
                         const key = (s.email || s.name || '').trim().toLowerCase();
-                        if (key && !studentMap[key] && !s.name.startsWith('SYSTEM_SETTINGS_') && !s.name.startsWith('SUPPORT_TICKET_') && !s.name.startsWith('SUPPORT_REPLY_')) {
+                        if (key && !studentMap[key] && !s.name.startsWith('SYSTEM_SETTINGS_') && !s.name.startsWith('SUPPORT_TICKET_') && !s.name.startsWith('SUPPORT_REPLY_') && !s.name.startsWith('ADMIN_DELEGATED_')) {
                             const rawRoll = s.roll_no || s.rollNo || '';
                             const parts = rawRoll.split('|');
                             const parsedEmail = s.email || parts[2] || (s.name && s.name.includes('@') ? s.name : '');
@@ -528,7 +529,7 @@ const SUPABASE_CONFIG = {
                     const { data: studentsData } = await this.client.from('students').select('*');
                     if (studentsData) {
                         studentsData.forEach(s => {
-                            if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_')) return;
+                            if (!s || s.name.startsWith('SYSTEM_SETTINGS_') || s.name.startsWith('SUPPORT_TICKET_') || s.name.startsWith('SUPPORT_REPLY_') || s.name.startsWith('ADMIN_DELEGATED_')) return;
                             const parts = (s.roll_no || '').split('|');
                             const roll = parts[0] ? parts[0].trim().toUpperCase() : '';
                             const accId = parts[1] ? parts[1].trim() : (s.account_id || '');
@@ -1029,6 +1030,103 @@ const SUPABASE_CONFIG = {
             localStorage.setItem('zafii_support_replies', JSON.stringify(filtered));
         } catch (e) {
             console.error("Local storage delete support reply error:", e);
+        }
+        return true;
+    },
+
+    // ----------------- DELEGATED ADMINISTRATORS -----------------
+    async saveDelegatedAdmin(adminData) {
+        const adminId = adminData.id || Date.now().toString();
+        const recordName = `ADMIN_DELEGATED_${adminId}`;
+        const rollPayload = `${adminData.name || ''}~|~${adminData.rollNo || ''}~|~${adminData.accountId || ''}~|~${adminData.email || ''}`;
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: recordName,
+                            roll_no: rollPayload,
+                            semester: 'DELEGATED_ADMIN',
+                            created_at: adminData.createdAt || new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+                console.log("✅ Delegated administrator privileges saved to Supabase.");
+            } catch (err) {
+                console.warn("Supabase save delegated admin error:", err);
+            }
+        }
+
+        // Cache in LocalStorage
+        try {
+            const admins = JSON.parse(localStorage.getItem('zafii_delegated_admins') || '[]');
+            admins.unshift({
+                id: adminId,
+                name: adminData.name || '',
+                rollNo: adminData.rollNo || '',
+                accountId: adminData.accountId || '',
+                email: adminData.email || '',
+                createdAt: adminData.createdAt || new Date().toISOString()
+            });
+            localStorage.setItem('zafii_delegated_admins', JSON.stringify(admins));
+        } catch (e) {
+            console.error("Local storage save delegated admin error:", e);
+        }
+        return true;
+    },
+
+    async getAllDelegatedAdmins() {
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .like('name', 'ADMIN_DELEGATED_%');
+
+                if (data && !error) {
+                    const admins = data.map(item => {
+                        const parts = (item.roll_no || '').split('~|~');
+                        const adminId = item.name.replace('ADMIN_DELEGATED_', '');
+                        return {
+                            id: adminId,
+                            name: parts[0] || '',
+                            rollNo: parts[1] || '',
+                            accountId: parts[2] || '',
+                            email: parts[3] || '',
+                            createdAt: item.created_at || new Date().toISOString()
+                        };
+                    });
+                    admins.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    localStorage.setItem('zafii_delegated_admins', JSON.stringify(admins));
+                    return admins;
+                }
+            } catch (err) {
+                console.warn("Supabase fetch delegated admins error:", err);
+            }
+        }
+        return JSON.parse(localStorage.getItem('zafii_delegated_admins') || '[]');
+    },
+
+    async deleteDelegatedAdmin(adminId) {
+        const recordName = `ADMIN_DELEGATED_${adminId}`;
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .delete()
+                    .eq('name', recordName);
+                console.log(`✅ Delegated administrator ${adminId} deleted from Supabase.`);
+            } catch (err) {
+                console.warn("Supabase delete delegated admin error:", err);
+            }
+        }
+        try {
+            const admins = JSON.parse(localStorage.getItem('zafii_delegated_admins') || '[]');
+            const filtered = admins.filter(a => a.id !== adminId);
+            localStorage.setItem('zafii_delegated_admins', JSON.stringify(filtered));
+        } catch (e) {
+            console.error("Local storage delete delegated admin error:", e);
         }
         return true;
     }

@@ -414,7 +414,22 @@ function updateUIWithUserData(userData) {
 
     const elBtnNavAdmin = document.getElementById('btn-nav-admin');
     if (elBtnNavAdmin) {
-        elBtnNavAdmin.style.display = window.isUserAdmin() ? 'inline-flex' : 'none';
+        const isAuthorizedAdmin = window.isUserAdmin();
+        if (isAuthorizedAdmin) {
+            elBtnNavAdmin.style.display = 'inline-flex';
+            elBtnNavAdmin.style.cursor = 'pointer';
+            elBtnNavAdmin.style.pointerEvents = 'auto';
+            elBtnNavAdmin.style.touchAction = 'manipulation';
+            elBtnNavAdmin.onclick = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                window.openAdminModal();
+            };
+        } else {
+            elBtnNavAdmin.style.display = 'none';
+        }
     }
 }
 
@@ -710,25 +725,29 @@ window.isUserAdmin = function() {
     const userEmail = (userObj.email || '').trim().toLowerCase();
     const userRoll = (userObj.rollNumber || userObj.roll || userObj.rollNo || '').trim().toUpperCase();
     const userAccId = (userObj.accountId || '').toString().trim();
+    const userName = (userObj.name || '').trim().toLowerCase();
     
     let savedEmail = '';
     let savedRoll = '';
     let savedAccId = '';
+    let savedName = '';
     try {
         const sess = JSON.parse(localStorage.getItem('zafii_active_session') || '{}');
         savedEmail = (sess.email || '').trim().toLowerCase();
         savedRoll = (sess.rollNumber || sess.roll || sess.rollNo || '').trim().toUpperCase();
         savedAccId = (sess.accountId || '').toString().trim();
+        savedName = (sess.name || '').trim().toLowerCase();
     } catch (e) {}
 
     const email = (userEmail || savedEmail).toLowerCase();
     const roll = (userRoll || savedRoll).toUpperCase();
     const accId = (userAccId || savedAccId).replace(/[^0-9]/g, '');
+    const name = (userName || savedName).toLowerCase();
 
-    // Strictly designated Administrator Accounts:
-    // 1. Huzaifa (pakhuzaifakhan@gmail.com, BSN-2026-7789, ID: 28831844)
-    // 2. Saleem (saadalimaxxup02@gmail.com, BSN-2026-5623, ID: 27601544)
-    // 3. Huzaifa Mushtaq (huzaifamushtaqahmed@gmail.com, BSN-2026-1076)
+    // 1. Strictly designated Primary Root Administrator Accounts:
+    // - Huzaifa (pakhuzaifakhan@gmail.com, BSN-2026-7789, ID: 28831844)
+    // - Saleem (saadalimaxxup02@gmail.com, BSN-2026-5623, ID: 27601544)
+    // - Huzaifa Mushtaq (huzaifamushtaqahmed@gmail.com, BSN-2026-1076)
     const authorizedEmails = [
         'pakhuzaifakhan@gmail.com',
         'saadalimaxxup02@gmail.com',
@@ -747,6 +766,22 @@ window.isUserAdmin = function() {
     if (authorizedEmails.some(ae => email && email.includes(ae))) return true;
     if (authorizedRolls.some(ar => roll && roll === ar)) return true;
     if (authorizedAccIds.some(aid => accId && accId === aid)) return true;
+
+    // 2. Check Dynamically Delegated Administrators
+    try {
+        const delegated = JSON.parse(localStorage.getItem('zafii_delegated_admins') || '[]');
+        for (const d of delegated) {
+            const dEmail = (d.email || '').trim().toLowerCase();
+            const dRoll = (d.rollNo || '').trim().toUpperCase();
+            const dAccId = (d.accountId || '').toString().replace(/[^0-9]/g, '');
+            const dName = (d.name || '').trim().toLowerCase();
+
+            if (dEmail && email && (email === dEmail || email.includes(dEmail))) return true;
+            if (dRoll && roll && roll === dRoll) return true;
+            if (dAccId && accId && accId === dAccId) return true;
+            if (dName && name && (name === dName || name.replace(/\s+/g, '') === dName.replace(/\s+/g, ''))) return true;
+        }
+    } catch (e) {}
 
     return false;
 };
@@ -908,9 +943,28 @@ function renderDashboard() {
             btnNavAdmin.innerHTML = '<i class="fa-solid fa-user-shield"></i> <span>Admin Control</span>';
             btnNavAdmin.style.background = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
             btnNavAdmin.style.boxShadow = '0 0 16px rgba(139, 92, 246, 0.6)';
+            btnNavAdmin.style.cursor = 'pointer';
+            btnNavAdmin.style.pointerEvents = 'auto';
+            btnNavAdmin.style.touchAction = 'manipulation';
+            btnNavAdmin.onclick = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                window.openAdminModal();
+            };
         } else {
             btnNavAdmin.style.display = 'none';
         }
+    }
+
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.getAllDelegatedAdmins === 'function') {
+        SUPABASE_CONFIG.getAllDelegatedAdmins().then(() => {
+            const elBtn = document.getElementById('btn-nav-admin');
+            if (elBtn) {
+                elBtn.style.display = window.isUserAdmin() ? 'inline-flex' : 'none';
+            }
+        }).catch(() => {});
     }
 
     updateStatsSummary();
@@ -2344,7 +2398,161 @@ async function loadAdminDashboardData() {
 
     // 4. Render BSN Semester 5 Master Merit List Table
     renderAdminMasterMeritList(results);
+
+    // 5. Render Authorized Administrators Table
+    await renderAdminMembersTable();
 }
+
+// ----------------- ADMINISTRATOR ACCESS DELEGATION CONTROLLER -----------------
+async function renderAdminMembersTable() {
+    const tbody = document.getElementById('admin-members-tbody');
+    if (!tbody) return;
+
+    // Primary Root Administrators (Permanent Master Admins)
+    const primaryRootAdmins = [
+        {
+            name: 'Huzaifa Mushtaq',
+            email: 'pakhuzaifakhan@gmail.com',
+            rollNo: 'BSN-2026-7789',
+            accountId: '28831844',
+            role: 'Primary Root Admin',
+            isRoot: true,
+            createdAt: '4 Sept 2026'
+        },
+        {
+            name: 'Saleem',
+            email: 'saadalimaxxup02@gmail.com',
+            rollNo: 'BSN-2026-5623',
+            accountId: '27601544',
+            role: 'Primary Root Admin',
+            isRoot: true,
+            createdAt: '4 Sept 2026'
+        },
+        {
+            name: 'Huzaifa Mushtaq',
+            email: 'huzaifamushtaqahmed@gmail.com',
+            rollNo: 'BSN-2026-1076',
+            accountId: '76699588',
+            role: 'Primary Root Admin',
+            isRoot: true,
+            createdAt: '4 Sept 2026'
+        }
+    ];
+
+    const delegatedAdmins = await SUPABASE_CONFIG.getAllDelegatedAdmins();
+    const allAdmins = [...primaryRootAdmins, ...delegatedAdmins];
+
+    tbody.innerHTML = allAdmins.map(admin => {
+        const maskedAcc = formatMaskedAccountId(admin.accountId);
+        const dateStr = admin.isRoot 
+            ? admin.createdAt 
+            : new Date(admin.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+        const safeName = escapeHtml(admin.name).replace(/'/g, "\\'");
+
+        return `
+            <tr>
+                <td style="vertical-align:middle;">
+                    <div style="font-weight:800; color:#ffffff; font-size:13.5px; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-user-shield" style="color:${admin.isRoot ? '#c084fc' : '#38bdf8'}; font-size:13px;"></i>
+                        <span>${escapeHtml(admin.name)}</span>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;">
+                        <i class="fa-regular fa-envelope" style="margin-right:4px;"></i>${escapeHtml(admin.email)}
+                    </div>
+                </td>
+                <td style="vertical-align:middle;">
+                    <div style="font-size:12.5px; font-weight:700; color:#e2e8f0;">
+                        <code style="color:var(--cyan-primary);">${escapeHtml(admin.rollNo)}</code>
+                    </div>
+                    <div style="font-size:11px; color:#f472b6; margin-top:2px;">
+                        ID: <code style="color:#f472b6;">${maskedAcc}</code>
+                    </div>
+                </td>
+                <td style="vertical-align:middle;">
+                    ${admin.isRoot 
+                        ? `<span class="badge" style="background:rgba(139,92,246,0.18); color:#c084fc; border:1px solid rgba(139,92,246,0.35); font-size:11px; padding:3px 8px;"><i class="fa-solid fa-crown" style="margin-right:4px;"></i>Primary Root Admin</span>`
+                        : `<span class="badge" style="background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); font-size:11px; padding:3px 8px;"><i class="fa-solid fa-user-check" style="margin-right:4px;"></i>Delegated Admin</span>`
+                    }
+                </td>
+                <td style="vertical-align:middle;">
+                    ${admin.isRoot 
+                        ? `<span class="badge badge-passed" style="font-size:11px; padding:3px 8px;"><i class="fa-solid fa-shield"></i> Master Key Holder</span>`
+                        : `<span class="badge badge-passed" style="font-size:11px; padding:3px 8px;"><i class="fa-solid fa-check"></i> Cloud Authorized (${dateStr})</span>`
+                    }
+                </td>
+                <td style="vertical-align:middle; text-align:right;">
+                    ${admin.isRoot 
+                        ? `<span style="font-size:11.5px; color:#64748b; font-weight:600;"><i class="fa-solid fa-lock" style="margin-right:4px;"></i>Protected</span>`
+                        : `<button onclick="adminRevokeDelegatedAccess('${admin.id}', '${safeName}')" class="btn-secondary" style="padding:5px 12px; font-size:11px; background:rgba(244,63,94,0.15); border-color:rgba(244,63,94,0.3); color:#f43f5e; cursor:pointer; border-radius:6px; touch-action:manipulation;"><i class="fa-solid fa-user-xmark" style="margin-right:4px;"></i>Revoke Access</button>`
+                    }
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+window.handleAddNewAdmin = async function(e) {
+    if (e) e.preventDefault();
+    const nameInput = document.getElementById('admin-input-name');
+    const emailInput = document.getElementById('admin-input-email');
+    const rollInput = document.getElementById('admin-input-roll');
+    const accIdInput = document.getElementById('admin-input-account-id');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
+    const rollNo = rollInput ? rollInput.value.trim().toUpperCase() : '';
+    const accountId = accIdInput ? accIdInput.value.trim() : '';
+
+    if (!name || !email || !rollNo || !accountId) {
+        alert("Please complete all 4 fields:\n- Full Scholar Name\n- Email Address\n- Roll Number\n- Account ID");
+        return;
+    }
+
+    if (!email.includes('@')) {
+        alert("Please provide a valid email address.");
+        return;
+    }
+
+    const adminData = {
+        name,
+        email,
+        rollNo,
+        accountId,
+        createdAt: new Date().toISOString()
+    };
+
+    const success = await SUPABASE_CONFIG.saveDelegatedAdmin(adminData);
+    if (success) {
+        alert(`✅ Administrator privileges successfully delegated to ${name}!\n\nWhen this scholar accesses the portal, the "Admin Control" button will appear in their navigation bar with full touch and click functionality.`);
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+        if (rollInput) rollInput.value = '';
+        if (accIdInput) accIdInput.value = '';
+        await renderAdminMembersTable();
+
+        // Dynamically update admin navigation button for current user
+        const btnNavAdmin = document.getElementById('btn-nav-admin');
+        if (btnNavAdmin) {
+            btnNavAdmin.style.display = window.isUserAdmin() ? 'inline-flex' : 'none';
+        }
+    } else {
+        alert("Failed to save administrator privileges. Please verify your connection.");
+    }
+};
+
+window.adminRevokeDelegatedAccess = async function(adminId, adminName) {
+    if (!confirm(`Are you sure you want to revoke administrator access for ${adminName}?`)) return;
+    await SUPABASE_CONFIG.deleteDelegatedAdmin(adminId);
+    alert(`Administrator access has been revoked for ${adminName}.`);
+    await renderAdminMembersTable();
+
+    // Dynamically update admin navigation button for current user
+    const btnNavAdmin = document.getElementById('btn-nav-admin');
+    if (btnNavAdmin) {
+        btnNavAdmin.style.display = window.isUserAdmin() ? 'inline-flex' : 'none';
+    }
+};
 
 // ----------------- MASTER MERIT LIST VISIBILITY & EXCLUSION CONTROLLER -----------------
 function getCandidateMeritKey(r) {
