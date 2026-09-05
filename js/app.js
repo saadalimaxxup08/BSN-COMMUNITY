@@ -844,7 +844,13 @@ function checkExamWindowStatus() {
     }
 }
 
-window.startQuiz = function(quizId) {
+window.startQuiz = async function(quizId) {
+    if (AppState.currentUser && AppState.currentUser.name && SUPABASE_CONFIG.client && navigator.onLine) {
+        try {
+            AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(AppState.currentUser.name);
+        } catch (e) {}
+    }
+
     if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
         alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
         return;
@@ -876,17 +882,13 @@ function openLockedSemesterModal(semKey) {
         'sem-7': 'Semester 7',
         'sem-8': 'Semester 8'
     };
-    const name = semNames[semKey] || 'Selected Semester';
+    const title = semNames[semKey] || 'Selected Semester';
+    const elTitle = document.getElementById('locked-modal-title');
+    const elDesc = document.getElementById('locked-modal-desc');
+    if (elTitle) elTitle.textContent = `${title} Access Locked`;
+    if (elDesc) elDesc.textContent = `All question banks, model papers, and scenario quizzes for ${title} are strictly scheduled for upcoming examination modules. Current live testing is active exclusively for Semester 5.`;
 
     const modal = document.getElementById('locked-semester-modal');
-    const title = document.getElementById('locked-modal-title');
-    const desc = document.getElementById('locked-modal-desc');
-
-    if (title) title.textContent = `${name} Currently Unavailable`;
-    if (desc) {
-        desc.innerHTML = `Notice: Currently, live examination model papers are available <strong>exclusively for BSN Semester 5</strong>. Question banks for ${name} are currently under review and will be published shortly.`;
-    }
-
     if (modal) modal.classList.add('active');
 }
 
@@ -913,6 +915,20 @@ function renderDashboard() {
     updateStatsSummary();
     switchSemester(AppState.activeSemester || 'sem-5');
     renderAssessmentHistory();
+
+    // Live Cloud Re-verification: Automatically detect admin attempt resets in real-time
+    if (AppState.currentUser && AppState.currentUser.name && SUPABASE_CONFIG.client && navigator.onLine) {
+        SUPABASE_CONFIG.getStudentQuizHistory(AppState.currentUser.name).then(freshHistory => {
+            const currentLen = (AppState.studentHistory || []).length;
+            const freshLen = (freshHistory || []).length;
+            if (currentLen !== freshLen) {
+                AppState.studentHistory = freshHistory;
+                updateStatsSummary();
+                switchSemester(AppState.activeSemester || 'sem-5');
+                renderAssessmentHistory();
+            }
+        }).catch(() => {});
+    }
 }
 
 function updateStatsSummary() {
@@ -1468,13 +1484,16 @@ function initQuizControls() {
         }
 
         const unansweredCount = AppState.userAnswers.filter(a => a === null).length;
-        let confirmMsg = "Are you sure you want to submit your assessment?";
-        if (unansweredCount > 0) {
-            confirmMsg = `You have left ${unansweredCount} question(s) unattempted. Are you sure you want to submit anyway?`;
+        if (unansweredCount >= 5) {
+            const proceed = confirm(`⚠️ WARNING: YOU HAVE NOT FINISHED THE EXAM!\n\nYou have left ${unansweredCount} questions UNATTEMPTED!\n\nAll unanswered questions will be marked as 0% (FAILED).\n\nAre you sure you want to prematurely terminate and submit your examination paper?`);
+            if (!proceed) return;
+        } else if (unansweredCount > 0) {
+            const proceed = confirm(`You have left ${unansweredCount} question(s) unattempted. Are you sure you want to submit anyway?`);
+            if (!proceed) return;
+        } else {
+            if (!confirm("Are you sure you want to submit your assessment?")) return;
         }
-        if (confirm(confirmMsg)) {
-            submitQuiz(false);
-        }
+        submitQuiz(false);
     });
 
     elements.btnQuitQuiz.addEventListener('click', () => {
@@ -1562,13 +1581,16 @@ function initQuizControls() {
             }
 
             const unansweredCount = AppState.userAnswers.filter(a => a === null).length;
-            let confirmMsg = "Are you sure you want to submit your examination paper now?";
-            if (unansweredCount > 0) {
-                confirmMsg = `You have left ${unansweredCount} question(s) unattempted. Are you sure you want to submit anyway?`;
+            if (unansweredCount >= 5) {
+                const proceed = confirm(`⚠️ WARNING: YOU HAVE NOT FINISHED THE EXAM!\n\nYou have left ${unansweredCount} questions UNATTEMPTED!\n\nAll unanswered questions will be marked as 0% (FAILED).\n\nAre you sure you want to prematurely terminate and submit your examination paper?`);
+                if (!proceed) return;
+            } else if (unansweredCount > 0) {
+                const proceed = confirm(`You have left ${unansweredCount} question(s) unattempted. Are you sure you want to submit anyway?`);
+                if (!proceed) return;
+            } else {
+                if (!confirm("Are you sure you want to submit your examination paper now?")) return;
             }
-            if (confirm(confirmMsg)) {
-                submitQuiz(false);
-            }
+            submitQuiz(false);
         });
     }
 

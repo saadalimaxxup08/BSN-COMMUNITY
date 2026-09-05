@@ -343,9 +343,12 @@ const SUPABASE_CONFIG = {
     // Fetch quiz history for a specific student
     async getStudentQuizHistory(studentName) {
         const cleanName = (studentName || '').trim().toLowerCase();
+        if (!cleanName) return [];
+
+        const key = `zafii_history_${cleanName}`;
 
         // Try Supabase if connected
-        if (this.client) {
+        if (this.client && navigator.onLine) {
             try {
                 const { data, error } = await this.client
                     .from('quiz_results')
@@ -353,45 +356,65 @@ const SUPABASE_CONFIG = {
                     .ilike('student_name', cleanName)
                     .order('created_at', { ascending: false });
 
-                if (data && !error && data.length > 0) {
-                    return data.map(item => {
-                        const rawRoll = item.roll_no || '';
-                        const parts = rawRoll.split('|');
-                        const pct = Number(item.percentage) || 0;
-                        const isPassed = pct >= 60; // 60% passing rule
-                        let grade = item.grade || '';
-                        if (pct >= 85) grade = "A+ (Distinction)";
-                        else if (pct >= 75) grade = "A (Excellent)";
-                        else if (pct >= 65) grade = "B (Good)";
-                        else if (pct >= 60) grade = "C (Satisfactory)";
-                        else grade = "F (Failed)";
+                if (!error && Array.isArray(data)) {
+                    if (data.length > 0) {
+                        const mapped = data.map(item => {
+                            const rawRoll = item.roll_no || '';
+                            const parts = rawRoll.split('|');
+                            const pct = Number(item.percentage) || 0;
+                            const isPassed = pct >= 60; // 60% passing rule
+                            let grade = item.grade || '';
+                            if (pct >= 85) grade = "A+ (Distinction)";
+                            else if (pct >= 75) grade = "A (Excellent)";
+                            else if (pct >= 65) grade = "B (Good)";
+                            else if (pct >= 60) grade = "C (Satisfactory)";
+                            else grade = "F (Failed)";
 
-                        return {
-                            studentName: item.student_name,
-                            rollNo: parts[0] || 'BSN-2026',
-                            accountId: parts[1] || item.account_id || '',
-                            semester: item.semester,
-                            subjectTitle: item.subject_title,
-                            subjectCode: item.subject_code,
-                            score: item.score,
-                            totalQuestions: item.total_questions,
-                            percentage: pct,
-                            grade: grade,
-                            isPassed: isPassed,
-                            breakdown: item.breakdown || [],
-                            timeTaken: item.time_taken,
-                            date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                        };
-                    });
+                            return {
+                                id: item.id,
+                                studentName: item.student_name,
+                                rollNo: parts[0] || 'BSN-2026',
+                                accountId: parts[1] || item.account_id || '',
+                                semester: item.semester,
+                                subjectTitle: item.subject_title,
+                                subjectCode: item.subject_code,
+                                score: item.score,
+                                totalQuestions: item.total_questions,
+                                percentage: pct,
+                                grade: grade,
+                                isPassed: isPassed,
+                                breakdown: item.breakdown || [],
+                                timeTaken: item.time_taken,
+                                date: new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                            };
+                        });
+                        try {
+                            localStorage.setItem(key, JSON.stringify(mapped));
+                        } catch (e) {}
+                        return mapped;
+                    } else {
+                        // Supabase successfully confirmed ZERO submissions exist in cloud database.
+                        // This indicates an administrator reset or deleted the attempt!
+                        // Immediately wipe stale local caches so the student is unlocked for re-attempt:
+                        try {
+                            localStorage.removeItem(key);
+                            const all = JSON.parse(localStorage.getItem('zafii_all_results') || '[]');
+                            const filtered = all.filter(r => (r.studentName || '').trim().toLowerCase() !== cleanName);
+                            localStorage.setItem('zafii_all_results', JSON.stringify(filtered));
+                            const pending = JSON.parse(localStorage.getItem('zafii_offline_pending_results') || '[]');
+                            const filteredPending = pending.filter(r => (r.studentName || '').trim().toLowerCase() !== cleanName);
+                            localStorage.setItem('zafii_offline_pending_results', JSON.stringify(filteredPending));
+                        } catch (e) {}
+                        return [];
+                    }
                 }
             } catch (err) {
                 console.warn("Supabase fetch history error, using local fallback:", err);
             }
         }
 
-        // Offline / LocalStorage fallback
+        // Offline / Network Failure LocalStorage fallback
         try {
-            const key = `zafii_history_${cleanName}`;
             const studentResults = JSON.parse(localStorage.getItem(key) || '[]');
             if (studentResults.length > 0) return studentResults;
 
@@ -547,6 +570,7 @@ const SUPABASE_CONFIG = {
                         else grade = "F (Failed)";
 
                         return {
+                            id: item.id,
                             studentName: item.student_name,
                             rollNo: parts[0] || 'BSN-2026',
                             accountId: resolvedAccId,
@@ -588,7 +612,15 @@ const SUPABASE_CONFIG = {
         // 1. Delete from Supabase quiz_results table
         if (this.client) {
             try {
-                // Delete by student_name and subject_code
+                // Delete by primary key ID if available
+                if (resultObj.id) {
+                    await this.client
+                        .from('quiz_results')
+                        .delete()
+                        .eq('id', resultObj.id);
+                }
+
+                // Delete by student_name and subject_code as well
                 const { error } = await this.client
                     .from('quiz_results')
                     .delete()
