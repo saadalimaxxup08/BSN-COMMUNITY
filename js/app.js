@@ -805,79 +805,19 @@ window.formatMaskedAccountId = function(accId, fallbackSeed = '') {
 };
 
 function checkExamWindowStatus() {
-    const isTimerHidden = localStorage.getItem('zafii_exam_timer_hidden') === 'true';
     const countdownCard = document.getElementById('exam-countdown-card');
     const btnStart = document.getElementById('btn-pediatric-exam-start');
 
-    if (isTimerHidden) {
-        if (countdownCard) countdownCard.style.display = 'none';
+    // Examination is globally unlocked for all candidates
+    if (countdownCard) countdownCard.style.display = 'none';
 
-        if (btnStart) {
-            btnStart.disabled = false;
-            btnStart.style.opacity = '1';
-            btnStart.style.cursor = 'pointer';
-            btnStart.innerHTML = `<span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>`;
-        }
-        return { isAvailable: true, status: 'UNRESTRICTED' };
+    if (btnStart) {
+        btnStart.disabled = false;
+        btnStart.style.opacity = '1';
+        btnStart.style.cursor = 'pointer';
+        btnStart.innerHTML = `<span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>`;
     }
-
-    if (countdownCard) countdownCard.style.display = 'block';
-
-    const now = Date.now();
-    const elTimerText = document.getElementById('live-exam-timer-text');
-    const isAuthorizedAdmin = window.isUserAdmin();
-
-    if (now < EXAM_WINDOW.startTime) {
-        const diff = EXAM_WINDOW.startTime - now;
-        const hrs = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
-        const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-
-        if (elTimerText) elTimerText.innerHTML = `⏳ Exam Opens In: <strong style="color:var(--cyan-primary); font-size:13.5px;">${timeStr}</strong> (08:00 PM PKT)`;
-        
-        if (btnStart && !isAuthorizedAdmin) {
-            btnStart.disabled = true;
-            btnStart.style.opacity = '0.6';
-            btnStart.style.cursor = 'not-allowed';
-            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Opens Today at 8:00 PM PKT</span>`;
-        } else if (btnStart && isAuthorizedAdmin) {
-            btnStart.disabled = false;
-            btnStart.style.opacity = '1';
-            btnStart.style.cursor = 'pointer';
-            btnStart.innerHTML = `<i class="fa-solid fa-user-shield"></i> <span>Admin Test Access</span>`;
-        }
-        return { isAvailable: isAuthorizedAdmin, status: 'NOT_OPEN_YET' };
-    } else if (now >= EXAM_WINDOW.startTime && now <= EXAM_WINDOW.endTime) {
-        const diff = EXAM_WINDOW.endTime - now;
-        const hrs = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
-        const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-
-        if (elTimerText) elTimerText.innerHTML = `🔥 LIVE ACTIVE | Closes In: <strong style="color:#25d366; font-size:13.5px;">${timeStr}</strong>`;
-        if (btnStart) {
-            btnStart.disabled = false;
-            btnStart.style.opacity = '1';
-            btnStart.style.cursor = 'pointer';
-            btnStart.innerHTML = `<span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>`;
-        }
-        return { isAvailable: true, status: 'ACTIVE' };
-    } else {
-        if (elTimerText) elTimerText.innerHTML = `<span style="color:#f43f5e; font-weight:800;">🔒 Examination Window Closed</span>`;
-        if (btnStart && !isAuthorizedAdmin) {
-            btnStart.disabled = true;
-            btnStart.style.opacity = '0.5';
-            btnStart.style.cursor = 'not-allowed';
-            btnStart.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Assessment Deadline Ended</span>`;
-        } else if (btnStart && isAuthorizedAdmin) {
-            btnStart.disabled = false;
-            btnStart.style.opacity = '1';
-            btnStart.style.cursor = 'pointer';
-            btnStart.innerHTML = `<i class="fa-solid fa-user-shield"></i> <span>Admin Test Access</span>`;
-        }
-        return { isAvailable: isAuthorizedAdmin, status: 'CLOSED' };
-    }
+    return { isAvailable: true, status: 'UNRESTRICTED' };
 }
 
 window.startQuiz = async function(quizId) {
@@ -885,17 +825,6 @@ window.startQuiz = async function(quizId) {
         try {
             AppState.studentHistory = await SUPABASE_CONFIG.getStudentQuizHistory(AppState.currentUser.name);
         } catch (e) {}
-    }
-
-    if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
-        alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
-        return;
-    }
-
-    const windowStatus = checkExamWindowStatus();
-    if (!windowStatus.isAvailable) {
-        alert("🔒 Examination Window Notice:\n\nLive assessment model papers for Pediatric Health Nursing open today at 08:00 PM PKT (Sep 4) and close tomorrow at 08:00 PM PKT (Sep 5).\n\nPlease return during the examination window to submit your paper!");
-        return;
     }
 
     const quiz = findQuizById(quizId);
@@ -1028,50 +957,27 @@ function renderAssessmentHistory() {
     history.forEach((record, index) => {
         const row = document.createElement('tr');
         
-        if (isAuthorizedAdmin || isResultsReleased) {
-            // Full detailed view for Admins OR when results are released by Admin
-            const isPassedRecord = record.percentage !== undefined ? Number(record.percentage) >= 60 : record.isPassed;
-            const statusBadge = isPassedRecord 
-                ? '<span class="status-tag status-correct">✓ Passed</span>' 
-                : '<span class="status-tag status-incorrect">✗ Failed</span>';
+        const isPassedRecord = record.percentage !== undefined ? Number(record.percentage) >= 60 : record.isPassed;
+        const statusBadge = isPassedRecord 
+            ? '<span class="status-tag status-correct">✓ Passed</span>' 
+            : '<span class="status-tag status-incorrect">✗ Failed</span>';
 
-            row.innerHTML = `
-                <td style="font-weight:600; color:#fff;">${record.date}</td>
-                <td>
-                    <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
-                    <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(record.semester)} • ${escapeHtml(record.subjectCode)}</div>
-                </td>
-                <td style="font-weight:700;">${record.score} / ${record.totalQuestions} (${record.percentage}%)</td>
-                <td><span class="subject-code-tag">${record.grade.split(' ')[0]}</span></td>
-                <td>${statusBadge}</td>
-                <td>
-                    <button class="btn-table-action" onclick="reDownloadHistoricalMarksheet(${index})">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span>Marksheet</span>
-                    </button>
-                </td>
-            `;
-        } else {
-            // Student View: Result Pending Notice (Redirects to WhatsApp Group)
-            const pendingBadge = `<span class="badge" style="background:rgba(245,158,11,0.15); color:var(--amber-warning); border:1px solid rgba(245,158,11,0.3); font-size:11px; padding:4px 10px; border-radius:12px;"><i class="fa-solid fa-clock"></i> Result Pending</span>`;
-
-            row.innerHTML = `
-                <td style="font-weight:600; color:#fff;">${record.date}</td>
-                <td>
-                    <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
-                    <div style="font-size:11px; color:var(--cyan-primary); font-weight:700;">${escapeHtml(record.subjectCode)} • ${escapeHtml(record.semester)}</div>
-                </td>
-                <td style="font-weight:700; color:var(--amber-warning); font-size:12.5px;">⏳ Pending Announcement</td>
-                <td><span class="subject-code-tag" style="background:rgba(255,255,255,0.08); color:var(--text-muted);">Under Review</span></td>
-                <td>${pendingBadge}</td>
-                <td>
-                    <a href="https://chat.whatsapp.com/EoHSF3h2DV02GvOErsPhoK" target="_blank" rel="noopener noreferrer" class="btn-table-action" style="background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-                        <i class="fa-brands fa-whatsapp"></i>
-                        <span>Join Group</span>
-                    </a>
-                </td>
-            `;
-        }
+        row.innerHTML = `
+            <td style="font-weight:600; color:#fff;">${record.date}</td>
+            <td>
+                <div style="font-weight:700; color:#fff;">${escapeHtml(record.subjectTitle)}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(record.semester)} • ${escapeHtml(record.subjectCode)}</div>
+            </td>
+            <td style="font-weight:700;">${record.score} / ${record.totalQuestions} (${record.percentage}%)</td>
+            <td><span class="subject-code-tag">${record.grade.split(' ')[0]}</span></td>
+            <td>${statusBadge}</td>
+            <td>
+                <button class="btn-table-action" onclick="reDownloadHistoricalMarksheet(${index})">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Marksheet</span>
+                </button>
+            </td>
+        `;
 
         elements.historyTableBody.appendChild(row);
     });
@@ -1079,16 +985,11 @@ function renderAssessmentHistory() {
 
 // Global authorization helper functions
 window.checkCanAccessMarksheet = function() {
-    if (window.isUserAdmin()) return true;
-    return localStorage.getItem('zafii_results_released') === 'true';
+    return true;
 };
 
 // Triggered when user re-downloads a previous test's marksheet
 window.reDownloadHistoricalMarksheet = function(index) {
-    if (!window.checkCanAccessMarksheet()) {
-        alert("🔒 Examination results and marksheets are currently protected by administration. Official results will be announced in the student WhatsApp group.");
-        return;
-    }
     const record = AppState.studentHistory[index];
     if (record) {
         generateMarksheetPDF(record);
@@ -1096,41 +997,8 @@ window.reDownloadHistoricalMarksheet = function(index) {
 };
 
 window.hasStudentSubmittedQuiz = function(quizIdOrCodeOrObj) {
-    if (window.isUserAdmin && window.isUserAdmin()) {
-        // Authorized admins can take tests unlimited times for testing
-        return false;
-    }
-    const history = AppState.studentHistory || [];
-    if (!history || history.length === 0) return false;
-
-    let targetCode = '';
-    let targetTitle = '';
-    let targetId = '';
-
-    if (typeof quizIdOrCodeOrObj === 'object' && quizIdOrCodeOrObj !== null) {
-        targetCode = (quizIdOrCodeOrObj.code || '').trim().toLowerCase();
-        targetTitle = (quizIdOrCodeOrObj.title || '').trim().toLowerCase();
-        targetId = (quizIdOrCodeOrObj.id || '').trim().toLowerCase();
-    } else if (typeof quizIdOrCodeOrObj === 'string') {
-        const foundQuiz = findQuizById(quizIdOrCodeOrObj);
-        if (foundQuiz) {
-            targetCode = (foundQuiz.code || '').trim().toLowerCase();
-            targetTitle = (foundQuiz.title || '').trim().toLowerCase();
-            targetId = (foundQuiz.id || '').trim().toLowerCase();
-        } else {
-            targetCode = quizIdOrCodeOrObj.trim().toLowerCase();
-        }
-    }
-
-    return history.some(item => {
-        const itemCode = (item.subjectCode || '').trim().toLowerCase();
-        const itemTitle = (item.subjectTitle || '').trim().toLowerCase();
-        
-        if (targetCode && itemCode && (itemCode === targetCode || itemCode.includes(targetCode) || targetCode.includes(itemCode))) return true;
-        if (targetId && itemCode && (itemCode === targetId || itemCode.includes(targetId) || targetId.includes(itemCode))) return true;
-        if (targetTitle && itemTitle && (itemTitle === targetTitle || itemTitle.includes(targetTitle) || targetTitle.includes(itemTitle))) return true;
-        return false;
-    });
+    // Assessment is globally unlocked for all candidates to attempt and practice freely
+    return false;
 };
 
 function renderSubjects(semesterKey) {
@@ -1256,11 +1124,6 @@ function renderSubjects(semesterKey) {
 
 // ----------------- QUIZ ENGINE -----------------
 function startQuiz(quizId) {
-    if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
-        alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
-        return;
-    }
-
     const quiz = findQuizById(quizId);
     if (!quiz) {
         alert("Assessment data could not be found!");
@@ -1365,12 +1228,6 @@ function restoreRunningQuizState() {
 }
 
 function startActualQuiz(quizId) {
-    if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(quizId)) {
-        alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment!\n\nEach candidate is allowed only ONE official attempt per subject. Your paper is locked and currently under review by BSN Academy.");
-        switchView('dashboard');
-        return;
-    }
-
     const quiz = findQuizById(quizId);
     if (!quiz) return;
 
@@ -1567,11 +1424,6 @@ function initQuizControls() {
 
     elements.btnRetakeQuiz.addEventListener('click', () => {
         if (AppState.activeQuiz) {
-            if (window.hasStudentSubmittedQuiz && window.hasStudentSubmittedQuiz(AppState.activeQuiz.id)) {
-                alert("🔒 Single Attempt Restriction Active:\n\nYou have already submitted your examination paper for this assessment. Re-attempting official exams is not allowed.\n\nYour paper is locked and under review by BSN Academy.");
-                switchView('dashboard');
-                return;
-            }
             startQuiz(AppState.activeQuiz.id);
         }
     });
@@ -1777,8 +1629,8 @@ function renderResultScreen(res) {
     const isAuthorizedAdmin = window.isUserAdmin();
     const isResultsReleased = localStorage.getItem('zafii_results_released') === 'true';
 
-    // Force result protection for regular students unless results have been published globally by Admin
-    const isProtectedResult = !isAuthorizedAdmin && !isResultsReleased;
+    // Results and marksheets are globally unlocked for all students to view immediately
+    const isProtectedResult = false;
 
     const elModelCard = document.getElementById('model-paper-result-card');
     const elStandardCard = document.getElementById('standard-result-card');
@@ -1825,7 +1677,7 @@ function renderResultScreen(res) {
     } else {
         elements.resultTitle.textContent = "Assessment Incomplete - Review Required";
         elements.resultTitle.style.color = "#f43f5e";
-        elements.resultSubtitle.textContent = `A minimum score of 50% is required to pass. Please review the rationales below and re-attempt.`;
+        elements.resultSubtitle.textContent = `A minimum score of 60% is required to pass. Please review the rationales below and re-attempt.`;
     }
 
     elements.metricCorrect.textContent = res.score;
