@@ -145,6 +145,861 @@ const QUIZ_DATA = {
     // SEMESTER 2
     "sem-2": [
         {
+        "id": "s2-qr-model-paper",
+        "title": "Quantitative Reasoning - 70 Scenario Mock Paper",
+        "code": "QR-201-MODEL",
+        "semester": "Semester 2",
+        "description": "70-scenario Quantitative Reasoning examination. Fully unlocked access with instant marksheet generation, score analytics, and answer explanations.",
+        "durationMinutes": 70,
+        "icon": "fa-calculator",
+        "badgeColor": "amber",
+        "isModelPaper": false,
+        "showAnswersImmediately": true,
+        "totalQuestions": 70,
+        "questions": [
+                {
+                        "id": 1,
+                        "question": "A patient is prescribed 1.5 L of IV fluid over 10 hours. After 6 hours, only 600 mL has been infused. What new hourly rate is required to complete the infusion on time?",
+                        "options": [
+                                "150 mL/hr",
+                                "180 mL/hr",
+                                "200 mL/hr",
+                                "225 mL/hr"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) 225 mL/hr. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 2,
+                        "question": "In a survey of 100 patients, 60 have symptom X, 40 have symptom Y, and 30 have symptom Z. Among them, 25 have X and Y, 15 have X and Z, 10 have Y and Z, and 5 have all three symptoms. How many patients have at least one symptom?",
+                        "options": [
+                                "65",
+                                "75",
+                                "85",
+                                "95"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 85. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 3,
+                        "question": "A nurse records the temperatures of 5 patients in a ward as 98.6\u00b0F, 99.0\u00b0F, 99.2\u00b0F, 100.1\u00b0F, and 100.5\u00b0F (mean = 99.48\u00b0F). If the nurse realizes the first reading was misread and should be 99.0\u00b0F instead of 98.6\u00b0F, what is the new mean?",
+                        "options": [
+                                "99.48\u00b0F",
+                                "99.56\u00b0F",
+                                "99.64\u00b0F",
+                                "99.72\u00b0F"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 99.56\u00b0F. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 4,
+                        "question": "A child weighing 18 kg is ordered Cephalexin 20 mg/kg/day in 2 divided doses. Stock available is 250 mg tablets. How many tablets are required per dose (rounded to a whole tablet as clinically noted)?",
+                        "options": [
+                                "0.75 tablet",
+                                "1 tablet",
+                                "1.5 tablets",
+                                "2 tablets"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 1 tablet. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 5,
+                        "question": "Why is Celsius temperature classified on the interval scale rather than the ratio scale?",
+                        "options": [
+                                "It lacks equal spacing between degrees",
+                                "It has no true zero point representing absolute absence of heat",
+                                "It cannot be used to compute averages or standard deviations",
+                                "Values cannot be negative"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) It has no true zero point representing absolute absence of heat. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 6,
+                        "question": "Using the same patient symptom survey from Q2 (100 patients: 60 with X, 40 with Y, 30 with Z; 25 with X\u2229Y, 15 with X\u2229Z, 10 with Y\u2229Z; 5 with all three), how many patients have exactly one symptom?",
+                        "options": [
+                                "25",
+                                "35",
+                                "45",
+                                "55"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 45. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 7,
+                        "question": "A patient is to receive 500 mL of normal saline over 4 hours using an IV set with a drop factor of 15 gtt/mL. Approximately what drip rate in drops per minute (gtt/min) is needed?",
+                        "options": [
+                                "31 gtt/min",
+                                "32 gtt/min",
+                                "33 gtt/min",
+                                "34 gtt/min"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 31 gtt/min. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 8,
+                        "question": "A researcher studies nurse burnout across Pakistan but only has access to nurses in Lahore hospitals. In research terminology, all diabetics/nurses accessible in Lahore hospitals represent the:",
+                        "options": [
+                                "Target population",
+                                "Accessible (study) population",
+                                "Sampling frame error",
+                                "Parameter group"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Accessible (study) population. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 9,
+                        "question": "If the mode of a dataset is 15 and the mean is 20, what does this pattern typically indicate about the distribution?",
+                        "options": [
+                                "Symmetric distribution",
+                                "Skewed left",
+                                "Skewed right",
+                                "Uniform distribution"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Skewed right. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 10,
+                        "question": "A 56-kg patient has a Body Surface Area (BSA) of 1.53 m^2. A chemotherapy order specifies 320 mg/m^2. What is the prescribed dose?",
+                        "options": [
+                                "420.6 mg",
+                                "489.6 mg",
+                                "90.6 mg",
+                                "81.6 mg"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 489.6 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 11,
+                        "question": "A nurse observes that a patient has a fever, cough, and fatigue, and infers that influenza is the most likely explanation while keeping other possibilities open. This type of reasoning is best classified as:",
+                        "options": [
+                                "Deductive reasoning",
+                                "Inductive reasoning",
+                                "Abductive reasoning",
+                                "Analogical reasoning"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Abductive reasoning. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 12,
+                        "question": "A 25% solution is diluted to prepare 500 mL of a 10% solution. Using C_1V_1 = C_2V_2, how much of the 25% solution is required?",
+                        "options": [
+                                "150 mL",
+                                "200 mL",
+                                "250 mL",
+                                "300 mL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 200 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 13,
+                        "question": "For a sample dataset with a sum of squared deviations from the mean equal to 100 across 10 observations (n = 10), what is the sample variance?",
+                        "options": [
+                                "10.00",
+                                "11.11",
+                                "100.00",
+                                "1000.00"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 11.11. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 14,
+                        "question": "A pediatric patient weighing 22 kg is ordered Ibuprofen 12 mg/kg/dose every 8 hours. Available suspension is 100 mg/5 mL. How many mL should be given per dose?",
+                        "options": [
+                                "10 mL",
+                                "12 mL",
+                                "13.2 mL",
+                                "15 mL"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 13.2 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 15,
+                        "question": "Given sets A = {1, 2, 3 and B = {a, b, consider the relation R = {(1, a), (2, a), (2, b). Is R a function?",
+                        "options": [
+                                "Yes, because every element of A appears",
+                                "No, because element 2 maps to more than one element in B",
+                                "Yes, because a is shared by two inputs",
+                                "Only if inverted to R^{-1"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) No, because element 2 maps to more than one element in B. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 16,
+                        "question": "In a hospital OPD, average waiting time is 20 minutes with a standard deviation of 5 minutes. Assuming a normal distribution, approximately what percentage of patients wait between 15 and 25 minutes?",
+                        "options": [
+                                "50%",
+                                "68%",
+                                "95%",
+                                "99%"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 68%. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 17,
+                        "question": "A patient is prescribed Enoxaparin 1 mg/kg SC every 12 hours and weighs 65 kg. Available pre-filled concentration is 60 mg/0.6 mL (100 mg/mL). By direct calculation, what volume corresponds to the ordered dose?",
+                        "options": [
+                                "0.5 mL",
+                                "0.6 mL",
+                                "0.65 mL",
+                                "0.7 mL"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 0.65 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 18,
+                        "question": "A nurse counts the number of occupied beds in a 20-bed ward. How is this variable classified in terms of continuity and measurement scale?",
+                        "options": [
+                                "Continuous and Interval",
+                                "Discrete and Ratio",
+                                "Discrete and Ordinal",
+                                "Continuous and Ratio"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Discrete and Ratio. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 19,
+                        "question": "A hospital averages 4 emergency cases per hour. Which probability distribution is most appropriate for modeling the count of emergency cases occurring in the next hour?",
+                        "options": [
+                                "Normal distribution",
+                                "Binomial distribution",
+                                "Poisson distribution",
+                                "Uniform distribution"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Poisson distribution. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 20,
+                        "question": "A 40-kg patient is prescribed a rescue drug at 2 mg/kg every 4 hours for 24 hours. What is the total daily dose administered over 24 hours?",
+                        "options": [
+                                "80 mg",
+                                "240 mg",
+                                "320 mg",
+                                "480 mg"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) 480 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 21,
+                        "question": "A nurse calculates a patient's BMI as 35.16 and then counsels the patient on weight management. In the quantitative reasoning process, counseling the patient represents:",
+                        "options": [
+                                "Performing mathematical analysis",
+                                "Translating the clinical issue into a formula",
+                                "Communicating findings / taking action",
+                                "Identifying the problem"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Communicating findings / taking action. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 22,
+                        "question": "In a class of 50 students, 10 take Guitar, 20 take Singing, and 4 take both. How many students take neither Guitar nor Singing?",
+                        "options": [
+                                "16",
+                                "20",
+                                "24",
+                                "30"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 24. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 23,
+                        "question": "A dataset has a mean of 20 and a standard deviation of 5. What is the z-score corresponding to a value of 30?",
+                        "options": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 2. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 24,
+                        "question": "Order: Heparin 1,200 units/hour IV. Available bag contains 25,000 units in 250 mL. What is the required infusion rate in mL/hr?",
+                        "options": [
+                                "10 mL/hr",
+                                "11 mL/hr",
+                                "12 mL/hr",
+                                "13 mL/hr"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 12 mL/hr. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 25,
+                        "question": "Which of the following graphs does NOT display percentages, while showing median, quartiles, and outliers?",
+                        "options": [
+                                "Pie chart",
+                                "Histogram",
+                                "Box-and-whisker plot",
+                                "Frequency polygon"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Box-and-whisker plot. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 26,
+                        "question": "A patient receives 450 mL normal saline, 350 mL glucose, and 700 mL Ringer's lactate IV, plus 250 mL oral juice. What is the total fluid intake?",
+                        "options": [
+                                "1,500 mL",
+                                "1,750 mL",
+                                "1,850 mL",
+                                "2,000 mL"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 1,850 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 27,
+                        "question": "What is the symmetric difference (A \u0394 B or A \u2295 B) of two sets A and B?",
+                        "options": [
+                                "Elements common to both A and B",
+                                "Elements in A or B, but **not** in both",
+                                "Elements in A that are not in B",
+                                "The union of A and B minus their complement"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Elements in A or B, but **not** in both. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 28,
+                        "question": "Daily OPD patient counts are 10, 15, 20, 25, 30. If on a busy day 50 patients visit, how are the range and standard deviation affected?",
+                        "options": [
+                                "Range increases, SD increases",
+                                "Range increases, SD decreases",
+                                "Range decreases, SD increases",
+                                "Range decreases, SD decreases"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Range increases, SD increases. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 29,
+                        "question": "A pediatric oncology patient is prescribed a drug at 150 mg/m^2/day with a BSA of 0.67 m^2, given in 2 divided doses. How much medication is given per dose?",
+                        "options": [
+                                "45 mg",
+                                "50 mg",
+                                "50.25 mg",
+                                "51.25 mg"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 50.25 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 30,
+                        "question": "If events A and B are mutually exclusive, what is P(A and B)?",
+                        "options": [
+                                "P(A) \u00d7 P(B)",
+                                "P(A) + P(B)",
+                                "0",
+                                "1"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 0. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 31,
+                        "question": "Solve the system of equations for x: 2x + 4y = 12 and x - y = 2.",
+                        "options": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 3. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 32,
+                        "question": "A nurse records hemoglobin levels of 5 patients: 12, 13, 14, 15, and 16 g/dL (mean = 14 g/dL). If a sixth patient with a hemoglobin of 8 g/dL is added, what is the new mean?",
+                        "options": [
+                                "13 g/dL",
+                                "13.5 g/dL",
+                                "14 g/dL",
+                                "14.5 g/dL"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 13 g/dL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 33,
+                        "question": "Order: Dextrose 5% 1500 mL over 9 hours using an IV set of 60 gtt/mL. What is the approximate flow rate in gtt/min?",
+                        "options": [
+                                "166 gtt/min",
+                                "167 gtt/min",
+                                "168 gtt/min",
+                                "170 gtt/min"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 167 gtt/min. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 34,
+                        "question": "If 3 nurses take 8 hours to complete ward assessments, how many hours will 4 nurses take to complete the same task (assuming inverse proportion)?",
+                        "options": [
+                                "6 hours",
+                                "8 hours",
+                                "10 hours",
+                                "12 hours"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 6 hours. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 35,
+                        "question": "A diagnostic test has 95% sensitivity. Out of 100 infected individuals, how many are expected to test positive?",
+                        "options": [
+                                "5",
+                                "50",
+                                "95",
+                                "100"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 95. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 36,
+                        "question": "A patient needs 3/4 of a tablet three times daily for 7 days. How many whole tablets are required in total?",
+                        "options": [
+                                "15 tablets",
+                                "16 tablets",
+                                "18 tablets",
+                                "21 tablets"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 16 tablets. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 37,
+                        "question": "Which statement accurately distinguishes inductive reasoning from deductive reasoning in clinical and analytical thinking?",
+                        "options": [
+                                "Inductive moves from specific observations to probable general conclusions; deductive moves from general premises to specific conclusions",
+                                "Inductive guarantees truth when premises are true; deductive risks overgeneralization",
+                                "Inductive relies on ethical values; deductive relies on random sampling",
+                                "Both move from general principles to certain outcomes"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Inductive moves from specific observations to probable general conclusions; deductive moves from general premises to specific conclusions. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 38,
+                        "question": "A solution is mixed in a 2:7 ratio (drug:saline). For a 450 mL total mixture, how much drug is needed?",
+                        "options": [
+                                "90 mL",
+                                "100 mL",
+                                "125 mL",
+                                "150 mL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 100 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 39,
+                        "question": "The mean of five numbers is 10. Four of the numbers are 8, 9, 10, and 11. What is the fifth number?",
+                        "options": [
+                                "10",
+                                "12",
+                                "13",
+                                "14"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 12. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 40,
+                        "question": "A nurse is ordered to administer 150 mg of a medication available as 50 mg per 2 mL. How many mL should be administered?",
+                        "options": [
+                                "3 mL",
+                                "6 mL",
+                                "7.5 mL",
+                                "10 mL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 6 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 41,
+                        "question": "A frequency polygon is constructed by plotting and connecting:",
+                        "options": [
+                                "Cumulative frequencies along a line graph",
+                                "Midpoints of the tops of bars in a histogram",
+                                "Sector angles of a pie chart",
+                                "Quartiles of a box-and-whisker plot"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Midpoints of the tops of bars in a histogram. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 42,
+                        "question": "Given functions f = {(1, 2), (2, 3), (3, 4) and g = {(2, a), (3, b), (4, c), what is the composite function (g \u2218 f)?",
+                        "options": [
+                                "{(1, 2), (2, 3), (3, 4)",
+                                "{(1, a), (2, b), (3, c)",
+                                "{(2, a), (3, b), (4, c)",
+                                "{(a, 1), (b, 2), (c, 3)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) {(1, a), (2, b), (3, c). Verified quantitative reasoning response."
+                },
+                {
+                        "id": 43,
+                        "question": "A patient is ordered 0.9% NaCl 2500 mL to infuse over 24 hours. What is the approximate infusion rate in mL/min?",
+                        "options": [
+                                "1.70 mL/min",
+                                "1.72 mL/min",
+                                "1.74 mL/min",
+                                "1.80 mL/min"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 1.74 mL/min. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 44,
+                        "question": "If 8 workers complete a task in 6 days, how many days will 12 workers take to complete the same task?",
+                        "options": [
+                                "4 days",
+                                "9 days",
+                                "16 days",
+                                "18 days"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 4 days. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 45,
+                        "question": "Which of the following is a non-terminating, non-recurring decimal?",
+                        "options": [
+                                "0.75",
+                                "0.333...",
+                                "0.636363...",
+                                "0.728459..."
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) 0.728459.... Verified quantitative reasoning response."
+                },
+                {
+                        "id": 46,
+                        "question": "A nurse calculates that a ward with 28 patients requires 7 nurses based on a 1:4 nurse-to-patient ratio. This application of quantitative reasoning primarily supports:",
+                        "options": [
+                                "Dosage conversion",
+                                "Staffing and scheduling",
+                                "Diagnostic test sensitivity",
+                                "Ethical conflict resolution"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Staffing and scheduling. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 47,
+                        "question": "If 25% of a number is 30, what is 40% of that same number?",
+                        "options": [
+                                "20",
+                                "24",
+                                "36",
+                                "48"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) 48. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 48,
+                        "question": "A patient's intake includes 0.5 L of water and 250 mL of IV fluids, while output is 0.3 L of urine. What is the total fluid intake in mL?",
+                        "options": [
+                                "500 mL",
+                                "750 mL",
+                                "800 mL",
+                                "1050 mL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 750 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 49,
+                        "question": "A dataset has a mean of 100 and a standard deviation of 15. What value lies two standard deviations above the mean?",
+                        "options": [
+                                "115",
+                                "130",
+                                "145",
+                                "150"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 130. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 50,
+                        "question": "A medication order is for 1/2 gram of a drug, and available tablets are 250 mg each. How many tablets should be administered?",
+                        "options": [
+                                "1/2 tablet",
+                                "1 tablet",
+                                "2 tablets",
+                                "4 tablets"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 2 tablets. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 51,
+                        "question": "If y is inversely proportional to x (y \u221d 1/x) and y = 10 when x = 2, what is the constant of proportionality k?",
+                        "options": [
+                                "5",
+                                "12",
+                                "20",
+                                "40"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 20. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 52,
+                        "question": "A nurse records intake of 2200 mL and output of 1800 mL over a shift. This indicates:",
+                        "options": [
+                                "Negative fluid balance",
+                                "Positive fluid balance",
+                                "Zero fluid balance",
+                                "Dehydration shock"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Positive fluid balance. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 53,
+                        "question": "Which statistical concept is especially helpful for interpreting diagnostic test results accurately (such as sensitivity and specificity)?",
+                        "options": [
+                                "Conditional probability",
+                                "Nominal scaling",
+                                "Stem-and-leaf plotting",
+                                "Arithmetic mean"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Conditional probability. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 54,
+                        "question": "A vial contains 1 g of drug in 10 mL. To administer a 350 mg dose, how many mL are needed?",
+                        "options": [
+                                "2.5 mL",
+                                "3.0 mL",
+                                "3.5 mL",
+                                "5.0 mL"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 3.5 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 55,
+                        "question": "A 70-kg adult has a BSA of 1.78 m^2 and is ordered Doxorubicin 60 mg/m^2. What is the required dose?",
+                        "options": [
+                                "90 mg",
+                                "100.8 mg",
+                                "106.8 mg",
+                                "115.8 mg"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 106.8 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 56,
+                        "question": "Why is median preferred over mean as a measure of central tendency for skewed distributions or ordinal ratings (e.g., pain or satisfaction scales)?",
+                        "options": [
+                                "It uses every observation equally",
+                                "It is less affected by extreme values / outliers and suits ordered ranks",
+                                "It always equals the mode",
+                                "It requires a true zero point"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) It is less affected by extreme values / outliers and suits ordered ranks. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 57,
+                        "question": "A wound is 75% healed. What fraction of the wound remains unhealed?",
+                        "options": [
+                                "1/4",
+                                "1/3",
+                                "2/5",
+                                "3/4"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 1/4. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 58,
+                        "question": "A pediatric patient weighs 22.4 kg and is ordered Cefotaxime 150 mg/kg/day divided q8h. How many mg are given per dose?",
+                        "options": [
+                                "860 mg",
+                                "1120 mg",
+                                "1450 mg",
+                                "3360 mg"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 1120 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 59,
+                        "question": "If a sector of a pie chart measures 90\u00b0, what percentage of the whole does that sector represent?",
+                        "options": [
+                                "20%",
+                                "25%",
+                                "30%",
+                                "50%"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 25%. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 60,
+                        "question": "A drug dosage is 0.25 mg/kg of body weight. For a patient weighing 72.4 kg, what dose is needed?",
+                        "options": [
+                                "16.5 mg",
+                                "18.1 mg",
+                                "20.0 mg",
+                                "24.5 mg"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 18.1 mg. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 61,
+                        "question": "A nurse uses the reasoning: \"Drug A lowered blood pressure in adults; Drug B has similar properties, so Drug B might also lower blood pressure.\" This demonstrates:",
+                        "options": [
+                                "Deductive reasoning",
+                                "Analogical reasoning",
+                                "Ethical reasoning",
+                                "Causal proof"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Analogical reasoning. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 62,
+                        "question": "What is the range of a dataset if the range is 50 and the lowest value is 10? (Find the highest value.)",
+                        "options": [
+                                "40",
+                                "50",
+                                "60",
+                                "70"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 60. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 63,
+                        "question": "A 1000 mL bag of Dextrose 5% is ordered over 8 hours. What is the infusion rate in mL/min?",
+                        "options": [
+                                "1.50 mL/min",
+                                "2.00 mL/min",
+                                "2.08 mL/min",
+                                "2.20 mL/min"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 2.08 mL/min. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 64,
+                        "question": "In a relative frequency distribution, if a class has a relative frequency of 0.25 and the total number of observations is 40, what is the frequency of that class?",
+                        "options": [
+                                "10",
+                                "16",
+                                "20",
+                                "25"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 10. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 65,
+                        "question": "A hospital's infection control report records 5 CLABSI events per 1,000 line days. This metric is an example of a:",
+                        "options": [
+                                "Ratio",
+                                "Rate",
+                                "Inverse proportion",
+                                "Complement"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Rate. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 66,
+                        "question": "A medication capsule is shaped like a cylinder with two hemispherical ends. Geometrically, this is best described as a:",
+                        "options": [
+                                "2D polygon",
+                                "Composite 3D shape",
+                                "Regular polyhedron",
+                                "Open plane figure"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Composite 3D shape. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 67,
+                        "question": "If 20% of a number is 40, what is 30% of that number?",
+                        "options": [
+                                "40",
+                                "50",
+                                "60",
+                                "70"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 60. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 68,
+                        "question": "A patient is prescribed Insulin Glargine 0.4 units/kg SC daily at bedtime, weighing 75 kg. Available concentration is 100 units/mL. How many mL are administered per dose?",
+                        "options": [
+                                "0.25 mL",
+                                "0.30 mL",
+                                "0.35 mL",
+                                "0.40 mL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 0.30 mL. Verified quantitative reasoning response."
+                },
+                {
+                        "id": 69,
+                        "question": "In a frequency distribution, what is the cumulative frequency of the last class always equal to?",
+                        "options": [
+                                "0",
+                                "1",
+                                "Total frequency (N)",
+                                "Relative frequency"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Total frequency (N). Verified quantitative reasoning response."
+                },
+                {
+                        "id": 70,
+                        "question": "Which reason explains why studying an entire population in healthcare research can sometimes be unethical?",
+                        "options": [
+                                "It reduces sample size",
+                                "It may expose participants to unnecessary risk or harm",
+                                "It prevents use of percentages",
+                                "It eliminates standard deviation"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) It may expose participants to unnecessary risk or harm. Verified quantitative reasoning response."
+                }
+        ]
+},
+        {
             id: "s2-micro",
             title: "Microbiology for Nurses",
             code: "MIC-201",
