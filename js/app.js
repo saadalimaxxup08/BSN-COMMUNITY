@@ -695,7 +695,7 @@ window.switchSemester = function(semKey) {
 
     const semNames = {
         'sem-1': 'Semester 1',
-        'sem-2': 'Semester 2',
+        'sem-2': 'Semester 2 (Live Exam)',
         'sem-3': 'Semester 3',
         'sem-4': 'Semester 4',
         'sem-5': 'Semester 5 (Active Exam)',
@@ -1005,7 +1005,8 @@ function renderSubjects(semesterKey) {
     if (!elements.subjectsGrid) return;
     elements.subjectsGrid.innerHTML = '';
 
-    if (semesterKey !== 'sem-5') {
+    const activeSemesters = ['sem-2', 'sem-5'];
+    if (!activeSemesters.includes(semesterKey)) {
         const semNames = {
             'sem-1': 'Semester 1',
             'sem-2': 'Semester 2',
@@ -1026,21 +1027,32 @@ function renderSubjects(semesterKey) {
                     ${semName} Assessment Currently Unavailable
                 </h3>
                 <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px; max-width:500px;">
-                    Notice: Live examination model papers are currently active exclusively for <strong>BSN Semester 5</strong>. Question banks for ${semName} are under review and will be published shortly.
+                    Notice: Live examination model papers are currently active for <strong>BSN Semester 2</strong> and <strong>BSN Semester 5</strong>. Question banks for ${semName} are under review and will be published shortly.
                 </p>
-                <button class="btn-primary" style="width:auto; padding:12px 28px; margin:0 auto;" onclick="switchSemester('sem-5')">
-                    <i class="fa-solid fa-fire"></i>
-                    <span>Proceed to Semester 5 Examination</span>
-                </button>
+                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn-primary" style="width:auto; padding:12px 24px; margin:0;" onclick="switchSemester('sem-2')">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Semester 2 Exam</span>
+                    </button>
+                    <button class="btn-primary" style="width:auto; padding:12px 24px; margin:0; background:linear-gradient(135deg, #10b981, #06b6d4);" onclick="switchSemester('sem-5')">
+                        <i class="fa-solid fa-fire"></i>
+                        <span>Semester 5 Exam</span>
+                    </button>
+                </div>
             </div>
         `;
         return;
     }
 
-    let subjects = getSubjectsBySemester('sem-5');
+    let subjects = getSubjectsBySemester(semesterKey);
     if (!subjects || subjects.length === 0) {
-        const fallbackQuiz = findQuizById('s5-model-paper');
-        if (fallbackQuiz) subjects = [fallbackQuiz];
+        if (semesterKey === 'sem-5') {
+            const fallbackQuiz = findQuizById('s5-model-paper');
+            if (fallbackQuiz) subjects = [fallbackQuiz];
+        } else if (semesterKey === 'sem-2') {
+            const fallbackQuiz = findQuizById('s2-qr-model-paper');
+            if (fallbackQuiz) subjects = [fallbackQuiz];
+        }
     }
 
     if (!subjects || subjects.length === 0) return;
