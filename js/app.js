@@ -6,7 +6,7 @@
 
 const AppState = {
     currentUser: null,
-    activeSemester: "sem-5", // Default active semester set to Semester 5
+    activeSemester: "sem-2", // Default active semester set to Semester 5
     activeQuiz: null,
     currentQuestionIndex: 0,
     userAnswers: [],
@@ -373,7 +373,7 @@ function updateUIWithUserData(userData) {
     }
 
     AppState.currentUser = userData;
-    AppState.activeSemester = "sem-5";
+    AppState.activeSemester = "sem-2";
 
     const name = userData.name || userData.email || 'Medical Scholar';
     const rollNo = userData.rollNo || 'BSN-2026-0000';
@@ -667,7 +667,7 @@ function initDashboard() {
     if (btnGoSem5) {
         btnGoSem5.addEventListener('click', () => {
             closeLockedSemesterModal();
-            switchSemester('sem-5');
+            switchSemester('sem-2');
         });
     }
 
@@ -698,7 +698,7 @@ window.switchSemester = function(semKey) {
         'sem-2': 'Semester 2 (Live Exam)',
         'sem-3': 'Semester 3',
         'sem-4': 'Semester 4',
-        'sem-5': 'Semester 5 (Active Exam)',
+        'sem-5': 'Semester 5',
         'sem-6': 'Semester 6',
         'sem-7': 'Semester 7',
         'sem-8': 'Semester 8'
@@ -898,7 +898,7 @@ function renderDashboard() {
 
     updateStatsSummary();
     if (window.checkStudentSupportNotifications) window.checkStudentSupportNotifications();
-    switchSemester(AppState.activeSemester || 'sem-5');
+    switchSemester(AppState.activeSemester || 'sem-2');
     renderAssessmentHistory();
 
     // Live Cloud Re-verification: Automatically detect admin attempt resets in real-time
@@ -909,7 +909,7 @@ function renderDashboard() {
             if (currentLen !== freshLen) {
                 AppState.studentHistory = freshHistory;
                 updateStatsSummary();
-                switchSemester(AppState.activeSemester || 'sem-5');
+                switchSemester(AppState.activeSemester || 'sem-2');
                 renderAssessmentHistory();
             }
         }).catch(() => {});
@@ -1005,13 +1005,13 @@ function renderSubjects(semesterKey) {
     if (!elements.subjectsGrid) return;
     elements.subjectsGrid.innerHTML = '';
 
-    const activeSemesters = ['sem-2', 'sem-5'];
-    if (!activeSemesters.includes(semesterKey)) {
+    if (semesterKey !== 'sem-2') {
         const semNames = {
             'sem-1': 'Semester 1',
             'sem-2': 'Semester 2',
             'sem-3': 'Semester 3',
             'sem-4': 'Semester 4',
+            'sem-5': 'Semester 5',
             'sem-6': 'Semester 6',
             'sem-7': 'Semester 7',
             'sem-8': 'Semester 8'
@@ -1027,32 +1027,21 @@ function renderSubjects(semesterKey) {
                     ${semName} Assessment Currently Unavailable
                 </h3>
                 <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px; max-width:500px;">
-                    Notice: Live examination model papers are currently active for <strong>BSN Semester 2</strong> and <strong>BSN Semester 5</strong>. Question banks for ${semName} are under review and will be published shortly.
+                    Notice: Live examination model papers are currently active exclusively for <strong>BSN Semester 2</strong>. Question banks for ${semName} are under review and will be published shortly.
                 </p>
-                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn-primary" style="width:auto; padding:12px 24px; margin:0;" onclick="switchSemester('sem-2')">
-                        <i class="fa-solid fa-calculator"></i>
-                        <span>Semester 2 Exam</span>
-                    </button>
-                    <button class="btn-primary" style="width:auto; padding:12px 24px; margin:0; background:linear-gradient(135deg, #10b981, #06b6d4);" onclick="switchSemester('sem-5')">
-                        <i class="fa-solid fa-fire"></i>
-                        <span>Semester 5 Exam</span>
-                    </button>
-                </div>
+                <button class="btn-primary" style="width:auto; padding:12px 28px; margin:0 auto;" onclick="switchSemester('sem-2')">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Proceed to Semester 2 Examination</span>
+                </button>
             </div>
         `;
         return;
     }
 
-    let subjects = getSubjectsBySemester(semesterKey);
+    let subjects = getSubjectsBySemester('sem-2');
     if (!subjects || subjects.length === 0) {
-        if (semesterKey === 'sem-5') {
-            const fallbackQuiz = findQuizById('s5-model-paper');
-            if (fallbackQuiz) subjects = [fallbackQuiz];
-        } else if (semesterKey === 'sem-2') {
-            const fallbackQuiz = findQuizById('s2-qr-model-paper');
-            if (fallbackQuiz) subjects = [fallbackQuiz];
-        }
+        const fallbackQuiz = findQuizById('s2-qr-model-paper');
+        if (fallbackQuiz) subjects = [fallbackQuiz];
     }
 
     if (!subjects || subjects.length === 0) return;
