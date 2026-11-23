@@ -658,6 +658,11 @@ function initDashboard() {
             const targetSem = tabBtn.getAttribute('data-semester');
             if (!targetSem) return;
 
+            if (tabBtn.classList.contains('locked-sem')) {
+                openLockedSemesterModal(targetSem);
+                return;
+            }
+
             switchSemester(targetSem);
         });
     }
@@ -840,9 +845,9 @@ window.startQuiz = async function(quizId) {
 function openLockedSemesterModal(semKey) {
     const semNames = {
         'sem-1': 'Semester 1',
-        'sem-2': 'Semester 2',
         'sem-3': 'Semester 3',
         'sem-4': 'Semester 4',
+        'sem-5': 'Semester 5',
         'sem-6': 'Semester 6',
         'sem-7': 'Semester 7',
         'sem-8': 'Semester 8'
@@ -851,7 +856,7 @@ function openLockedSemesterModal(semKey) {
     const elTitle = document.getElementById('locked-modal-title');
     const elDesc = document.getElementById('locked-modal-desc');
     if (elTitle) elTitle.textContent = `${title} Access Locked`;
-    if (elDesc) elDesc.textContent = `All question banks, model papers, and scenario quizzes for ${title} are strictly scheduled for upcoming examination modules. Current live testing is active exclusively for Semester 5.`;
+    if (elDesc) elDesc.textContent = `All question banks, model papers, and scenario quizzes for ${title} are scheduled for upcoming examination modules. Current live testing is active exclusively for Semester 2.`;
 
     const modal = document.getElementById('locked-semester-modal');
     if (modal) modal.classList.add('active');
