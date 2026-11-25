@@ -1006,6 +1006,30 @@ window.hasStudentSubmittedQuiz = function(quizIdOrCodeOrObj) {
     return false;
 };
 
+window.isPaperUnlocked = function(quizId) {
+    const defaultLocks = {
+        's2-qr-model-paper': true,
+        's2-nur-model-paper': false,
+        's2-nut-model-paper': false,
+        's2-ap-model-paper': false,
+        's2-fon-model-paper': false
+    };
+    try {
+        const stored = localStorage.getItem('zafii_paper_locks');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (quizId in parsed) {
+                return Boolean(parsed[quizId]);
+            }
+        }
+    } catch (e) {}
+    return Boolean(defaultLocks[quizId]);
+};
+
+window.showLockedPaperNotice = function(paperTitle) {
+    alert(`🔒 Access Restricted!\n\n"${paperTitle}" ko administrator ne filhal lock kiya hua hai.\n\nJab Admin portal se is paper ko unlock karein ge, tabhi aap is examination ko attempt kar sakenge.`);
+};
+
 function renderSubjects(semesterKey) {
     if (!elements.subjectsGrid) return;
     elements.subjectsGrid.innerHTML = '';
@@ -1051,8 +1075,11 @@ function renderSubjects(semesterKey) {
 
     if (!subjects || subjects.length === 0) return;
 
+    const isAuthorizedAdmin = window.isUserAdmin();
+
     subjects.forEach(subject => {
         const isSubmitted = window.hasStudentSubmittedQuiz(subject);
+        const isUnlocked = window.isPaperUnlocked(subject.id);
         const card = document.createElement('div');
         card.className = 'glass-card subject-card';
 
@@ -1092,7 +1119,55 @@ function renderSubjects(semesterKey) {
                     </button>
                 </div>
             `;
+        } else if (!isUnlocked && !isAuthorizedAdmin) {
+            // Locked by Administrator for regular students
+            card.style.border = '1px dashed rgba(239, 68, 68, 0.45)';
+            card.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.06), rgba(15,23,42,0.85))';
+            card.innerHTML = `
+                <div>
+                    <div class="subject-header">
+                        <div class="subject-icon-box" style="background:rgba(239,68,68,0.15); color:#f43f5e;">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <span class="subject-code-tag" style="background:rgba(239,68,68,0.2); color:#fda4af; border-color:rgba(239,68,68,0.4);">
+                            <i class="fa-solid fa-lock" style="margin-right:4px;"></i>LOCKED
+                        </span>
+                    </div>
+                    <h4 class="subject-title" style="color:#cbd5e1;">${escapeHtml(subject.title)}</h4>
+                    <p class="subject-desc" style="color:var(--text-muted);">${escapeHtml(subject.description)}</p>
+                </div>
+
+                <div>
+                    <div class="subject-meta-row">
+                        <div class="meta-item">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span>${subject.questions.length} MCQs</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>${subject.durationMinutes} Mins</span>
+                        </div>
+                    </div>
+
+                    <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#fda4af; font-size:12px; font-weight:700; border-radius:8px; padding:8px 12px; margin-top:14px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Locked by Admin • Awaiting Release</span>
+                    </div>
+
+                    <button class="btn-start-quiz" onclick="showLockedPaperNotice('${escapeHtml(subject.title).replace(/'/g, "\'")}')" style="margin-top:10px; width:100%; opacity:0.8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Paper Locked by Admin</span>
+                    </button>
+                </div>
+            `;
         } else {
+            // Normal Active Card (or Admin Preview)
+            const adminLockedBadge = (!isUnlocked && isAuthorizedAdmin) 
+                ? `<div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:var(--amber-warning); font-size:11.5px; font-weight:700; border-radius:6px; padding:4px 8px; margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                    <i class="fa-solid fa-shield-halved"></i> Locked for Students (Admin Preview Active)
+                   </div>`
+                : '';
+
             card.innerHTML = `
                 <div>
                     <div class="subject-header">
@@ -1106,6 +1181,7 @@ function renderSubjects(semesterKey) {
                 </div>
 
                 <div>
+                    ${adminLockedBadge}
                     <div class="subject-meta-row">
                         <div class="meta-item">
                             <i class="fa-regular fa-circle-question"></i>
@@ -1136,11 +1212,20 @@ function startQuiz(quizId) {
         return;
     }
 
+    if (!window.isPaperUnlocked(quizId) && !window.isUserAdmin()) {
+        window.showLockedPaperNotice(quiz.title);
+        return;
+    }
+
     // Open Pre-Assessment Instructions Briefing Modal first
     openExamBriefing(quiz);
 }
 
 function openExamBriefing(quiz) {
+    if (!window.isPaperUnlocked(quiz.id) && !window.isUserAdmin()) {
+        window.showLockedPaperNotice(quiz.title);
+        return;
+    }
     AppState.pendingQuizId = quiz.id;
 
     const elTitle = document.getElementById('briefing-exam-title');
@@ -2078,6 +2163,9 @@ function initAdminModule() {
 }
 
 async function loadAdminDashboardData() {
+    if (typeof window.renderAdminPaperLocks === 'function') {
+        window.renderAdminPaperLocks();
+    }
     const elTotalStudents = document.getElementById('admin-total-students');
     const elTotalQuizzes = document.getElementById('admin-total-quizzes');
     const elAvgPassRate = document.getElementById('admin-avg-pass-rate');
@@ -3122,3 +3210,174 @@ async function updateAdminSupportBadge() {
         if (ping) ping.style.display = 'none';
     }
 }
+
+
+// ----------------- ADMIN SEMESTER 2 PAPERS LOCK & VISIBILITY CONTROL -----------------
+window.renderAdminPaperLocks = async function() {
+    const container = document.getElementById('admin-papers-lock-grid');
+    if (!container) return;
+
+    let paperLocks = {};
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.getPaperLocks === 'function') {
+        paperLocks = await SUPABASE_CONFIG.getPaperLocks();
+    } else {
+        const stored = localStorage.getItem('zafii_paper_locks');
+        paperLocks = stored ? JSON.parse(stored) : {
+            's2-qr-model-paper': true,
+            's2-nur-model-paper': false,
+            's2-nut-model-paper': false,
+            's2-ap-model-paper': false,
+            's2-fon-model-paper': false
+        };
+    }
+
+    const s2Subjects = getSubjectsBySemester('sem-2') || [];
+    container.innerHTML = '';
+
+    s2Subjects.forEach(sub => {
+        const isUnlocked = Boolean(paperLocks[sub.id]);
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: rgba(255,255,255,0.04);
+            border: 1px solid ${isUnlocked ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.2s ease;
+        `;
+
+        const statusBadge = isUnlocked
+            ? `<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); font-size:11px; font-weight:800; padding:3px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle-check"></i> UNLOCKED • LIVE</span>`
+            : `<span style="background:rgba(239,68,68,0.15); color:#f43f5e; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:800; padding:3px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-lock"></i> LOCKED • PROTECTED</span>`;
+
+        const toggleBtn = isUnlocked
+            ? `<button onclick="adminTogglePaperLock('${sub.id}')" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:#fff; border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; width:100%; touch-action:manipulation;">
+                <i class="fa-solid fa-lock"></i>
+                <span>Lock Paper (Hide from Students)</span>
+               </button>`
+            : `<button onclick="adminTogglePaperLock('${sub.id}')" style="background:linear-gradient(135deg, #10b981, #06b6d4); color:#fff; border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; width:100%; touch-action:manipulation;">
+                <i class="fa-solid fa-lock-open"></i>
+                <span>Unlock Paper (Show to Students)</span>
+               </button>`;
+
+        card.innerHTML = `
+            <div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                    <span style="font-size:11px; font-weight:800; color:var(--cyan-primary); background:rgba(6,182,212,0.12); padding:2px 6px; border-radius:6px;">${sub.code}</span>
+                    ${statusBadge}
+                </div>
+                <h5 style="margin:0 0 4px 0; font-size:13.5px; font-weight:800; color:#fff;">${escapeHtml(sub.title)}</h5>
+                <div style="font-size:11.5px; color:var(--text-muted); display:flex; gap:10px;">
+                    <span><i class="fa-regular fa-circle-question"></i> ${sub.questions.length} MCQs</span>
+                    <span><i class="fa-regular fa-clock"></i> ${sub.durationMinutes} Mins</span>
+                </div>
+            </div>
+            <div>
+                ${toggleBtn}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+};
+
+window.adminTogglePaperLock = async function(quizId) {
+    let paperLocks = {};
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.getPaperLocks === 'function') {
+        paperLocks = await SUPABASE_CONFIG.getPaperLocks();
+    } else {
+        const stored = localStorage.getItem('zafii_paper_locks');
+        paperLocks = stored ? JSON.parse(stored) : {};
+    }
+
+    const current = Boolean(paperLocks[quizId]);
+    const newState = !current;
+    paperLocks[quizId] = newState;
+
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.setPaperLocks === 'function') {
+        await SUPABASE_CONFIG.setPaperLocks(paperLocks);
+    } else {
+        localStorage.setItem('zafii_paper_locks', JSON.stringify(paperLocks));
+    }
+
+    await window.renderAdminPaperLocks();
+    if (AppState.currentSemester === 'sem-2') {
+        renderSubjects('sem-2');
+    }
+
+    const sub = findQuizById(quizId);
+    const title = sub ? sub.title : quizId;
+    alert(`✅ Setting Saved & Synchronized to Live Cloud Database!\n\n"${title}" is now ${newState ? 'UNLOCKED (Visible & Active for all students)' : 'LOCKED (Protected & Hidden from students)'}!`);
+};
+
+window.adminLockAll4Papers = async function() {
+    let paperLocks = {};
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.getPaperLocks === 'function') {
+        paperLocks = await SUPABASE_CONFIG.getPaperLocks();
+    } else {
+        const stored = localStorage.getItem('zafii_paper_locks');
+        paperLocks = stored ? JSON.parse(stored) : {};
+    }
+
+    paperLocks['s2-nur-model-paper'] = false;
+    paperLocks['s2-nut-model-paper'] = false;
+    paperLocks['s2-ap-model-paper'] = false;
+    paperLocks['s2-fon-model-paper'] = false;
+
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.setPaperLocks === 'function') {
+        await SUPABASE_CONFIG.setPaperLocks(paperLocks);
+    } else {
+        localStorage.setItem('zafii_paper_locks', JSON.stringify(paperLocks));
+    }
+
+    await window.renderAdminPaperLocks();
+    if (AppState.currentSemester === 'sem-2') {
+        renderSubjects('sem-2');
+    }
+
+    alert("🔒 All 4 Newly Added Model Papers Have Been Locked!\n\nStudents cannot attempt or open Nursing Theories, Applied Nutrition, Anatomy & Physiology II, or Fundamentals of Nursing until you unlock them.");
+};
+
+window.adminUnlockAllPapers = async function() {
+    let paperLocks = {};
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.getPaperLocks === 'function') {
+        paperLocks = await SUPABASE_CONFIG.getPaperLocks();
+    } else {
+        const stored = localStorage.getItem('zafii_paper_locks');
+        paperLocks = stored ? JSON.parse(stored) : {};
+    }
+
+    paperLocks['s2-qr-model-paper'] = true;
+    paperLocks['s2-nur-model-paper'] = true;
+    paperLocks['s2-nut-model-paper'] = true;
+    paperLocks['s2-ap-model-paper'] = true;
+    paperLocks['s2-fon-model-paper'] = true;
+
+    if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.setPaperLocks === 'function') {
+        await SUPABASE_CONFIG.setPaperLocks(paperLocks);
+    } else {
+        localStorage.setItem('zafii_paper_locks', JSON.stringify(paperLocks));
+    }
+
+    await window.renderAdminPaperLocks();
+    if (AppState.currentSemester === 'sem-2') {
+        renderSubjects('sem-2');
+    }
+
+    alert("🎉 All 5 Model Papers Unlocked!\n\nAll Semester 2 model examination papers are now live and open for all students to attempt.");
+};
+
+// Auto sync paper locks from Supabase on startup
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof SUPABASE_CONFIG !== 'undefined' && typeof SUPABASE_CONFIG.getPaperLocks === 'function') {
+            SUPABASE_CONFIG.getPaperLocks().then(() => {
+                if (typeof AppState !== 'undefined' && AppState.currentSemester === 'sem-2') {
+                    renderSubjects('sem-2');
+                }
+            });
+        }
+    }, 500);
+});
