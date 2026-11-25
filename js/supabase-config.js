@@ -1129,6 +1129,71 @@ const SUPABASE_CONFIG = {
             console.error("Local storage delete delegated admin error:", e);
         }
         return true;
+    },
+    // ----------------- EXAMINATION PAPERS ACCESS & LOCKS -----------------
+    async getPaperLocks() {
+        const defaultLocks = {
+            's2-qr-model-paper': true,    // Quantitative Reasoning (unlocked by default)
+            's2-nur-model-paper': false,   // Nursing Theories (locked by default)
+            's2-nut-model-paper': false,   // Applied Nutrition (locked by default)
+            's2-ap-model-paper': false,    // Anatomy & Physiology - II (locked by default)
+            's2-fon-model-paper': false    // Fundamentals of Nursing (locked by default)
+        };
+
+        if (this.client) {
+            try {
+                const { data, error } = await this.client
+                    .from('students')
+                    .select('*')
+                    .eq('name', 'SYSTEM_SETTINGS_PAPER_LOCKS')
+                    .maybeSingle();
+
+                if (data && !error && data.roll_no) {
+                    try {
+                        const parsed = JSON.parse(data.roll_no);
+                        const merged = { ...defaultLocks, ...parsed };
+                        localStorage.setItem('zafii_paper_locks', JSON.stringify(merged));
+                        return merged;
+                    } catch (e) {
+                        console.warn("Failed to parse paper locks json:", e);
+                    }
+                }
+            } catch (err) {
+                console.warn("Supabase fetch paper locks error:", err);
+            }
+        }
+
+        try {
+            const cached = localStorage.getItem('zafii_paper_locks');
+            if (cached) return { ...defaultLocks, ...JSON.parse(cached) };
+        } catch (e) {}
+
+        localStorage.setItem('zafii_paper_locks', JSON.stringify(defaultLocks));
+        return defaultLocks;
+    },
+
+    async setPaperLocks(paperLocks) {
+        const jsonStr = JSON.stringify(paperLocks);
+        localStorage.setItem('zafii_paper_locks', jsonStr);
+
+        if (this.client) {
+            try {
+                await this.client
+                    .from('students')
+                    .upsert([
+                        {
+                            name: 'SYSTEM_SETTINGS_PAPER_LOCKS',
+                            roll_no: jsonStr,
+                            semester: 'SYSTEM_CONFIG',
+                            created_at: new Date().toISOString()
+                        }
+                    ], { onConflict: 'name' });
+                console.log("✅ Paper lock permissions synchronized to Supabase.");
+            } catch (err) {
+                console.warn("Supabase save paper locks error:", err);
+            }
+        }
+        return paperLocks;
     }
 };
 
