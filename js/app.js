@@ -1333,6 +1333,11 @@ function renderSubjects(semesterKey) {
         return aUnlocked - bUnlocked;
     });
 
+    // Hide locked papers completely from regular students; admins still see all with preview badge
+    const visibleSubjects = isAuthorizedAdmin
+        ? orderedSubjects
+        : orderedSubjects.filter(({ subject }) => window.isPaperUnlocked(subject.id));
+
     // Calculate counts for header
     let liveCount = 0;
     let lockedCount = 0;
@@ -1356,6 +1361,12 @@ function renderSubjects(semesterKey) {
         flex-wrap: wrap;
         gap: 12px;
     `;
+    const adminLockedPill = isAuthorizedAdmin
+        ? `<span style="font-size:11px; font-weight:800; background:rgba(239,68,68,0.15); color:#fda4af; border:1px solid rgba(239,68,68,0.3); padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;">
+                <i class="fa-solid fa-eye-slash"></i> ${lockedCount} Hidden (Locked)
+           </span>`
+        : '';
+
     headerBanner.innerHTML = `
         <div style="display:flex; align-items:center; gap:12px;">
             <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #06b6d4, #8b5cf6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; box-shadow:0 0 14px rgba(6,182,212,0.3); flex-shrink:0;">
@@ -1366,23 +1377,38 @@ function renderSubjects(semesterKey) {
                     BSN Semester 2 — Academic Courses & Model Papers
                 </div>
                 <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">
-                    Curriculum Sequence: Paper 1 to Paper 5 arranged in official university order.
+                    Active Examination Assessments arranged in official university curriculum order.
                 </div>
             </div>
         </div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span style="font-size:11px; font-weight:800; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;">
-                <i class="fa-solid fa-lock-open"></i> ${liveCount} Active Unlocked
+                <i class="fa-solid fa-lock-open"></i> ${liveCount} Active Paper${liveCount === 1 ? '' : 's'}
             </span>
-            <span style="font-size:11px; font-weight:800; background:rgba(239,68,68,0.15); color:#fda4af; border:1px solid rgba(239,68,68,0.3); padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;">
-                <i class="fa-solid fa-lock"></i> ${lockedCount} Locked by Admin
-            </span>
+            ${adminLockedPill}
         </div>
     `;
     elements.subjectsGrid.appendChild(headerBanner);
 
-    // 2. Render Each Subject with Prominent Subject Name & Status Underneath
-    orderedSubjects.forEach(({ subject, meta }, idx) => {
+    if (visibleSubjects.length === 0) {
+        const emptyCard = document.createElement('div');
+        emptyCard.className = 'glass-card empty-state';
+        emptyCard.style.cssText = 'padding:40px 24px; text-align:center; max-width:560px; margin:12px auto; grid-column: 1 / -1; width:100%;';
+        emptyCard.innerHTML = `
+            <div style="width:60px; height:60px; border-radius:50%; background:rgba(245,158,11,0.15); color:var(--amber-warning); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 16px;">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 style="font-size:19px; font-weight:800; margin-bottom:8px; color:#fff;">No Active Papers Available</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0;">
+                All examination model papers are currently locked by the Administrator. Please check back once they are officially unlocked.
+            </p>
+        `;
+        elements.subjectsGrid.appendChild(emptyCard);
+        return;
+    }
+
+    // 2. Render Each Visible Subject with Prominent Subject Name & Status Underneath
+    visibleSubjects.forEach(({ subject, meta }, idx) => {
         const isSubmitted = window.hasStudentSubmittedQuiz(subject);
         const isUnlocked = window.isPaperUnlocked(subject.id);
         const card = document.createElement('div');
@@ -1515,7 +1541,7 @@ function renderSubjects(semesterKey) {
 
             const adminLockedBadge = (!isUnlocked && isAuthorizedAdmin) 
                 ? `<div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:var(--amber-warning); font-size:11.5px; font-weight:700; border-radius:6px; padding:4px 8px; margin-bottom:8px; display:flex; align-items:center; gap:5px;">
-                    <i class="fa-solid fa-shield-halved"></i> Locked for Students (Admin Preview Active)
+                    <i class="fa-solid fa-shield-halved"></i> Hidden from Students • Locked (Admin Preview)
                    </div>`
                 : '';
 
