@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" />
     
     <!-- Custom Glassmorphic Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=24.0">
+    <link rel="stylesheet" href="css/style.css?v=25.0">
 
     <!-- External Libraries (CDN) -->
     <!-- 1. html2pdf.js for direct Chrome PDF marksheet downloads -->
@@ -254,21 +254,20 @@
                     <h2>Welcome back, <span id="banner-student-name" style="color:var(--cyan-primary);">Scholar</span>! 👋</h2>
                     
                     <!-- Prominent Student Roll Number, Account ID & Email Badge Box -->
-                    <div style="margin: 10px 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                        <span style="font-size:13px; color:var(--text-muted); font-weight:700;">Candidate Credentials:</span>
-                        <span style="background:linear-gradient(135deg, rgba(6,182,212,0.2), rgba(37,211,102,0.2)); border:1.5px solid var(--cyan-primary); color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; font-family:monospace; letter-spacing:1px; box-shadow:0 0 12px rgba(6,182,212,0.3); display:inline-flex; align-items:center; gap:6px;">
+                    <div class="credentials-banner-row" style="margin: 10px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <span class="cred-label" style="font-size:12.5px; color:var(--text-muted); font-weight:700;">Credentials:</span>
+                        <span class="cred-chip chip-cyan" style="background:linear-gradient(135deg, rgba(6,182,212,0.18), rgba(37,211,102,0.18)); border:1px solid var(--cyan-primary); color:#ffffff; padding:4px 10px; border-radius:10px; font-weight:800; font-size:12px; font-family:monospace; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-id-card" style="color:var(--cyan-primary);"></i>
                             <span id="banner-student-roll-badge">BSN-2026-0000</span>
                         </span>
-                        <span style="background:linear-gradient(135deg, rgba(236,72,153,0.2), rgba(168,85,247,0.2)); border:1.5px solid #ec4899; color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; font-family:monospace; letter-spacing:1px; box-shadow:0 0 12px rgba(236,72,153,0.3); display:inline-flex; align-items:center; gap:6px;">
+                        <span class="cred-chip chip-pink" style="background:linear-gradient(135deg, rgba(236,72,153,0.18), rgba(168,85,247,0.18)); border:1px solid #ec4899; color:#ffffff; padding:4px 10px; border-radius:10px; font-weight:800; font-size:12px; font-family:monospace; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-key" style="color:#f472b6;"></i>
-                            <span>Account ID: </span>
+                            <span>ID: </span>
                             <span id="banner-student-account-id" style="color:#f472b6;">84920147</span>
                         </span>
-                        <span style="background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2)); border:1.5px solid #10b981; color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; font-family:monospace; letter-spacing:0.5px; box-shadow:0 0 12px rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:6px;">
+                        <span class="cred-chip chip-emerald" style="background:linear-gradient(135deg, rgba(16,185,129,0.18), rgba(6,182,212,0.18)); border:1px solid #10b981; color:#ffffff; padding:4px 10px; border-radius:10px; font-weight:700; font-size:11.5px; font-family:monospace; display:inline-flex; align-items:center; gap:6px; max-width:260px;">
                             <i class="fa-solid fa-envelope" style="color:#34d399;"></i>
-                            <span>Email: </span>
-                            <span id="banner-student-email" style="color:#34d399;">student@gmail.com</span>
+                            <span id="banner-student-email" style="color:#34d399; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">student@gmail.com</span>
                         </span>
                     </div>
 
@@ -1416,7 +1415,7 @@
     <script src="js/supabase-config.js?v=23.0"></script>
     <script src="js/quiz-data.js?v=21.0"></script>
     <script src="js/pdf-generator.js?v=21.0"></script>
-    <script src="js/app.js?v=24.0"></script>
+    <script src="js/app.js?v=25.0"></script>
 
     <!-- ==================================================== -->
     <!-- GLOBAL PROFESSIONAL CUSTOM IN-APP MODAL DIALOG       -->
