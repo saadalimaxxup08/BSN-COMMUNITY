@@ -2708,6 +2708,861 @@ const QUIZ_DATA = {
                         "explanation": "Correct Option: (D) All of the above. Verified Applied Nutrition response."
                 }
         ]
+},
+        {
+        "id": "s2-ap2-model-paper",
+        "title": "Anatomy & Physiology II - 70 Scenario Mock Paper",
+        "code": "AP-204-MODEL",
+        "semester": "Semester 2",
+        "description": "70-scenario Anatomy & Physiology II examination covering cardiovascular, respiratory, renal, nervous, endocrine, and reproductive systems with instant marksheet generation.",
+        "durationMinutes": 70,
+        "icon": "fa-heart-pulse",
+        "badgeColor": "rose",
+        "isModelPaper": false,
+        "showAnswersImmediately": true,
+        "totalQuestions": 70,
+        "questions": [
+                {
+                        "id": 1,
+                        "question": "A trauma patient arrives in the emergency department with a penetrating chest wound. Assessment reveals absent breath sounds on the right side, and a chest radiograph shows complete collapse of the right lung. Which pressure relationship change explains this collapse?",
+                        "options": [
+                                "Intrapulmonic pressure falls below atmospheric pressure",
+                                "Intrapleural pressure equals or exceeds intrapulmonic pressure",
+                                "Alveolar surface tension drops to zero",
+                                "Intra-abdominal pressure exceeds thoracic pressure"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Intrapleural pressure equals or exceeds intrapulmonic pressure. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 2,
+                        "question": "A 64-year-old man with end-stage chronic kidney disease has severe hyperphosphatemia and hypocalcemia. Over several months, his parathyroid glands become markedly hyperactive, leading to bone pain and pathological fractures. Which primary endocrine mechanism drives this bone disease?",
+                        "options": [
+                                "Excessive calcitonin inhibiting osteoblast maturation",
+                                "Sustained elevation of parathyroid hormone stimulating osteoclast activity",
+                                "Primary adrenal insufficiency reducing bone matrix synthesis",
+                                "Excess thyroid hormone suppressing renal vitamin D activation"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Sustained elevation of parathyroid hormone stimulating osteoclast activity. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 3,
+                        "question": "During a neurological examination, a patient can speak fluently with normal prosody and grammar, yet produces sentences filled with jargon and cannot follow simple spoken or written commands. Which cortical region is most likely lesioned?",
+                        "options": [
+                                "Broca's area in the inferior frontal gyrus",
+                                "Wernicke's area in the posterior superior temporal gyrus",
+                                "Primary somatosensory cortex in the postcentral gyrus",
+                                "Prefrontal association cortex"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Wernicke's area in the posterior superior temporal gyrus. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 4,
+                        "question": "A patient with severe emphysema exhibits marked loss of elastic recoil in the lung parenchyma and hyperinflated alveoli during expiration. How does this structural change alter lung mechanics?",
+                        "options": [
+                                "Lung compliance decreases while elastic recoil increases",
+                                "Lung compliance increases while passive expiratory recoil decreases",
+                                "Airway resistance falls to zero during forced expiration",
+                                "Surfactant production doubles to stabilize alveolar walls"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Lung compliance increases while passive expiratory recoil decreases. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 5,
+                        "question": "A 29-year-old woman presents with persistent galactorrhea, amenorrhea, and bitemporal hemianopsia. Compression of which anatomical structure explains her visual field defect?",
+                        "options": [
+                                "Lateral geniculate nucleus",
+                                "Optic chiasm",
+                                "Primary visual cortex in the occipital lobe",
+                                "Oculomotor nerve"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Optic chiasm. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 6,
+                        "question": "A patient undergoes a surgical procedure that damages the right phrenic nerve. Which immediate respiratory effect is most expected?",
+                        "options": [
+                                "Loss of cough reflex at the tracheal bifurcation",
+                                "Paralysis of the right hemidiaphragm",
+                                "Complete relaxation of all internal intercostal muscles",
+                                "Bronchoconstriction restricted to the right main bronchus"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Paralysis of the right hemidiaphragm. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 7,
+                        "question": "In the nephron, which tubular segment is responsible for the bulk reabsorption of filtered water, sodium, glucose, and amino acids under normal physiological conditions?",
+                        "options": [
+                                "Thin descending limb of the loop of Henle",
+                                "Proximal convoluted tubule",
+                                "Cortical collecting duct",
+                                "Macula densa of the distal tubule"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Proximal convoluted tubule. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 8,
+                        "question": "A 38-year-old man presents with paroxysmal severe hypertension, pounding headaches, diaphoresis, and palpitations triggered by stress. Laboratory testing confirms a catecholamine-secreting tumor of the adrenal medulla. Which pharmacological blockade strategy prevents unopposed alpha-mediated vasoconstriction during management?",
+                        "options": [
+                                "Beta-adrenergic blockade prior to alpha-adrenergic blockade",
+                                "Alpha-adrenergic blockade prior to beta-adrenergic blockade",
+                                "Selective muscarinic blockade followed by loop diuretics",
+                                "Direct renin inhibition followed by aldosterone antagonists"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Alpha-adrenergic blockade prior to beta-adrenergic blockade. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 9,
+                        "question": "Which neuroglial cell type forms myelin sheaths around multiple axons within the central nervous system?",
+                        "options": [
+                                "Schwann cell",
+                                "Oligodendrocyte",
+                                "Astrocyte",
+                                "Ependymal cell"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Oligodendrocyte. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 10,
+                        "question": "A patient with a suspected lumbar spinal pathology is scheduled for a lumbar puncture. Why is the needle typically inserted into a subarachnoid interspace inferior to the second lumbar vertebra?",
+                        "options": [
+                                "Cerebrospinal fluid pressure is lowest below the sacral promontory",
+                                "The spinal cord conus medullaris terminates superiorly near the L1\u2013L2 level",
+                                "The dura mater ends abruptly at the second lumbar vertebra",
+                                "Epidural venous plexuses are absent below L2"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) The spinal cord conus medullaris terminates superiorly near the L1\u2013L2 level. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 11,
+                        "question": "A 46-year-old woman reports progressive difficulty focusing on near objects such as a restaurant menu and must hold reading material farther away. Which physiological change best accounts for this finding?",
+                        "options": [
+                                "Elongation of the eyeball causing light to focus anterior to the retina",
+                                "Age-related loss of lens elasticity reducing accommodation",
+                                "Irregular curvature of the anterior corneal surface",
+                                "Opacification of the vitreous humor"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Age-related loss of lens elasticity reducing accommodation. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 12,
+                        "question": "Which capillary network runs parallel to the loop of Henle in juxtamedullary nephrons and helps maintain the medullary osmotic gradient via countercurrent exchange?",
+                        "options": [
+                                "Peritubular capillaries around cortical tubules",
+                                "Vasa recta",
+                                "Afferent glomerular arterioles",
+                                "Interlobar veins"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Vasa recta. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 13,
+                        "question": "A patient with a confirmed lesion of the right facial nerve (CN VII) exhibits drooping of the right corner of the mouth and inability to voluntarily close the right eyelid. Which additional deficit is consistent with proximal facial nerve involvement?",
+                        "options": [
+                                "Loss of somatic sensation over the forehead and cheek",
+                                "Loss of taste sensation from the anterior two-thirds of the tongue",
+                                "Inability to abduct the right eye laterally",
+                                "Deviation of the protruded tongue toward the left side"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Loss of taste sensation from the anterior two-thirds of the tongue. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 14,
+                        "question": "Which group of hormones is synthesized from cholesterol and crosses target cell plasma membranes to bind intracellular receptors?",
+                        "options": [
+                                "Catecholamines",
+                                "Steroid hormones",
+                                "Glycoprotein hormones",
+                                "Polypeptide hypothalamic hormones"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Steroid hormones. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 15,
+                        "question": "A 52-year-old woman with type 2 diabetes presents with acute painless vision loss in one eye. Fundoscopy shows flame-shaped retinal hemorrhages and macular edema. Which pathophysiological process underlies this presentation?",
+                        "options": [
+                                "Sudden occlusion of the central retinal artery by a calcific embolus",
+                                "Chronic hyperglycemia-induced retinal microvascular damage and leakage",
+                                "Acute angle closure blocking trabecular aqueous outflow",
+                                "Degeneration of rods in the peripheral retina"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Chronic hyperglycemia-induced retinal microvascular damage and leakage. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 16,
+                        "question": "Which laryngeal cartilage pair pivots and slides to alter the tension and position of the vocal folds during phonation?",
+                        "options": [
+                                "Epiglottis",
+                                "Arytenoid cartilages",
+                                "Thyroid cartilage",
+                                "Corniculate cartilages"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Arytenoid cartilages. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 17,
+                        "question": "A patient experiences a sudden spike in arterial blood pressure after lifting a heavy weight. Within seconds, heart rate slows and peripheral arteriolar resistance decreases. Which sequence accurately describes this baroreceptor reflex?",
+                        "options": [
+                                "Chemoreceptors stimulate sympathetic cardioaccelerator fibers",
+                                "Stretch receptors signal brainstem centers to increase parasympathetic and reduce sympathetic tone",
+                                "Osmoreceptors trigger antidiuretic hormone release to induce vasodilation",
+                                "Nociceptors inhibit vagal outflow to the sinoatrial node"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Stretch receptors signal brainstem centers to increase parasympathetic and reduce sympathetic tone. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 18,
+                        "question": "A 43-year-old woman presents with central obesity, moon facies, proximal muscle wasting, thin skin with purple striae, and elevated fasting blood glucose. Excess secretion of which hormone is primarily responsible?",
+                        "options": [
+                                "Aldosterone",
+                                "Cortisol",
+                                "Dehydroepiandrosterone (DHEA)",
+                                "Epinephrine"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Cortisol. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 19,
+                        "question": "In a normal 28-day ovarian and menstrual cycle, which hormonal surge directly triggers the release of a secondary oocyte from the mature Graafian follicle?",
+                        "options": [
+                                "Progesterone peak during the mid-luteal phase",
+                                "Luteinizing hormone (LH) surge",
+                                "Inhibin surge from granulosa cells",
+                                "Prolactin spike during the menstrual phase"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Luteinizing hormone (LH) surge. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 20,
+                        "question": "A patient presents with sudden-onset hearing loss accompanied by a feeling of fullness in the ear canal. Otoscopy reveals a dark waxy mass completely occluding the external auditory meatus. How is this hearing deficit classified?",
+                        "options": [
+                                "Sensorineural hearing loss",
+                                "Conductive hearing loss",
+                                "Central auditory processing deficit",
+                                "Retrocochlear neuropathy"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Conductive hearing loss. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 21,
+                        "question": "A patient with nephrotic syndrome has heavy proteinuria and marked hypoalbuminemia, resulting in generalized peripheral edema. Why does a low plasma albumin concentration promote edema formation?",
+                        "options": [
+                                "Capillary hydrostatic pressure drops below interstitial pressure",
+                                "Plasma oncotic pressure decreases, favoring net fluid movement out of capillaries",
+                                "Lymphatic vessels constrict in response to low plasma protein",
+                                "Antidiuretic hormone secretion ceases completely"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Plasma oncotic pressure decreases, favoring net fluid movement out of capillaries. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 22,
+                        "question": "Which structure of the inner ear contains the utricle and saccule and is part of the bony labyrinth?",
+                        "options": [
+                                "Cochlear duct",
+                                "Vestibule",
+                                "Tympanic cavity",
+                                "Eustachian tube"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Vestibule. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 23,
+                        "question": "A patient with Parkinson's disease exhibits resting tremor, cogwheel rigidity, and bradykinesia. Degeneration of dopaminergic neurons in which midbrain structure is classically associated with these motor signs?",
+                        "options": [
+                                "Red nucleus",
+                                "Substantia nigra",
+                                "Inferior colliculus",
+                                "Pontine pneumotaxic center"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Substantia nigra. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 24,
+                        "question": "Which mechanism allows a sperm cell to penetrate the zona pellucida and fuse with the secondary oocyte during fertilization?",
+                        "options": [
+                                "Mitochondrial ATP synthesis propelling the flagellum through the endometrium",
+                                "Acrosomal enzymes digesting protective oocyte coverings",
+                                "Nuclear chromatin condensation dissolving the corona radiata",
+                                "Prostaglandins in seminal fluid lysing the zona pellucida"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Acrosomal enzymes digesting protective oocyte coverings. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 25,
+                        "question": "A patient with acute pyelonephritis presents with fever, chills, costovertebral angle tenderness, and dysuria. Which anatomical pathway most commonly leads to this infection?",
+                        "options": [
+                                "Direct lymphatic spread from the descending colon",
+                                "Ascending bacterial spread from the lower urinary tract into the renal pelvis and parenchyma",
+                                "Retrograde venous reflux from the hepatic portal system",
+                                "Perforation of the renal capsule by cortical cysts"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Ascending bacterial spread from the lower urinary tract into the renal pelvis and parenchyma. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 26,
+                        "question": "Which area of the brainstem contains vital autonomic centers regulating heart rate, vascular tone, and basic respiratory rhythm?",
+                        "options": [
+                                "Midbrain tectum",
+                                "Medulla oblongata",
+                                "Cerebral peduncles",
+                                "Corpus callosum"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Medulla oblongata. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 27,
+                        "question": "A 36-year-old woman presents with oligomenorrhea, hirsutism, acne, and ovarian enlargement with multiple small cysts on ultrasound. Which hormonal imbalance is characteristic of polycystic ovary syndrome (PCOS)?",
+                        "options": [
+                                "Profound primary ovarian failure with undetectable estrogens",
+                                "Elevated androgen activity and ovulatory dysfunction",
+                                "Isolated deficiency of follicle-stimulating hormone with normal ovulation",
+                                "Excess progesterone causing continuous endometrial shedding"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Elevated androgen activity and ovulatory dysfunction. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 28,
+                        "question": "In the urinary bladder, what is the name of the smooth muscle layer in the muscularis that contracts during micturition to expel urine?",
+                        "options": [
+                                "Internal urethral sphincter",
+                                "Detrusor muscle",
+                                "Dartos muscle",
+                                "Cremaster muscle"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Detrusor muscle. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 29,
+                        "question": "A patient with a traumatic head injury develops decerebrate posturing (extension of arms and legs), a Glasgow Coma Scale score of 6, and anisocoria (unequal pupils). Which immediate threat is indicated by this constellation?",
+                        "options": [
+                                "Benign post-concussive migraine",
+                                "Severely elevated intracranial pressure with brainstem compression",
+                                "Peripheral vestibular neuritis",
+                                "Transient ischemic attack of the occipital pole"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Severely elevated intracranial pressure with brainstem compression. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 30,
+                        "question": "Which structure of the eye produces aqueous humor to maintain intraocular pressure and nourish the avascular lens and cornea?",
+                        "options": [
+                                "Choroid plexus",
+                                "Ciliary body",
+                                "Lacrimal gland",
+                                "Canal of Schlemm"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Ciliary body. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 31,
+                        "question": "A patient with uncontrolled type 1 diabetes presents with Kussmaul respirations, fruity breath odor, hyperglycemia, and hypotension. Which metabolic emergency is occurring?",
+                        "options": [
+                                "Myxedema coma",
+                                "Diabetic ketoacidosis",
+                                "Syndrome of inappropriate antidiuretic hormone (SIADH)",
+                                "Conn's syndrome"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Diabetic ketoacidosis. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 32,
+                        "question": "Where is the primary gustatory area located within the cerebral cortex?",
+                        "options": [
+                                "Occipital lobe",
+                                "Parietal lobe",
+                                "Prefrontal cortex",
+                                "Cerebellar vermis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Parietal lobe. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 33,
+                        "question": "A 55-year-old man with a history of smoking presents with a chronic productive cough, excess bronchial mucus production, and impaired mucociliary clearance. Which chronic airway disorder is most consistent with these findings?",
+                        "options": [
+                                "Spontaneous pneumothorax",
+                                "Chronic bronchitis",
+                                "Acute epiglottitis",
+                                "Restrictive pulmonary fibrosis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Chronic bronchitis. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 34,
+                        "question": "A patient with a suspected incomplete spinal cord injury shows ipsilateral loss of motor function and vibration/proprioception below the lesion, accompanied by contralateral loss of pain and temperature sensation starting one to two segments below the lesion. Which syndrome is described?",
+                        "options": [
+                                "Central cord syndrome",
+                                "Brown-S\u00e9quard syndrome",
+                                "Anterior cord syndrome",
+                                "Cauda equina syndrome"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Brown-S\u00e9quard syndrome. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 35,
+                        "question": "Which structure in the respiratory tract acts as a highly sensitive reflexogenic zone that triggers the cough reflex when irritated by foreign particles or secretions?",
+                        "options": [
+                                "Alveolar duct",
+                                "Carina",
+                                "Lingula",
+                                "Costodiaphragmatic recess"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Carina. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 36,
+                        "question": "A patient with uncontrolled diabetes mellitus exhibits glucose in the urine (glycosuria) alongside polyuria. Which renal mechanism explains why glucose appears in the urine?",
+                        "options": [
+                                "Active tubular secretion of glucose into the collecting duct",
+                                "Filtered glucose load exceeds the tubular transport maximum of proximal carriers",
+                                "Breakdown of glomerular basement membrane selectively leaking glucose",
+                                "Aldosterone-mediated inhibition of sodium-glucose cotransporters"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Filtered glucose load exceeds the tubular transport maximum of proximal carriers. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 37,
+                        "question": "Which type of chemical signaling acts locally on neighboring cells without traveling through the bloodstream?",
+                        "options": [
+                                "Endocrine signaling",
+                                "Paracrine signaling",
+                                "Neurohormonal signaling",
+                                "Synaptic long-tract signaling"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Paracrine signaling. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 38,
+                        "question": "A 23-year-old man presents with sharp, stabbing unilateral facial pain lasting seconds to minutes, triggered by light touch on his cheek or chewing. Which cranial nerve is primarily implicated?",
+                        "options": [
+                                "Facial nerve (CN VII)",
+                                "Trigeminal nerve (CN V)",
+                                "Glossopharyngeal nerve (CN IX)",
+                                "Hypoglossal nerve (CN XII)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Trigeminal nerve (CN V). Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 39,
+                        "question": "A patient with a suspected cerebral aneurysm rupture presents with a sudden, explosive \"thunderclap\" headache, photophobia, and nuchal rigidity. Which anatomical space most directly contains extravasated blood in this classic presentation?",
+                        "options": [
+                                "Epidural space",
+                                "Subarachnoid space",
+                                "Subdural potential space",
+                                "Central canal of the spinal cord"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Subarachnoid space. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 40,
+                        "question": "Which structure serves as the anatomical gateway on the mediastinal surface of the lung where bronchi, pulmonary vessels, lymphatic vessels, and nerves enter and exit?",
+                        "options": [
+                                "Cupula",
+                                "Hilum",
+                                "Cardiac notch",
+                                "Oblique fissure"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Hilum. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 41,
+                        "question": "A patient with chronic kidney disease is prescribed a dietary phosphate binder to be taken with meals. Why is phosphate control essential in advanced renal failure?",
+                        "options": [
+                                "Prevents metabolic alkalosis from excess phosphate excretion",
+                                "Prevents hyperphosphatemia-driven secondary hyperparathyroidism and vascular calcification",
+                                "Stimulates erythropoietin synthesis in peritubular interstitial cells",
+                                "Enhances potassium excretion in the distal nephron"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Prevents hyperphosphatemia-driven secondary hyperparathyroidism and vascular calcification. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 42,
+                        "question": "Which region of the retina contains the highest density of cone photoreceptors and mediates sharpest visual acuity?",
+                        "options": [
+                                "Optic disc",
+                                "Fovea centralis",
+                                "Ora serrata",
+                                "Ciliary zonule"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Fovea centralis. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 43,
+                        "question": "A 50-year-old woman presents with cold intolerance, unexplained weight gain, constipation, dry coarse skin, and delayed relaxation of deep tendon reflexes. Laboratory testing shows elevated serum TSH and low free T4. Which diagnosis fits best?",
+                        "options": [
+                                "Secondary hyperthyroidism",
+                                "Primary hypothyroidism",
+                                "Graves' disease",
+                                "Subacute thyroiditis in the thyrotoxic phase"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Primary hypothyroidism. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 44,
+                        "question": "A patient with a suspected cervical spinal cord injury at C3\u2013C4 is brought to the emergency department. Why is respiratory failure an immediate life-threatening concern?",
+                        "options": [
+                                "Vagal parasympathetic fibers to the bronchi originate at C3\u2013C4",
+                                "Phrenic nerve motor outflow originates primarily from cervical segments C3 to C5",
+                                "Medullary chemoreceptors are housed within the C3 vertebral body",
+                                "Internal intercostal nerves exit exclusively at C3\u2013C4"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Phrenic nerve motor outflow originates primarily from cervical segments C3 to C5. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 45,
+                        "question": "In a female fetus, approximately how many primary oocytes are present in the ovaries at birth?",
+                        "options": [
+                                "Approximately 400",
+                                "Approximately two million",
+                                "Approximately 40,000",
+                                "Zero; oogenesis begins at menarche"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Approximately two million. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 46,
+                        "question": "Which substance is normally excluded from passing freely through a healthy glomerular filtration membrane into Bowman's capsule?",
+                        "options": [
+                                "Glucose",
+                                "High-molecular-weight plasma proteins",
+                                "Urea and creatinine",
+                                "Sodium and chloride ions"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) High-molecular-weight plasma proteins. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 47,
+                        "question": "A 61-year-old man with long-standing poorly controlled hypertension reports sudden onset of floaters, flashes of light (photopsias), and a dark \"curtain\" advancing across the visual field of one eye. What condition requires urgent evaluation?",
+                        "options": [
+                                "Nuclear sclerotic cataract",
+                                "Retinal detachment",
+                                "Allergic conjunctivitis",
+                                "Presbyopia"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Retinal detachment. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 48,
+                        "question": "A patient with chronic adrenal insufficiency (Addison's disease) presents with fatigue, weight loss, orthostatic hypotension, hyponatremia, and hyperkalemia. Which combination of hormone deficiencies explains the electrolyte and volume disturbances?",
+                        "options": [
+                                "Excess epinephrine and norepinephrine",
+                                "Deficiency of both glucocorticoids and mineralocorticoids",
+                                "Isolated deficiency of growth hormone and prolactin",
+                                "Excess antidiuretic hormone and oxytocin"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Deficiency of both glucocorticoids and mineralocorticoids. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 49,
+                        "question": "Which structure anchors the ovary to the pelvic wall and carries the ovarian blood vessels and nerves?",
+                        "options": [
+                                "Round ligament of the uterus",
+                                "Suspensory ligament of the ovary",
+                                "Cardinal (transverse cervical) ligament",
+                                "Uterosacral ligament"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Suspensory ligament of the ovary. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 50,
+                        "question": "Which brain region regulates circadian sleep-wake cycles, body temperature, thirst, and anterior/posterior pituitary hormone control?",
+                        "options": [
+                                "Cerebellar cortex",
+                                "Hypothalamus",
+                                "Basal ganglia",
+                                "Pineal stalk exclusively"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Hypothalamus. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 51,
+                        "question": "A patient with severe hypocalcemia exhibits carpopedal spasm and hyperreflexia (tetany). Around which threshold does plasma calcium decline typically trigger neuromuscular excitability and tetany?",
+                        "options": [
+                                "Below approximately 10.5 mg/dL",
+                                "Below approximately 6 mg/dL",
+                                "Below approximately 9.0 mg/dL",
+                                "Above 12 mg/dL"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Below approximately 6 mg/dL. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 52,
+                        "question": "During quiet breathing at rest, which primary muscles contract to increase thoracic cavity volume during inspiration?",
+                        "options": [
+                                "Internal intercostals and rectus abdominis",
+                                "Diaphragm and external intercostal muscles",
+                                "Sternocleidomastoid and transversus thoracis",
+                                "Scalenes and internal obliques"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Diaphragm and external intercostal muscles. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 53,
+                        "question": "A 2-year-old boy is evaluated for a congenital urethral anomaly in which the urethral meatus opens on the dorsal (top) surface of the penis rather than at the tip. What is this condition called?",
+                        "options": [
+                                "Hypospadias",
+                                "Epispadias",
+                                "Phimosis",
+                                "Cryptorchidism"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Epispadias. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 54,
+                        "question": "Where is cerebrospinal fluid primarily reabsorbed back into the venous circulation?",
+                        "options": [
+                                "Choroid plexus of the fourth ventricle",
+                                "Dural venous sinuses via arachnoid villi and granulations",
+                                "Central canal of the conus medullaris",
+                                "Cerebral aqueduct of Sylvius"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Dural venous sinuses via arachnoid villi and granulations. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 55,
+                        "question": "A patient with severe pneumonia develops consolidation in the right lower lobe and pleuritic chest pain. Which percussion finding and breath sound pattern are characteristic over consolidated lung tissue?",
+                        "options": [
+                                "Hyperresonance to percussion with absent breath sounds",
+                                "Dullness to percussion with bronchial breath sounds and crackles",
+                                "Tympany to percussion with prolonged expiratory wheezes",
+                                "Normal resonance with pleural friction rub only"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Dullness to percussion with bronchial breath sounds and crackles. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 56,
+                        "question": "Which cranial nerve provides motor innervation to the sternocleidomastoid and trapezius muscles to rotate the head and elevate or shrug the shoulders?",
+                        "options": [
+                                "Vagus nerve (CN X)",
+                                "Accessory nerve (CN XI)",
+                                "Trochlear nerve (CN IV)",
+                                "Abducens nerve (CN VI)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Accessory nerve (CN XI). Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 57,
+                        "question": "A patient with end-stage renal disease is undergoing hemodialysis. During treatment, rapid intravascular fluid removal places the patient at greatest immediate risk for which hemodynamic complication?",
+                        "options": [
+                                "Malignant hypertension",
+                                "Hypotension",
+                                "Acute hypervolemic pulmonary edema",
+                                "Polycythemia"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Hypotension. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 58,
+                        "question": "Which structure receives urine directly from the papillary/collecting ducts within the renal medulla/papilla?",
+                        "options": [
+                                "Renal pelvis",
+                                "Minor calyx",
+                                "Ureter",
+                                "Urinary trigone"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Minor calyx. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 59,
+                        "question": "Which substance is NOT a recognized neurotransmitter in the human nervous system?",
+                        "options": [
+                                "Acetylcholine",
+                                "Cortisone",
+                                "Norepinephrine",
+                                "Dopamine"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Cortisone. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 60,
+                        "question": "A 31-year-old woman has a positive pregnancy test five days after a missed period (roughly two weeks post-conception). Which hormone produced by developing trophoblastic/placental tissue forms the basis of early pregnancy detection?",
+                        "options": [
+                                "Luteinizing hormone (LH)",
+                                "Human chorionic gonadotropin (hCG)",
+                                "Follicle-stimulating hormone (FSH)",
+                                "Oxytocin"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Human chorionic gonadotropin (hCG). Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 61,
+                        "question": "A patient with a history of seizures is taking phenytoin. Why is periodic therapeutic drug monitoring and hepatic/neurological counseling important during long-term therapy?",
+                        "options": [
+                                "It is excreted unchanged exclusively in sweat",
+                                "Narrow therapeutic window and nonlinear pharmacokinetics increase toxicity risk",
+                                "It rapidly induces permanent adrenal cortex hyperplasia",
+                                "It causes immediate hypoglycemia if taken with food"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Narrow therapeutic window and nonlinear pharmacokinetics increase toxicity risk. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 62,
+                        "question": "Which anatomical feature helps maintain testicular temperature slightly below core body temperature to support normal spermatogenesis?",
+                        "options": [
+                                "Seminiferous rete testis",
+                                "Scrotum and its dartos and cremaster muscle thermoregulatory reflexes",
+                                "Ejaculatory duct smooth muscle",
+                                "Tunica albuginea capsule"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Scrotum and its dartos and cremaster muscle thermoregulatory reflexes. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 63,
+                        "question": "A patient with ascending muscle weakness, areflexia, and paresthesia following a recent respiratory or gastrointestinal infection is diagnosed with Guillain-Barr\u00e9 syndrome. Which respiratory complication requires vigilant monitoring?",
+                        "options": [
+                                "Excessive surfactant secretion causing alveolar flooding",
+                                "Neurogenic respiratory muscle weakness and impending ventilatory failure",
+                                "Primary pulmonary arterial thrombosis",
+                                "Spasmodic laryngomalacia"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Neurogenic respiratory muscle weakness and impending ventilatory failure. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 64,
+                        "question": "Which hypothalamic releasing hormone stimulates the anterior pituitary to secrete adrenocorticotropic hormone (ACTH)?",
+                        "options": [
+                                "Thyrotropin-releasing hormone (TRH)",
+                                "Corticotropin-releasing hormone (CRH)",
+                                "Gonadotropin-releasing hormone (GnRH)",
+                                "Growth hormone-inhibiting hormone (somatostatin)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Corticotropin-releasing hormone (CRH). Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 65,
+                        "question": "A patient with a suspected stroke is evaluated for acute neurological deficits. Why is blood glucose assessment alongside airway/respiratory protection an early priority during initial care?",
+                        "options": [
+                                "Hyperglycemia immediately reverses ischemic penumbra necrosis",
+                                "Hypoglycemia can mimic stroke and compromise brain energy supply while airway reflexes may be impaired",
+                                "Stroke patients uniformly develop acute adrenal crisis within 10 minutes",
+                                "Blood glucose determines whether the lesion is in the cerebellum or spinal cord"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Hypoglycemia can mimic stroke and compromise brain energy supply while airway reflexes may be impaired. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 66,
+                        "question": "What is the primary physiological effect of antidiuretic hormone (vasopressin) on the collecting ducts of the kidney?",
+                        "options": [
+                                "Increases sodium excretion and promotes diuresis",
+                                "Increases water permeability via aquaporin-2 insertion, reducing urine volume",
+                                "Dilates afferent arterioles to double glomerular filtration rate",
+                                "Blocks urea recycling in the inner medullary collecting duct"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Increases water permeability via aquaporin-2 insertion, reducing urine volume. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 67,
+                        "question": "Which structure is located immediately anterior to the urinary bladder in adult females?",
+                        "options": [
+                                "Uterus and upper vagina",
+                                "Pubic symphysis",
+                                "Rectum",
+                                "Sacral promontory"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Pubic symphysis. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 68,
+                        "question": "A patient with heavy, prolonged menstrual bleeding exceeding normal duration or volume is diagnosed with which condition?",
+                        "options": [
+                                "Amenorrhea",
+                                "Menorrhagia",
+                                "Oligomenorrhea",
+                                "Mittelschmerz"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Menorrhagia. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 69,
+                        "question": "A patient with suspected epiglottitis presents with drooling, muffled voice, stridor, and sitting forward in a tripod posture. Why does stridor signal an urgent airway concern?",
+                        "options": [
+                                "It reflects benign alveolar hyperinflation during expiration",
+                                "High-pitched inspiratory sound indicates turbulent airflow through a critically narrowed upper airway",
+                                "It indicates fluid accumulation restricted to the costophrenic angle",
+                                "It is caused by pleural friction over the diaphragm"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) High-pitched inspiratory sound indicates turbulent airflow through a critically narrowed upper airway. Verified Anatomy & Physiology II response."
+                },
+                {
+                        "id": 70,
+                        "question": "Which structure in the male reproductive tract secretes an alkaline mucus-like fluid into the spongy urethra to lubricate and neutralize acidic urine residue, and is also known as Cowper's gland?",
+                        "options": [
+                                "Seminal vesicle",
+                                "Bulbourethral gland",
+                                "Prostate gland",
+                                "Ampulla of the vas deferens"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Bulbourethral gland. Verified Anatomy & Physiology II response."
+                }
+        ]
 }
     ],
     "sem-3": [
