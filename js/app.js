@@ -1164,21 +1164,32 @@ window.hasStudentSubmittedQuiz = function(quizIdOrCodeOrObj) {
 window.isPaperUnlocked = function(quizId) {
     const defaultLocks = {
         's2-qr-model-paper': true,
+        's2-theories-model-paper': false,
         's2-nur-model-paper': false,
+        's2-nutrition-model-paper': false,
         's2-nut-model-paper': false,
+        's2-ap2-model-paper': false,
         's2-ap-model-paper': false,
         's2-fon-model-paper': false
     };
+
+    let checkId = quizId;
+    if (quizId === 's2-theories-model-paper') checkId = 's2-nur-model-paper';
+    if (quizId === 's2-nur-model-paper') checkId = 's2-theories-model-paper';
+    if (quizId === 's2-nutrition-model-paper') checkId = 's2-nut-model-paper';
+    if (quizId === 's2-nut-model-paper') checkId = 's2-nutrition-model-paper';
+    if (quizId === 's2-ap2-model-paper') checkId = 's2-ap-model-paper';
+    if (quizId === 's2-ap-model-paper') checkId = 's2-ap2-model-paper';
+
     try {
         const stored = localStorage.getItem('zafii_paper_locks');
         if (stored) {
             const parsed = JSON.parse(stored);
-            if (quizId in parsed) {
-                return Boolean(parsed[quizId]);
-            }
+            if (quizId in parsed) return Boolean(parsed[quizId]);
+            if (checkId in parsed) return Boolean(parsed[checkId]);
         }
     } catch (e) {}
-    return Boolean(defaultLocks[quizId]);
+    return Boolean(defaultLocks[quizId] || defaultLocks[checkId]);
 };
 
 window.showLockedPaperNotice = function(paperTitle) {
@@ -1228,55 +1239,209 @@ function renderSubjects(semesterKey) {
         return;
     }
 
-    let subjects = getSubjectsBySemester('sem-2');
-    if (!subjects || subjects.length === 0) {
+    let rawSubjects = getSubjectsBySemester('sem-2') || [];
+    if (!rawSubjects || rawSubjects.length === 0) {
         const fallbackQuiz = findQuizById('s2-qr-model-paper');
-        if (fallbackQuiz) subjects = [fallbackQuiz];
+        if (fallbackQuiz) rawSubjects = [fallbackQuiz];
     }
 
-    if (!subjects || subjects.length === 0) return;
+    if (!rawSubjects || rawSubjects.length === 0) return;
+
+    // Standardized Official Curriculum Order (Paper 1 to Paper 5)
+    const curriculumOrder = [
+        {
+            key: 's2-qr-model-paper',
+            alias: 's2-qr-model-paper',
+            paperNum: 'PAPER 01',
+            cleanName: 'Quantitative Reasoning',
+            code: 'QR-201',
+            icon: 'fa-calculator',
+            colorTheme: 'amber'
+        },
+        {
+            key: 's2-theories-model-paper',
+            alias: 's2-nur-model-paper',
+            paperNum: 'PAPER 02',
+            cleanName: 'Nursing Theories',
+            code: 'NUR-202',
+            icon: 'fa-book-open-reader',
+            colorTheme: 'purple'
+        },
+        {
+            key: 's2-nutrition-model-paper',
+            alias: 's2-nut-model-paper',
+            paperNum: 'PAPER 03',
+            cleanName: 'Applied Nutrition',
+            code: 'NUT-203',
+            icon: 'fa-apple-whole',
+            colorTheme: 'emerald'
+        },
+        {
+            key: 's2-ap2-model-paper',
+            alias: 's2-ap-model-paper',
+            paperNum: 'PAPER 04',
+            cleanName: 'Anatomy & Physiology – II',
+            code: 'AP-204',
+            icon: 'fa-heart-pulse',
+            colorTheme: 'rose'
+        },
+        {
+            key: 's2-fon-model-paper',
+            alias: 's2-fon-model-paper',
+            paperNum: 'PAPER 05',
+            cleanName: 'Fundamentals of Nursing',
+            code: 'FON-205',
+            icon: 'fa-stethoscope',
+            colorTheme: 'cyan'
+        }
+    ];
+
+    // Sort subjects by curriculum order
+    const orderedSubjects = [];
+    curriculumOrder.forEach(orderItem => {
+        const found = rawSubjects.find(s => s.id === orderItem.key || s.id === orderItem.alias);
+        if (found) {
+            orderedSubjects.push({
+                subject: found,
+                meta: orderItem
+            });
+        }
+    });
+
+    // If any other subjects exist, append them
+    rawSubjects.forEach(s => {
+        if (!orderedSubjects.find(item => item.subject.id === s.id)) {
+            orderedSubjects.push({
+                subject: s,
+                meta: {
+                    paperNum: `PAPER 0${orderedSubjects.length + 1}`,
+                    cleanName: s.title.split('-')[0].trim(),
+                    code: s.code || 'BSN-200',
+                    icon: s.icon || 'fa-book-medical',
+                    colorTheme: s.badgeColor || 'cyan'
+                }
+            });
+        }
+    });
 
     const isAuthorizedAdmin = window.isUserAdmin();
 
-    subjects.forEach(subject => {
+    // Calculate counts for header
+    let liveCount = 0;
+    let lockedCount = 0;
+    orderedSubjects.forEach(({ subject }) => {
+        if (window.isPaperUnlocked(subject.id)) liveCount++;
+        else lockedCount++;
+    });
+
+    // 1. Inject Curriculum Header with Tarteeb & Statistics
+    const headerBanner = document.createElement('div');
+    headerBanner.style.cssText = `
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.06));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 14px 18px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    `;
+    headerBanner.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #06b6d4, #8b5cf6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; box-shadow:0 0 14px rgba(6,182,212,0.3); flex-shrink:0;">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+                <div style="font-size:15px; font-weight:800; color:#ffffff;">
+                    BSN Semester 2 — Academic Courses & Model Papers
+                </div>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">
+                    Curriculum Sequence: Paper 1 to Paper 5 arranged in official university order.
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:11px; font-weight:800; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;">
+                <i class="fa-solid fa-lock-open"></i> ${liveCount} Active Unlocked
+            </span>
+            <span style="font-size:11px; font-weight:800; background:rgba(239,68,68,0.15); color:#fda4af; border:1px solid rgba(239,68,68,0.3); padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;">
+                <i class="fa-solid fa-lock"></i> ${lockedCount} Locked by Admin
+            </span>
+        </div>
+    `;
+    elements.subjectsGrid.appendChild(headerBanner);
+
+    // 2. Render Each Subject with Prominent Subject Name & Status Underneath
+    orderedSubjects.forEach(({ subject, meta }, idx) => {
         const isSubmitted = window.hasStudentSubmittedQuiz(subject);
         const isUnlocked = window.isPaperUnlocked(subject.id);
         const card = document.createElement('div');
         card.className = 'glass-card subject-card';
+        card.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 18px;
+            border-radius: 18px;
+            transition: all 0.25s ease;
+            position: relative;
+        `;
 
         if (isSubmitted) {
+            card.style.border = '1px solid rgba(16,185,129,0.35)';
+            card.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(15,23,42,0.85))';
             card.innerHTML = `
                 <div>
-                    <div class="subject-header">
-                        <div class="subject-icon-box emerald" style="background:rgba(16,185,129,0.15); color:#10b981;">
-                            <i class="fa-solid fa-circle-check"></i>
+                    <!-- Subject Header: Paper Index & Status Badge -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span class="badge" style="background:rgba(16,185,129,0.2); color:#10b981; font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px;">${meta.paperNum}</span>
+                            <code style="font-size:11px; color:#cbd5e1; background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:6px; font-family:monospace;">${meta.code}</code>
                         </div>
-                        <span class="subject-code-tag" style="background:rgba(16,185,129,0.2); color:#10b981; border-color:rgba(16,185,129,0.3);">${subject.code}</span>
+                        <span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px;">
+                            <i class="fa-solid fa-circle-check"></i> COMPLETED
+                        </span>
                     </div>
-                    <h4 class="subject-title">${escapeHtml(subject.title)}</h4>
-                    <p class="subject-desc">${escapeHtml(subject.description)}</p>
+
+                    <!-- Prominent Subject Name -->
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                        <div class="subject-icon-box" style="width:38px; height:38px; font-size:16px; border-radius:10px; background:rgba(16,185,129,0.15); color:#10b981; flex-shrink:0;">
+                            <i class="fa-solid ${meta.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size:16px; font-weight:900; color:#ffffff; margin:0 0 2px 0; line-height:1.3;">${escapeHtml(meta.cleanName)}</h4>
+                            <div style="font-size:11.5px; color:var(--text-muted);">Model Examination Paper</div>
+                        </div>
+                    </div>
+
+                    <p class="subject-desc" style="font-size:12px; line-height:1.5; color:var(--text-muted); margin-bottom:12px;">${escapeHtml(subject.description)}</p>
                 </div>
 
                 <div>
-                    <div class="subject-meta-row">
-                        <div class="meta-item">
+                    <!-- Meta Row -->
+                    <div class="subject-meta-row" style="margin-bottom:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-circle-question"></i>
                             <span>${subject.questions.length} MCQs</span>
                         </div>
-                        <div class="meta-item">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-clock"></i>
                             <span>${subject.durationMinutes} Mins</span>
                         </div>
                     </div>
 
-                    <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#10b981; font-size:12px; font-weight:700; border-radius:8px; padding:8px 12px; margin-top:14px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <!-- Underneath Status: Completed -->
+                    <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#10b981; font-size:12px; font-weight:700; border-radius:10px; padding:8px 12px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
                         <i class="fa-solid fa-lock"></i>
-                        <span>Single Attempt Completed • Locked</span>
+                        <span>Single Attempt Completed • Result Recorded</span>
                     </div>
 
                     <button class="btn-start-quiz" disabled style="margin-top:10px; width:100%; opacity:0.85; cursor:not-allowed; background:linear-gradient(135deg, #059669, #10b981); border:none; color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <span>Under Review (Result Pending)</span>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Assessment Submitted</span>
                     </button>
                 </div>
             `;
@@ -1286,43 +1451,61 @@ function renderSubjects(semesterKey) {
             card.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.06), rgba(15,23,42,0.85))';
             card.innerHTML = `
                 <div>
-                    <div class="subject-header">
-                        <div class="subject-icon-box" style="background:rgba(239,68,68,0.15); color:#f43f5e;">
-                            <i class="fa-solid fa-lock"></i>
+                    <!-- Subject Header: Paper Index & Status Badge -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span class="badge" style="background:rgba(239,68,68,0.18); color:#fda4af; font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px;">${meta.paperNum}</span>
+                            <code style="font-size:11px; color:#cbd5e1; background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:6px; font-family:monospace;">${meta.code}</code>
                         </div>
-                        <span class="subject-code-tag" style="background:rgba(239,68,68,0.2); color:#fda4af; border-color:rgba(239,68,68,0.4);">
-                            <i class="fa-solid fa-lock" style="margin-right:4px;"></i>LOCKED
+                        <span class="badge" style="background:rgba(239,68,68,0.15); color:#fda4af; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px;">
+                            <i class="fa-solid fa-lock"></i> LOCKED BY ADMIN
                         </span>
                     </div>
-                    <h4 class="subject-title" style="color:#cbd5e1;">${escapeHtml(subject.title)}</h4>
-                    <p class="subject-desc" style="color:var(--text-muted);">${escapeHtml(subject.description)}</p>
+
+                    <!-- Prominent Subject Name -->
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                        <div class="subject-icon-box" style="width:38px; height:38px; font-size:16px; border-radius:10px; background:rgba(239,68,68,0.15); color:#f43f5e; flex-shrink:0;">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size:16px; font-weight:900; color:#ffffff; margin:0 0 2px 0; line-height:1.3;">${escapeHtml(meta.cleanName)}</h4>
+                            <div style="font-size:11.5px; color:#fda4af; font-weight:600;">Access Restricted • Scheduled Release</div>
+                        </div>
+                    </div>
+
+                    <p class="subject-desc" style="font-size:12px; line-height:1.5; color:var(--text-muted); margin-bottom:12px;">${escapeHtml(subject.description)}</p>
                 </div>
 
                 <div>
-                    <div class="subject-meta-row">
-                        <div class="meta-item">
+                    <!-- Meta Row -->
+                    <div class="subject-meta-row" style="margin-bottom:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-circle-question"></i>
                             <span>${subject.questions.length} MCQs</span>
                         </div>
-                        <div class="meta-item">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-clock"></i>
                             <span>${subject.durationMinutes} Mins</span>
                         </div>
                     </div>
 
-                    <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#fda4af; font-size:12px; font-weight:700; border-radius:8px; padding:8px 12px; margin-top:14px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <!-- Underneath Status: Locked by Admin -->
+                    <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); color:#fda4af; font-size:11.5px; font-weight:700; border-radius:10px; padding:8px 12px; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
                         <i class="fa-solid fa-shield-halved"></i>
-                        <span>Locked by Admin • Awaiting Release</span>
+                        <span>Locked by Admin • Awaiting Official Release</span>
                     </div>
 
-                    <button class="btn-start-quiz" onclick="showLockedPaperNotice('${escapeHtml(subject.title).replace(/'/g, "\'")}')" style="margin-top:10px; width:100%; opacity:0.8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;">
+                    <button class="btn-start-quiz" onclick="showLockedPaperNotice('${escapeHtml(meta.cleanName).replace(/'/g, "\'")}')" style="margin-top:10px; width:100%; opacity:0.8; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;">
                         <i class="fa-solid fa-lock"></i>
                         <span>Paper Locked by Admin</span>
                     </button>
                 </div>
             `;
         } else {
-            // Normal Active Card (or Admin Preview)
+            // Unlocked & Active (or Admin Preview)
+            card.style.border = '1px solid rgba(6,182,212,0.35)';
+            card.style.background = 'linear-gradient(135deg, rgba(6,182,212,0.06), rgba(15,23,42,0.85))';
+
             const adminLockedBadge = (!isUnlocked && isAuthorizedAdmin) 
                 ? `<div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:var(--amber-warning); font-size:11.5px; font-weight:700; border-radius:6px; padding:4px 8px; margin-bottom:8px; display:flex; align-items:center; gap:5px;">
                     <i class="fa-solid fa-shield-halved"></i> Locked for Students (Admin Preview Active)
@@ -1331,30 +1514,47 @@ function renderSubjects(semesterKey) {
 
             card.innerHTML = `
                 <div>
-                    <div class="subject-header">
-                        <div class="subject-icon-box ${subject.badgeColor || 'rose'}">
-                            <i class="fa-solid ${subject.icon || 'fa-baby'}"></i>
+                    <!-- Subject Header: Paper Index & Status Badge -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span class="badge" style="background:rgba(6,182,212,0.2); color:var(--cyan-primary); font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px;">${meta.paperNum}</span>
+                            <code style="font-size:11px; color:#cbd5e1; background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:6px; font-family:monospace;">${meta.code}</code>
                         </div>
-                        <span class="subject-code-tag">${subject.code}</span>
+                        <span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px;">
+                            <i class="fa-solid fa-lock-open"></i> UNLOCKED • LIVE
+                        </span>
                     </div>
-                    <h4 class="subject-title">${escapeHtml(subject.title)}</h4>
-                    <p class="subject-desc">${escapeHtml(subject.description)}</p>
+
+                    <!-- Prominent Subject Name -->
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                        <div class="subject-icon-box ${meta.colorTheme}" style="width:38px; height:38px; font-size:16px; border-radius:10px; flex-shrink:0;">
+                            <i class="fa-solid ${meta.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size:16px; font-weight:900; color:#ffffff; margin:0 0 2px 0; line-height:1.3;">${escapeHtml(meta.cleanName)}</h4>
+                            <div style="font-size:11.5px; color:#6ee7b7; font-weight:600;">Active Examination • Ready to Attempt</div>
+                        </div>
+                    </div>
+
+                    <p class="subject-desc" style="font-size:12px; line-height:1.5; color:var(--text-muted); margin-bottom:12px;">${escapeHtml(subject.description)}</p>
                 </div>
 
                 <div>
                     ${adminLockedBadge}
-                    <div class="subject-meta-row">
-                        <div class="meta-item">
+                    <!-- Meta Row -->
+                    <div class="subject-meta-row" style="margin-bottom:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-circle-question"></i>
                             <span>${subject.questions.length} MCQs</span>
                         </div>
-                        <div class="meta-item">
+                        <div class="meta-item" style="font-size:11.5px;">
                             <i class="fa-regular fa-clock"></i>
                             <span>${subject.durationMinutes} Mins</span>
                         </div>
                     </div>
 
-                    <button class="btn-start-quiz" id="btn-pediatric-exam-start" onclick="startQuiz('${subject.id}')" style="margin-top:16px;">
+                    <!-- Underneath Status: Live Exam Button -->
+                    <button class="btn-start-quiz" onclick="startQuiz('${subject.id}')" style="margin-top:6px; width:100%; justify-content:center; padding:12px 18px; font-size:13.5px; font-weight:800; border-radius:12px;">
                         <span>Start Assessment</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -3453,9 +3653,18 @@ window.adminTogglePaperLock = async function(quizId) {
         paperLocks = stored ? JSON.parse(stored) : {};
     }
 
-    const current = Boolean(paperLocks[quizId]);
+    let checkId = quizId;
+    if (quizId === 's2-theories-model-paper') checkId = 's2-nur-model-paper';
+    if (quizId === 's2-nur-model-paper') checkId = 's2-theories-model-paper';
+    if (quizId === 's2-nutrition-model-paper') checkId = 's2-nut-model-paper';
+    if (quizId === 's2-nut-model-paper') checkId = 's2-nutrition-model-paper';
+    if (quizId === 's2-ap2-model-paper') checkId = 's2-ap-model-paper';
+    if (quizId === 's2-ap-model-paper') checkId = 's2-ap2-model-paper';
+
+    const current = Boolean(paperLocks[quizId] || paperLocks[checkId]);
     const newState = !current;
     paperLocks[quizId] = newState;
+    paperLocks[checkId] = newState;
 
     if (SUPABASE_CONFIG && typeof SUPABASE_CONFIG.setPaperLocks === 'function') {
         await SUPABASE_CONFIG.setPaperLocks(paperLocks);
