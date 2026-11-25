@@ -1027,7 +1027,7 @@ window.isPaperUnlocked = function(quizId) {
 };
 
 window.showLockedPaperNotice = function(paperTitle) {
-    alert(`🔒 Access Restricted!\n\n"${paperTitle}" ko administrator ne filhal lock kiya hua hai.\n\nJab Admin portal se is paper ko unlock karein ge, tabhi aap is examination ko attempt kar sakenge.`);
+    alert(`🔒 Access Restricted!\n\n"${paperTitle}" is currently locked by the Administrator.\n\nOnce the administrator unlocks this examination paper from the Admin Console, candidates will be able to attempt the assessment.`);
 };
 
 function renderSubjects(semesterKey) {
