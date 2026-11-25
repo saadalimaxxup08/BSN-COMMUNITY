@@ -1853,6 +1853,861 @@ const QUIZ_DATA = {
                         "explanation": "Correct Option: (C) Strengthening flexible lines of defense. Verified Nursing Theories response."
                 }
         ]
+},
+        {
+        "id": "s2-nutrition-model-paper",
+        "title": "Applied Nutrition - 70 Scenario Mock Paper",
+        "code": "NUT-203-MODEL",
+        "semester": "Semester 2",
+        "description": "70-scenario Applied Nutrition examination covering clinical diets, maternal & child nutrition, metabolic disorders, and TPN with instant marksheet generation.",
+        "durationMinutes": 70,
+        "icon": "fa-apple-whole",
+        "badgeColor": "emerald",
+        "isModelPaper": false,
+        "showAnswersImmediately": true,
+        "totalQuestions": 70,
+        "questions": [
+                {
+                        "id": 1,
+                        "question": "A pregnant woman with a pre-pregnancy BMI of 24.0 kg/m^2 is in her fourth week of a twin gestation. Which gestational weight gain range is recommended for a twin pregnancy?",
+                        "options": [
+                                "25\u201330 pounds",
+                                "31\u201350 pounds",
+                                "37\u201354 pounds",
+                                "50\u201362 pounds"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 37\u201354 pounds. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 2,
+                        "question": "A patient with chronic kidney disease (CKD) not on dialysis is prescribed a low-protein diet. Which daily protein range is standard for managing chronic kidney disease?",
+                        "options": [
+                                "0.4\u20130.8 g/kg/day",
+                                "0.6\u20130.8 g/kg/day",
+                                "1.0\u20131.2 g/kg/day",
+                                "1.5\u20131.7 g/kg/day"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 0.6\u20130.8 g/kg/day. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 3,
+                        "question": "A patient with kidney failure is placed on a strict 24-hour fluid restriction of 1000 mL. How should the nurse distribute this fluid allowance across the day?",
+                        "options": [
+                                "Eliminate liquids between meal times",
+                                "Proportion more fluids during the day than during the night",
+                                "Divide the fluids equally among the three nursing shifts",
+                                "Include only clear fluids in the restriction plan"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Proportion more fluids during the day than during the night. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 4,
+                        "question": "Which vitamin supplement is contraindicated in the treatment of hepatitis?",
+                        "options": [
+                                "Vitamin A",
+                                "Vitamin B12",
+                                "Vitamin B9",
+                                "Vitamin E"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Vitamin A. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 5,
+                        "question": "All of the following are standard dietary recommendations in hemochromatosis EXCEPT:",
+                        "options": [
+                                "Avoid foods high in iron",
+                                "Avoid using iron pots and pans",
+                                "Avoid taking iron-containing supplements/pills",
+                                "Use iron pots and pans for cooking"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Use iron pots and pans for cooking. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 6,
+                        "question": "Which enteral feeding tube starts in the nose and ends in the intestines?",
+                        "options": [
+                                "Nasogastric",
+                                "Orogastric",
+                                "Enterogastric",
+                                "Nasoenteric"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Nasoenteric. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 7,
+                        "question": "The \"physiological anemia of pregnancy\" is primarily a result of:",
+                        "options": [
+                                "A decrease in the mother's iron absorption",
+                                "A decrease in the mother's water consumption",
+                                "A decrease in the mother's red blood cell production",
+                                "An increase in the mother's blood volume"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) An increase in the mother's blood volume. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 8,
+                        "question": "Which of the following confirmed values meets the diagnostic threshold for diabetes mellitus?",
+                        "options": [
+                                "Random glucose > 120 mg/dL",
+                                "2-hour post-meal glucose 126 mg/dL",
+                                "Fasting blood glucose 100 mg/dL",
+                                "HbA1c value of 6.5% or higher"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) HbA1c value of 6.5% or higher. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 9,
+                        "question": "The glycosylated hemoglobin (HbA1c) test measures average blood glucose over the previous three months. Which value is considered a diagnosis of pre-diabetes?",
+                        "options": [
+                                "6.5\u20137%",
+                                "5.7\u20136.4%",
+                                "5\u20135.6%",
+                                "Above 7%"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 5.7\u20136.4%. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 10,
+                        "question": "Increased sodium intake is considered a risk factor for nephrolithiasis because it:",
+                        "options": [
+                                "Enhances urinary calcium excretion",
+                                "Produces bile salts",
+                                "Causes systemic water loss",
+                                "Increases intestinal absorption of oxalates"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Enhances urinary calcium excretion. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 11,
+                        "question": "Which renal disorder is characterized by high proteinuria, hypoproteinemia, and generalized edema?",
+                        "options": [
+                                "Chronic renal failure",
+                                "Nephrotic syndrome",
+                                "Nephrolithiasis",
+                                "Acute renal failure"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Nephrotic syndrome. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 12,
+                        "question": "Which diet is recommended for managing nephrotic syndrome?",
+                        "options": [
+                                "Low salt, low fat, and high cholesterol diet",
+                                "Moderate salt, low fat, and low cholesterol diet",
+                                "Low salt, moderate fat, and low cholesterol diet",
+                                "Low salt, low fat, and low cholesterol diet"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Low salt, low fat, and low cholesterol diet. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 13,
+                        "question": "Total parenteral nutrition (TPN) solutions contain high concentrations of:",
+                        "options": [
+                                "Protein and dextrose",
+                                "Lipid emulsion alone",
+                                "Electrolytes and water-soluble vitamins only",
+                                "Fiber and disaccharides"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Protein and dextrose. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 14,
+                        "question": "Which of the following accurately describes the greatest risk related to having a feeding tube?",
+                        "options": [
+                                "Electrolyte imbalance",
+                                "Fluid volume overload",
+                                "Aspiration",
+                                "Local skin infection"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Aspiration. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 15,
+                        "question": "Which set represents the five classic signs of intolerance to tube feeding?",
+                        "options": [
+                                "Nausea, diarrhea, cramping, constipation, dehydration",
+                                "Nausea, diarrhea, cramping, constipation, heartburn",
+                                "Nausea, diarrhea, dehydration, vomiting, abdominal distension",
+                                "Vomiting, constipation, fever, hematuria, dehydration"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Nausea, diarrhea, cramping, constipation, dehydration. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 16,
+                        "question": "A child has a deficiency in both protein and calories leading to stunted growth and severe wasting. Which condition is most likely present?",
+                        "options": [
+                                "Rickets",
+                                "Kwashiorkor",
+                                "Marasmus",
+                                "Scurvy"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Marasmus. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 17,
+                        "question": "A child exhibits a swollen belly (edema), hair discoloration, and skin lesions. Which condition is most likely present?",
+                        "options": [
+                                "Kwashiorkor",
+                                "Scurvy",
+                                "Marasmus",
+                                "Rickets"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Kwashiorkor. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 18,
+                        "question": "In Vitamin K deficiency, blood prothrombin content decreases markedly and blood clotting time is:",
+                        "options": [
+                                "Decreased",
+                                "Increased",
+                                "Extremely decreased",
+                                "Unchanged"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Increased. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 19,
+                        "question": "Which supplement is routinely given shortly after birth to newborns because they lack intestinal bacteria to synthesize it?",
+                        "options": [
+                                "Vitamin K",
+                                "Vitamin B",
+                                "Vitamin A",
+                                "Vitamin C"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Vitamin K. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 20,
+                        "question": "The clinical signs of Vitamin A deficiency are predominantly:",
+                        "options": [
+                                "Cardiac in origin",
+                                "Gastric in origin",
+                                "Neurological in origin",
+                                "Ocular in origin"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Ocular in origin. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 21,
+                        "question": "In adults, Vitamin D deficiency results in:",
+                        "options": [
+                                "Conjunctival xerosis",
+                                "Night blindness",
+                                "Osteomalacia",
+                                "Scurvy"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Osteomalacia. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 22,
+                        "question": "The activity of which vitamin depends upon efficient kidney function?",
+                        "options": [
+                                "Ascorbic acid",
+                                "Vitamin B12",
+                                "Vitamin D",
+                                "Retinol"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Vitamin D. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 23,
+                        "question": "What is the primary rationale for complex carbohydrate intake in a diabetic patient?",
+                        "options": [
+                                "Enhances cellular glucose uptake independent of insulin",
+                                "Absorbs gradually into the blood",
+                                "Promotes renal glucose reabsorption",
+                                "Directly stimulates pancreatic beta-cell hyperplasia"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Absorbs gradually into the blood. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 24,
+                        "question": "A nurse provides a bedtime snack for a patient. This intervention is based on the knowledge that intermediate-acting insulins are effective for an approximate duration of:",
+                        "options": [
+                                "6\u20138 hours",
+                                "10\u201314 hours / 14\u201318 hours",
+                                "24\u201328 hours",
+                                "2\u20134 hours"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 10\u201314 hours / 14\u201318 hours. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 25,
+                        "question": "The primary goal of exercise for diabetic patients is to:",
+                        "options": [
+                                "Increase cellular sensitivity to insulin",
+                                "Promote peripheral blood circulation alone",
+                                "Increase appetite",
+                                "Decrease glucose utilization by skeletal muscle"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Increase cellular sensitivity to insulin. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 26,
+                        "question": "Which food sources have a high glycemic index?",
+                        "options": [
+                                "White bread, potatoes, white rice",
+                                "Mushrooms, zucchini, cabbage",
+                                "Plain yogurt and milk",
+                                "Non-starchy green leafy vegetables"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) White bread, potatoes, white rice. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 27,
+                        "question": "According to diabetes prevention trials, high-risk individuals can reduce their risk of developing diabetes by:",
+                        "options": [
+                                "Taking a strict zero-carbohydrate diet",
+                                "Consuming only saturated fats",
+                                "Losing 5\u20137% of body weight through a hypocaloric low-fat diet and 30 minutes of daily activity",
+                                "Skipping breakfast and dinner daily"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Losing 5\u20137% of body weight through a hypocaloric low-fat diet and 30 minutes of daily activity. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 28,
+                        "question": "Which lipoprotein profile is essential for good cardiovascular health?",
+                        "options": [
+                                "High HDL and low LDL",
+                                "High LDL and low HDL",
+                                "Only high LDL",
+                                "Only low HDL"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) High HDL and low LDL. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 29,
+                        "question": "What is the optimal/healthy level of HDL cholesterol in adults?",
+                        "options": [
+                                "< 20 mg/dL",
+                                "15\u201330 mg/dL",
+                                "< 35 mg/dL",
+                                "40 mg/dL or higher"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) 40 mg/dL or higher. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 30,
+                        "question": "Monounsaturated fats are found in which dietary sources?",
+                        "options": [
+                                "Olive oil, canola oil, cashews, almonds, peanuts, avocados",
+                                "Corn, soybean, safflower, and cottonseed oils",
+                                "Whole milk, butter, cheese, red meat, egg yolks",
+                                "Margarines, deep-fried chips, commercial baked goods"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Olive oil, canola oil, cashews, almonds, peanuts, avocados. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 31,
+                        "question": "Why is sodium restriction important for cardiovascular patients?",
+                        "options": [
+                                "It promotes weight gain",
+                                "It helps lower blood pressure and prevent edema",
+                                "It increases HDL cholesterol levels",
+                                "It minimizes urinary sodium excretion"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) It helps lower blood pressure and prevent edema. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 32,
+                        "question": "Which dietary component has been shown to improve hypertension in humans?",
+                        "options": [
+                                "Sodium",
+                                "Potassium",
+                                "Saturated fats",
+                                "Dietary cholesterol"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Potassium. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 33,
+                        "question": "Which of the following is a modifiable risk factor for hypertension?",
+                        "options": [
+                                "Obesity",
+                                "Genetic predisposition",
+                                "Biological sex",
+                                "Family history"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Obesity. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 34,
+                        "question": "How do antioxidants in fruits and vegetables promote cardiovascular health?",
+                        "options": [
+                                "Raise blood pressure",
+                                "Promote vascular inflammation",
+                                "Reduce oxidative stress",
+                                "Increase LDL cholesterol levels"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Reduce oxidative stress. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 35,
+                        "question": "Which diet should be restricted for cardiovascular patients EXCEPT:",
+                        "options": [
+                                "Fried foods",
+                                "Red meats",
+                                "Margarine",
+                                "Salmon"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Salmon. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 36,
+                        "question": "Why are whole grains recommended for cardiovascular health?",
+                        "options": [
+                                "They increase LDL cholesterol levels",
+                                "They help reduce blood pressure",
+                                "They promote unwanted blood clotting",
+                                "They contribute directly to excess weight gain"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) They help reduce blood pressure. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 37,
+                        "question": "Which vitamin plays an important role in reducing the risk of neural tube defects during pregnancy?",
+                        "options": [
+                                "Vitamin C",
+                                "Vitamin B12",
+                                "Vitamin B9 (Folate)",
+                                "Vitamin K"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Vitamin B9 (Folate). Verified Applied Nutrition response."
+                },
+                {
+                        "id": 38,
+                        "question": "To produce a healthy baby, a mother should ideally have an adequate diet:",
+                        "options": [
+                                "Only during the gestational period",
+                                "Only during the first trimester",
+                                "Only during the second and third trimesters",
+                                "From before conception through the lactation period"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) From before conception through the lactation period. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 39,
+                        "question": "The third trimester of pregnancy is the main time for fetal storage of:",
+                        "options": [
+                                "Iron, calcium, and folate",
+                                "Iron, fat, and calcium",
+                                "Vitamin D, vitamin K, and fat",
+                                "Fat, calcium, and folate"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Iron, fat, and calcium. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 40,
+                        "question": "What is the adequate intake of calcium (mg/day) for pregnant women under the age of 19?",
+                        "options": [
+                                "1300 mg/day",
+                                "1000 mg/day",
+                                "1100 mg/day",
+                                "800 mg/day"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) 1300 mg/day. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 41,
+                        "question": "A pregnant woman experiencing nausea and vomiting (morning sickness) should be advised to:",
+                        "options": [
+                                "Drink a large glass of water with high-fat food before rising",
+                                "Eat small, frequent meals",
+                                "Increase intake of high-fat, spicy, or salty foods",
+                                "Limit all fluid intake throughout the day"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Eat small, frequent meals. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 42,
+                        "question": "Persistent ingestion of non-nutritive substances for at least 1 month at a developmentally inappropriate age (such as during pregnancy) is known as:",
+                        "options": [
+                                "Behavioral food cult",
+                                "Pica",
+                                "Traditional food belief",
+                                "Hyperemesis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Pica. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 43,
+                        "question": "Which of the following is a characteristic sign of preeclampsia?",
+                        "options": [
+                                "Vomiting",
+                                "Abdominal pain",
+                                "Hypertension",
+                                "Loss of appetite"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Hypertension. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 44,
+                        "question": "A perinatal complication of a diabetic pregnancy includes:",
+                        "options": [
+                                "Neonatal hypoglycemia",
+                                "Hydrocephalus",
+                                "Maternal postpartum hemorrhage",
+                                "Small-for-gestational-age infant only"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Neonatal hypoglycemia. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 45,
+                        "question": "What is the recommended weight gain during pregnancy for a woman with a normal pre-pregnancy BMI?",
+                        "options": [
+                                "At least 15 pounds",
+                                "15\u201320 pounds",
+                                "25\u201335 pounds",
+                                "35\u201345 pounds"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 25\u201335 pounds. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 46,
+                        "question": "How long is a full-term pregnancy?",
+                        "options": [
+                                "34 weeks",
+                                "36 weeks",
+                                "40 weeks",
+                                "42 weeks"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 40 weeks. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 47,
+                        "question": "Which of the following factors is LEAST likely to pose a risk to maternal and fetal health during pregnancy and childbirth?",
+                        "options": [
+                                "Multiple closely spaced pregnancies",
+                                "Underweight mother",
+                                "Maternal age of 15 years or under",
+                                "Maternal age of 30 to 35 years"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Maternal age of 30 to 35 years. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 48,
+                        "question": "Colostrum is a thick yellowish fluid that is higher in:",
+                        "options": [
+                                "Protein and minerals/antibodies",
+                                "Fat and lactose sugar",
+                                "Total calories compared to mature milk",
+                                "Free fatty acids and cholesterol"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Protein and minerals/antibodies. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 49,
+                        "question": "When a mother asks when breastfeeding should be started for her newborn baby after delivery, the best nursing response is:",
+                        "options": [
+                                "Soon after delivery / within one hour",
+                                "After 6 hours",
+                                "Within 24 hours",
+                                "Whenever the mother feels rested"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Soon after delivery / within one hour. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 50,
+                        "question": "Foods or fluids given to newborns before breastfeeding is established or before breast milk \"comes in,\" usually on the first day of life, are called:",
+                        "options": [
+                                "Mandatory feeds",
+                                "Energy feeds",
+                                "Prelacteal feeds",
+                                "Weaning feeds"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Prelacteal feeds. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 51,
+                        "question": "According to the WHO, at what age should weaning (complementary feeding) be started?",
+                        "options": [
+                                "3\u20134 months",
+                                "5 months",
+                                "6 months",
+                                "9\u201310 months"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 6 months. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 52,
+                        "question": "When an infant spits out new food and pulls faces during early feeding, what does this most commonly indicate?",
+                        "options": [
+                                "An indicator of permanent food dislike",
+                                "Reaction to a new sensation and taste",
+                                "Acute abdominal pain",
+                                "Nausea and vomiting"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Reaction to a new sensation and taste. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 53,
+                        "question": "Foods for infants should be prepared without added:",
+                        "options": [
+                                "Sugar and salt",
+                                "Salt and herbs",
+                                "Water and oils",
+                                "Vegetables and fruits"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Sugar and salt. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 54,
+                        "question": "Which food is the least allergy-causing option and a great first solid food for an infant?",
+                        "options": [
+                                "Rice cereal",
+                                "Skim cow's milk",
+                                "Whole egg",
+                                "Fish"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Rice cereal. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 55,
+                        "question": "Some babies are intolerant to cow's milk formulas; in these cases, which option is used as a substitute?",
+                        "options": [
+                                "Casein-based milk",
+                                "Whey-based milk",
+                                "Soy formula",
+                                "Unmodified evaporated milk"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Soy formula. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 56,
+                        "question": "\"Stay-down\" formula milk is thickened formula used in babies with the aim of:",
+                        "options": [
+                                "Treating cow's milk allergy",
+                                "Managing lactose intolerance",
+                                "Preventing reflux",
+                                "Replacing breast milk in healthy term infants"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Preventing reflux. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 57,
+                        "question": "A low-birth-weight infant weighs less than:",
+                        "options": [
+                                "1500 g",
+                                "2500 g",
+                                "3000 g",
+                                "3500 g"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 2500 g. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 58,
+                        "question": "The ratio of nutrient content to total energy content is termed:",
+                        "options": [
+                                "Nutrient density",
+                                "Calorie density",
+                                "Energy density",
+                                "Glycemic load"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Nutrient density. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 59,
+                        "question": "Which of the following statements regarding macronutrient energy value is accurate?",
+                        "options": [
+                                "Carbohydrates yield 4 kcal/g and fats yield 9 kcal/g",
+                                "Protein yields 9 kcal/g",
+                                "Fat yields 7 kcal/g",
+                                "Carbohydrates yield 9 kcal/g"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Carbohydrates yield 4 kcal/g and fats yield 9 kcal/g. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 60,
+                        "question": "Calculate the BMI of a patient weighing 84 kg with a height of 2 m:",
+                        "options": [
+                                "18.5 kg/m^2",
+                                "20 kg/m^2",
+                                "21 kg/m^2",
+                                "27 kg/m^2"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) 21 kg/m^2. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 61,
+                        "question": "A young adult calculates her BMI and finds it to be 27 kg/m^2. What does this BMI range suggest about her weight status?",
+                        "options": [
+                                "Underweight",
+                                "Normal weight",
+                                "Overweight",
+                                "Obese"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Overweight. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 62,
+                        "question": "The difference between total body weight and body fat weight is called:",
+                        "options": [
+                                "Resting metabolic rate (RMR)",
+                                "Basal metabolic rate (BMR)",
+                                "Body mass index (BMI)",
+                                "Lean body mass (LBM)"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Lean body mass (LBM). Verified Applied Nutrition response."
+                },
+                {
+                        "id": 63,
+                        "question": "What is the primary purpose of calculating Basal Metabolic Rate (BMR)?",
+                        "options": [
+                                "Estimate daily water intake",
+                                "Assess specific vitamin deficiencies",
+                                "Determine calorie needs at rest",
+                                "Measure skeletal muscle strength"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Determine calorie needs at rest. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 64,
+                        "question": "As a nurse, what is the best core approach to suggest for sustainable weight loss to a patient?",
+                        "options": [
+                                "Avoid all dietary fats",
+                                "Avoid all carbohydrates",
+                                "Skip two meals every day",
+                                "Increase energy expenditure relative to energy intake"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Increase energy expenditure relative to energy intake. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 65,
+                        "question": "A patient has an intense fear of gaining weight and severely restricts food intake. The patient most likely suffers from:",
+                        "options": [
+                                "Anxiety nervosa",
+                                "Bulimia nervosa",
+                                "Anorexia nervosa",
+                                "Binge eating disorder"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Anorexia nervosa. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 66,
+                        "question": "As a registered nurse educating a patient with gallbladder disease, why should you advise avoiding carbonated drinks?",
+                        "options": [
+                                "They increase gastric acidity",
+                                "They increase blood pressure",
+                                "They increase serum cholesterol",
+                                "They increase gas/distension and movement of stones or discomfort"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) They increase gas/distension and movement of stones or discomfort. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 67,
+                        "question": "Which of the following statements is NOT true of liver cirrhosis?",
+                        "options": [
+                                "It involves scar formation replacing healthy liver cells",
+                                "It can result from chronic alcohol use or fatty/inflamed liver disease",
+                                "It mostly affects only obese individuals",
+                                "It represents advanced structural liver damage"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) It mostly affects only obese individuals. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 68,
+                        "question": "Which test is primarily performed to detect liver damage?",
+                        "options": [
+                                "LFTs (Liver Function Tests)",
+                                "RFTs (Renal Function Tests)",
+                                "CBC (Complete Blood Count)",
+                                "DHEA-sulfate serum test"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) LFTs (Liver Function Tests). Verified Applied Nutrition response."
+                },
+                {
+                        "id": 69,
+                        "question": "Why does alcoholic liver disease compromise nutritional status?",
+                        "options": [
+                                "Alcohol alters metabolism of protein, vitamins, and minerals",
+                                "Alcohol consumption displaces nutrient intake",
+                                "Nutrients may not be absorbed efficiently",
+                                "All of the above"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) All of the above. Verified Applied Nutrition response."
+                },
+                {
+                        "id": 70,
+                        "question": "For planning a balanced diet, it is essential to consider:",
+                        "options": [
+                                "Knowledge of Recommended Dietary Allowances (RDAs)",
+                                "Physiological status",
+                                "Food groups",
+                                "All of the above"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) All of the above. Verified Applied Nutrition response."
+                }
+        ]
 }
     ],
     "sem-3": [
