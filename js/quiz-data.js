@@ -998,6 +998,861 @@ const QUIZ_DATA = {
                         "explanation": "Correct Option: (B) It may expose participants to unnecessary risk or harm. Verified quantitative reasoning response."
                 }
         ]
+},
+        {
+        "id": "s2-theories-model-paper",
+        "title": "Nursing Theories - 70 Scenario Mock Paper",
+        "code": "NUR-202-MODEL",
+        "semester": "Semester 2",
+        "description": "70-scenario Nursing Theories examination covering Grand, Middle-Range, and Practice models with instant marksheet generation, score analytics, and rationales.",
+        "durationMinutes": 70,
+        "icon": "fa-book-medical",
+        "badgeColor": "purple",
+        "isModelPaper": false,
+        "showAnswersImmediately": true,
+        "totalQuestions": 70,
+        "questions": [
+                {
+                        "id": 1,
+                        "question": "A nursing theory is best described as:",
+                        "options": [
+                                "Factual",
+                                "Definite",
+                                "Dynamic",
+                                "Universal"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Dynamic. Verified Nursing Theories response."
+                },
+                {
+                        "id": 2,
+                        "question": "Which statement accurately reflects how nursing theories are classified and evaluated?",
+                        "options": [
+                                "A theory usually fits one category only and is valid only if backed by major nursing organizations.",
+                                "The category in which a theory fits depends on how it is interpreted, and theories lacking specificity are not limited solely to scholars.",
+                                "Evaluating a theory begins primarily by checking whether other nursing scholars have received it well.",
+                                "A theory is invalidated whenever a nurse's personal observations do not support it."
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) The category in which a theory fits depends on how it is interpreted, and theories lacking specificity are not limited solely to scholars.. Verified Nursing Theories response."
+                },
+                {
+                        "id": 3,
+                        "question": "A nursing student asks why examining nursing theory sometimes feels unresolved rather than settled around fixed rules. Which learning approach is least productive when engaging with nursing theory?",
+                        "options": [
+                                "Listening",
+                                "Adopting another person's position",
+                                "Expecting a firm answer",
+                                "Evaluating"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Expecting a firm answer. Verified Nursing Theories response."
+                },
+                {
+                        "id": 4,
+                        "question": "A nurse theorist argues that valid knowledge claims must rest on sensory experiences verified through scientific methodology, whereas another emphasizes the nature of existence and \"what really exists.\" Which pairing accurately matches these philosophical branches?",
+                        "options": [
+                                "Empiricism and Ontology",
+                                "Epistemology and Logic",
+                                "Aesthetics and Metaphysics",
+                                "Existentialism and Epistemology"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Empiricism and Ontology. Verified Nursing Theories response."
+                },
+                {
+                        "id": 5,
+                        "question": "Which branch of philosophy is specifically concerned with demonstrable principles, the structure of arguments and statements, and why an argument is valid?",
+                        "options": [
+                                "Metaphysics",
+                                "Logic",
+                                "Ontology",
+                                "Epistemology"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Logic. Verified Nursing Theories response."
+                },
+                {
+                        "id": 6,
+                        "question": "In deductive reasoning, a statement or proposition used as a basis for forming or deriving a conclusion is a:",
+                        "options": [
+                                "Assumption",
+                                "Testing",
+                                "Premise",
+                                "Theorem"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Premise. Verified Nursing Theories response."
+                },
+                {
+                        "id": 7,
+                        "question": "A concept in a theory that is as constrained as possible so that only elements strictly needed are included exemplifies:",
+                        "options": [
+                                "Parsimony",
+                                "Ontology",
+                                "Aesthetic",
+                                "Construct"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Parsimony. Verified Nursing Theories response."
+                },
+                {
+                        "id": 8,
+                        "question": "A nurse is caring for a patient who recently underwent a mastectomy and wants to assess psycho-spiritual comfort needs rather than physical dressing status or pain scores alone. Which nursing action best addresses this?",
+                        "options": [
+                                "Asking the patient to rate her current level of pain",
+                                "Listening to the way the patient describes herself",
+                                "Checking the patient's dressings frequently",
+                                "Noticing how many visitors the patient receives"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Listening to the way the patient describes herself. Verified Nursing Theories response."
+                },
+                {
+                        "id": 9,
+                        "question": "Which component of a nursing theory translates theoretical concepts into application within nursing practice?",
+                        "options": [
+                                "Definition",
+                                "Assumptions",
+                                "Models",
+                                "Process"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Models. Verified Nursing Theories response."
+                },
+                {
+                        "id": 10,
+                        "question": "A nurse reflects on clinical observations to generate new inquiries and validate nursing knowledge systematically. Which statement best captures how theory, research, and practice relate?",
+                        "options": [
+                                "Practice only applies rules without generating questions for theory.",
+                                "Theory, research, and practice affect each other in ways that are reciprocal, cyclical, and interactive.",
+                                "Nursing knowledge relies on trial and error rather than research validation.",
+                                "Theory replaces clinical skills and protocols in practice."
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Theory, research, and practice affect each other in ways that are reciprocal, cyclical, and interactive.. Verified Nursing Theories response."
+                },
+                {
+                        "id": 11,
+                        "question": "Which of the following is NOT one of the common concepts included across nursing theories?",
+                        "options": [
+                                "Nursing history",
+                                "The person or patient",
+                                "Health and environment",
+                                "Nursing goals and functions"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Nursing history. Verified Nursing Theories response."
+                },
+                {
+                        "id": 12,
+                        "question": "A framework that explains how all parts of a system work together as a whole while each part also operates in relation to the whole independently is:",
+                        "options": [
+                                "Developmental theory",
+                                "Adaptation theory",
+                                "General System theory",
+                                "Functional theory"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) General System theory. Verified Nursing Theories response."
+                },
+                {
+                        "id": 13,
+                        "question": "Which nurse theorist used \"General Systems Theory\" as a framework for theory development?",
+                        "options": [
+                                "Florence Nightingale",
+                                "Betty Neuman",
+                                "Hildegard Peplau",
+                                "Martha E. Rogers"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Betty Neuman. Verified Nursing Theories response."
+                },
+                {
+                        "id": 14,
+                        "question": "According to the integrated knowledge stage of knowing, what characterizes a nurse at this stage?",
+                        "options": [
+                                "Relying strictly on unspoken intuition without external input",
+                                "Assimilation and application of knowledge from nursing and other healthcare disciplines",
+                                "Memorizing isolated procedures without clinical context",
+                                "Rejecting theoretical frameworks in favor of routine"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Assimilation and application of knowledge from nursing and other healthcare disciplines. Verified Nursing Theories response."
+                },
+                {
+                        "id": 15,
+                        "question": "Florence Nightingale's view of nursing's role regarding the body and the environment is best summarized as:",
+                        "options": [
+                                "Curing disease directly through medical interventions",
+                                "Facilitating the body's reparative processes by manipulating the client's environment so nature can act",
+                                "Replacing physician diagnosis and treatment plans",
+                                "Viewing human beings as open systems in constant energy exchange"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Facilitating the body's reparative processes by manipulating the client's environment so nature can act. Verified Nursing Theories response."
+                },
+                {
+                        "id": 16,
+                        "question": "According to Nightingale's theory, what does the canon of \"petty management\" mean?",
+                        "options": [
+                                "Empathy for the patient",
+                                "Continuity of care when the nurse is absent",
+                                "Standard of care",
+                                "Environmental alteration"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Empathy for the patient. Verified Nursing Theories response."
+                },
+                {
+                        "id": 17,
+                        "question": "Which statement is an EXCEPTION among the assumptions of Florence Nightingale's Environmental Theory?",
+                        "options": [
+                                "Nurses should be trained",
+                                "Nursing is both an empirical art and science",
+                                "The disease process is important to nursing",
+                                "Spirituality is the core of nursing care"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Spirituality is the core of nursing care. Verified Nursing Theories response."
+                },
+                {
+                        "id": 18,
+                        "question": "Which of the following is a criticism of Florence Nightingale's Theory?",
+                        "options": [
+                                "Overemphasis on health promotion and maintenance",
+                                "Absence of a conceptual diagram",
+                                "Neglect of environmental hygiene",
+                                "Excessive focus on assisting the individual"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Absence of a conceptual diagram. Verified Nursing Theories response."
+                },
+                {
+                        "id": 19,
+                        "question": "Virginia Henderson defined the unique function of the nurse as assisting the individual toward health, recovery, or peaceful death with activities they would perform unaided if they had the necessary strength, will, or knowledge, aiming to:",
+                        "options": [
+                                "Ensure lifelong dependency on nursing care",
+                                "Help the individual gain independence as rapidly as possible",
+                                "Focus exclusively on medical cure phases",
+                                "Standardize care around 12 physiological components"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Help the individual gain independence as rapidly as possible. Verified Nursing Theories response."
+                },
+                {
+                        "id": 20,
+                        "question": "In Henderson's framework, providing a comfortable bed, checking wheel locks, and keeping the call bell within the patient's reach addresses which patient need?",
+                        "options": [
+                                "Biological",
+                                "Physical",
+                                "Spiritual",
+                                "Safety"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Safety. Verified Nursing Theories response."
+                },
+                {
+                        "id": 21,
+                        "question": "When a nurse performs daily passive exercises to reduce knee joint stiffness and the patient walks without difficulty after one week, how is this evaluation categorized?",
+                        "options": [
+                                "Positive patient outcomes",
+                                "Positive nursing intervention's outcomes",
+                                "Improved health strategies",
+                                "Successful implementation of exercise"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Positive nursing intervention's outcomes. Verified Nursing Theories response."
+                },
+                {
+                        "id": 22,
+                        "question": "Henderson's view of the nursing process as \"really the application of the logical approach to the solution of a problem\" rests on which reason?",
+                        "options": [
+                                "Diagnoses are selected from NANDA classification",
+                                "The steps are developed on the scientific method",
+                                "It replaces individualized patient assessment",
+                                "It applies only to community settings"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) The steps are developed on the scientific method. Verified Nursing Theories response."
+                },
+                {
+                        "id": 23,
+                        "question": "A patient works full-time during the day while attending nursing school at night, balancing competing demands on health and self-care. In Dorothea Orem's theory, which term best applies to the total set of self-care actions required to meet current health needs?",
+                        "options": [
+                                "Self-care agency",
+                                "Self-care deficit",
+                                "Therapeutic self-care demand",
+                                "Partially compensatory system"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Therapeutic self-care demand. Verified Nursing Theories response."
+                },
+                {
+                        "id": 24,
+                        "question": "A nurse teaches a diabetic patient how to self-administer insulin independently while the patient manages daily routines. Which Orem nursing system does this reflect?",
+                        "options": [
+                                "Wholly compensatory",
+                                "Partially compensatory",
+                                "Supportive-educative",
+                                "Dependent-care system"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Supportive-educative. Verified Nursing Theories response."
+                },
+                {
+                        "id": 25,
+                        "question": "Which of the following is NOT a category of self-care requisites in Orem's theory?",
+                        "options": [
+                                "Universal",
+                                "Developmental",
+                                "Health deviation",
+                                "Fundamental"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Fundamental. Verified Nursing Theories response."
+                },
+                {
+                        "id": 26,
+                        "question": "In Orem's theory, variables such as gender, age, developmental state, health state, socio-cultural orientation, family system, and living pattern are termed:",
+                        "options": [
+                                "Attributory factors",
+                                "Conditioning factors",
+                                "Secondary factors",
+                                "Privileges"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Conditioning factors. Verified Nursing Theories response."
+                },
+                {
+                        "id": 27,
+                        "question": "Which of the following is NOT related to Orem's theory?",
+                        "options": [
+                                "Theory of self-curing",
+                                "Theory of self-care",
+                                "Theory of self-care deficit",
+                                "Theory of nursing systems"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Theory of self-curing. Verified Nursing Theories response."
+                },
+                {
+                        "id": 28,
+                        "question": "In Faye Glenn Abdellah's framework, care needs focused on facilitating the maintenance of oxygen and nutrition supply to body cells are classified as:",
+                        "options": [
+                                "Basic to all patients",
+                                "Sustenal care needs",
+                                "Remedial care needs",
+                                "Restorative care needs"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Sustenal care needs. Verified Nursing Theories response."
+                },
+                {
+                        "id": 29,
+                        "question": "In Abdellah's theory, care needs that involve identifying and accepting positive and negative expressions, feelings, and reactions, and recognizing the emotional interrelatedness of illness, correspond to:",
+                        "options": [
+                                "Basic to all patients",
+                                "Sustenal care needs",
+                                "Remedial care needs",
+                                "Restorative care needs"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Remedial care needs. Verified Nursing Theories response."
+                },
+                {
+                        "id": 30,
+                        "question": "Care needs that include accepting the optimum possible goals in light of physical and emotional limitations are classified under Abdellah's framework as:",
+                        "options": [
+                                "Basic to all patients",
+                                "Sustenal care needs",
+                                "Remedial care needs",
+                                "Restorative care needs"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Restorative care needs. Verified Nursing Theories response."
+                },
+                {
+                        "id": 31,
+                        "question": "Which of the following is NOT included in Abdellah's 21 nursing problems?",
+                        "options": [
+                                "Hygiene and physical comfort",
+                                "Drug administration errors",
+                                "Activity and rest",
+                                "Oxygen supply"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Drug administration errors. Verified Nursing Theories response."
+                },
+                {
+                        "id": 32,
+                        "question": "Which of the following is NOT a concept related to Faye Abdellah's theory?",
+                        "options": [
+                                "Sustenal care needs",
+                                "The twenty-one nursing problems",
+                                "Restorative care needs",
+                                "Therapeutic self-care demand"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Therapeutic self-care demand. Verified Nursing Theories response."
+                },
+                {
+                        "id": 33,
+                        "question": "Abdellah's theory is best classified as a:",
+                        "options": [
+                                "Practice theory",
+                                "Middle-range theory",
+                                "Grand theory",
+                                "Meta theory"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Middle-range theory. Verified Nursing Theories response."
+                },
+                {
+                        "id": 34,
+                        "question": "Understanding the role of social problems as influencing factors in illness belongs to which need category in Abdellah's framework?",
+                        "options": [
+                                "Basic to all patients",
+                                "Remedial care need",
+                                "Sustenal care need",
+                                "Restorative care need"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Remedial care need. Verified Nursing Theories response."
+                },
+                {
+                        "id": 35,
+                        "question": "According to Hildegard Peplau's theory, which term represents \"a word symbol that implies forward movement of personality and other ongoing human processes in the direction of creative, constructive, productive, personal and community living\"?",
+                        "options": [
+                                "Health",
+                                "Environment",
+                                "Person",
+                                "Nursing"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Health. Verified Nursing Theories response."
+                },
+                {
+                        "id": 36,
+                        "question": "In Peplau's interpersonal model, during which phase does the patient participate in goal setting, develop a feeling of belonging, and respond selectively to those who meet his or her needs?",
+                        "options": [
+                                "Orientation",
+                                "Identification",
+                                "Exploitation",
+                                "Resolution"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Identification. Verified Nursing Theories response."
+                },
+                {
+                        "id": 37,
+                        "question": "According to Peplau, during which phase of the nurse-patient relationship is active listening most important?",
+                        "options": [
+                                "During the termination phase",
+                                "During the working phase",
+                                "During the orientation phase",
+                                "During the planning phase"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) During the working phase. Verified Nursing Theories response."
+                },
+                {
+                        "id": 38,
+                        "question": "Which of the following is NOT one of the sequential phases of the interpersonal relationship in Peplau's theory?",
+                        "options": [
+                                "Orientation",
+                                "Identification",
+                                "Restoration",
+                                "Exploitation"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Restoration. Verified Nursing Theories response."
+                },
+                {
+                        "id": 39,
+                        "question": "Serving as a substitute for another person, such as a parent or sibling, corresponds to which nursing role?",
+                        "options": [
+                                "Surrogate",
+                                "Resource person",
+                                "Teacher",
+                                "Counselor"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Surrogate. Verified Nursing Theories response."
+                },
+                {
+                        "id": 40,
+                        "question": "Which of the following is NOT a concept related to the personal system in Imogene King's Theory?",
+                        "options": [
+                                "Perception",
+                                "Self",
+                                "Body image",
+                                "Organization"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Organization. Verified Nursing Theories response."
+                },
+                {
+                        "id": 41,
+                        "question": "In Imogene King's Goal Attainment Theory, \"stress\" belongs to which system?",
+                        "options": [
+                                "Personal system",
+                                "Interpersonal system",
+                                "Social system",
+                                "Transaction"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Interpersonal system. Verified Nursing Theories response."
+                },
+                {
+                        "id": 42,
+                        "question": "Imogene King's Goal Attainment Theory is classified under which category of theories?",
+                        "options": [
+                                "Need theories",
+                                "Interaction theories",
+                                "Outcome theories",
+                                "Humanistic theories"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Interaction theories. Verified Nursing Theories response."
+                },
+                {
+                        "id": 43,
+                        "question": "Which theorist stated that \"each human being perceives the world as a total person in making transactions with individuals and things in environment\"?",
+                        "options": [
+                                "Neuman",
+                                "Nightingale",
+                                "Peplau",
+                                "Imogene King"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Imogene King. Verified Nursing Theories response."
+                },
+                {
+                        "id": 44,
+                        "question": "According to Ida Jean Orlando's Nursing Process Theory, what initiates the nursing process, and what defines \"distress\"?",
+                        "options": [
+                                "Physician orders initiate it; distress is total inability to communicate.",
+                                "Patient behavior or nurse observations initiate it; distress is the experience of a patient whose need has not been met (or has been only partially met).",
+                                "Care plans initiate it; distress is refusal of medication.",
+                                "Environmental changes initiate it; distress is anxiety before discharge."
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Patient behavior or nurse observations initiate it; distress is the experience of a patient whose need has not been met (or has been only partially met).. Verified Nursing Theories response."
+                },
+                {
+                        "id": 45,
+                        "question": "Which of the following is identified as a main weakness of Ida Jean Orlando's Nursing Process Theory?",
+                        "options": [
+                                "Overemphasis on rigid hospital hierarchies",
+                                "Lack of operational definitions of society or environment",
+                                "Exclusion of immediate patient needs",
+                                "Focus only on long-term community health"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Lack of operational definitions of society or environment. Verified Nursing Theories response."
+                },
+                {
+                        "id": 46,
+                        "question": "In Lydia E. Hall's Care, Core, and Cure model, which component is based on pathological and therapeutic sciences?",
+                        "options": [
+                                "Care",
+                                "Core",
+                                "Cure",
+                                "All three equally"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Cure. Verified Nursing Theories response."
+                },
+                {
+                        "id": 47,
+                        "question": "A nurse provides emotional support to a terminally ill patient, whereas another nurse bathes and feeds a dependent elderly patient. Which components of Lydia Hall's model do these two actions represent respectively?",
+                        "options": [
+                                "Care, then Core",
+                                "Core, then Care",
+                                "Cure, then Core",
+                                "Care, then Cure"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Core, then Care. Verified Nursing Theories response."
+                },
+                {
+                        "id": 48,
+                        "question": "Which statement is EXCLUDED from the weaknesses of Lydia E. Hall's theory?",
+                        "options": [
+                                "Only applicable to adult patients",
+                                "Acute-stage patients are not included",
+                                "Only related to those who are ill",
+                                "It appears to be completely and simply logical"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) It appears to be completely and simply logical. Verified Nursing Theories response."
+                },
+                {
+                        "id": 49,
+                        "question": "According to Lydia E. Hall, to whom does her theory apply?",
+                        "options": [
+                                "Adults",
+                                "Children",
+                                "16 years and above",
+                                "16 years and below"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Adults. Verified Nursing Theories response."
+                },
+                {
+                        "id": 50,
+                        "question": "Ernestine Wiedenbach's conceptual model of nursing is called:",
+                        "options": [
+                                "The Helping Art of Clinical Nursing",
+                                "Modeling and Role Modeling Theory",
+                                "Health As Expanding Consciousness",
+                                "Human-To-Human Relationship Model"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) The Helping Art of Clinical Nursing. Verified Nursing Theories response."
+                },
+                {
+                        "id": 51,
+                        "question": "In Callista Roy's Adaptation Model, which subsystem responds through four cognitive-emotive channels (perceptual and information processing, learning, judgment, and emotion)?",
+                        "options": [
+                                "Regulator subsystem",
+                                "Cognator subsystem",
+                                "Physiologic mode",
+                                "Self-concept mode"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Cognator subsystem. Verified Nursing Theories response."
+                },
+                {
+                        "id": 52,
+                        "question": "Which of the following is NOT one of Roy's adaptive modes?",
+                        "options": [
+                                "Physiologic-physical / physiologic needs",
+                                "Self-concept or group identity mode",
+                                "Role function",
+                                "Achievement"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Achievement. Verified Nursing Theories response."
+                },
+                {
+                        "id": 53,
+                        "question": "When applying Roy's Adaptation Model, which stimulus is NOT among the stimuli assessed?",
+                        "options": [
+                                "Focal stimulus",
+                                "Contextual stimulus",
+                                "Perceptual stimulus",
+                                "Residual stimulus"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Perceptual stimulus. Verified Nursing Theories response."
+                },
+                {
+                        "id": 54,
+                        "question": "Which of the following is NOT a concept related to Roy's Adaptation Model?",
+                        "options": [
+                                "Focal stimuli",
+                                "Cognator subsystem",
+                                "Role function",
+                                "Flexible line of defense"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Flexible line of defense. Verified Nursing Theories response."
+                },
+                {
+                        "id": 55,
+                        "question": "In Betty Neuman's Systems Model, the increase in energy occurring in relation to the degree of reaction to a stressor is termed:",
+                        "options": [
+                                "Reconstitution",
+                                "Lines of resistance",
+                                "Primary prevention",
+                                "Secondary prevention"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Lines of resistance. Verified Nursing Theories response."
+                },
+                {
+                        "id": 56,
+                        "question": "According to Neuman's Systems Model, what serves as the standard for determining wellness-deviance?",
+                        "options": [
+                                "Flexible line of defense",
+                                "Normal line of defense",
+                                "Line of resistance",
+                                "Core structure"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Line of resistance. Verified Nursing Theories response."
+                },
+                {
+                        "id": 57,
+                        "question": "Which environment in Neuman's model is unconsciously developed and used by the client to support protective coping?",
+                        "options": [
+                                "Internal environment",
+                                "External environment",
+                                "Created environment",
+                                "All of the above"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Created environment. Verified Nursing Theories response."
+                },
+                {
+                        "id": 58,
+                        "question": "In Betty Neuman's model, \"cooling measures\" are considered part of which level of prevention?",
+                        "options": [
+                                "Primary prevention",
+                                "Secondary prevention",
+                                "Tertiary prevention",
+                                "Primordial prevention"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Secondary prevention. Verified Nursing Theories response."
+                },
+                {
+                        "id": 59,
+                        "question": "Which of the following is NOT a concept in Dorothy Johnson's Behavioral Systems Model?",
+                        "options": [
+                                "Affiliation",
+                                "Dependency",
+                                "Achievement",
+                                "Energy fields"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Energy fields. Verified Nursing Theories response."
+                },
+                {
+                        "id": 60,
+                        "question": "In Johnson's Behavioral System Model, \"predisposition to act with reference to the goal, in certain ways rather than other ways\" refers to:",
+                        "options": [
+                                "Drive",
+                                "Set",
+                                "Goal",
+                                "Scope of action"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Set. Verified Nursing Theories response."
+                },
+                {
+                        "id": 61,
+                        "question": "\"Social inclusion, intimacy and the formation and attachment of a strong social bond\" are explained in which subsystem of Johnson's model?",
+                        "options": [
+                                "Dependency subsystem",
+                                "Attachment or affiliative subsystem",
+                                "Achievement subsystem",
+                                "Aggressive subsystem"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Attachment or affiliative subsystem. Verified Nursing Theories response."
+                },
+                {
+                        "id": 62,
+                        "question": "Which of the following is NOT one of the four structural characteristics of each subsystem in Johnson's model?",
+                        "options": [
+                                "Drives",
+                                "Set",
+                                "Choices",
+                                "Demands"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Demands. Verified Nursing Theories response."
+                },
+                {
+                        "id": 63,
+                        "question": "In Martha Rogers' Science of Unitary Human Beings, \"continuous and mutual interaction between man and environment\" is termed:",
+                        "options": [
+                                "Pattern",
+                                "Integrality",
+                                "Resonancy",
+                                "Helicy"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Integrality. Verified Nursing Theories response."
+                },
+                {
+                        "id": 64,
+                        "question": "Which term refers to the \"irreducible, pan-dimensional energy field identified by pattern and integral with the human field\"?",
+                        "options": [
+                                "Health",
+                                "Environment",
+                                "Person",
+                                "Nursing"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Environment. Verified Nursing Theories response."
+                },
+                {
+                        "id": 65,
+                        "question": "According to Rogers' theory, human beings cannot be divided into parts but must be viewed as a whole; this concept is called:",
+                        "options": [
+                                "Unitary human beings",
+                                "Similarity of all human beings",
+                                "Integrity of human beings",
+                                "Dignity of human beings"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Unitary human beings. Verified Nursing Theories response."
+                },
+                {
+                        "id": 66,
+                        "question": "Rosemarie Rizzo Parse's Human Becoming Theory includes Meaning, Rhythmicity, and Cotranscendence. Which of the following is NOT part of Parse's framework?",
+                        "options": [
+                                "Helicy",
+                                "Meaning",
+                                "Rhythmicity",
+                                "Cotranscendence"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Helicy. Verified Nursing Theories response."
+                },
+                {
+                        "id": 67,
+                        "question": "Which of the following is NOT one of Margaret Newman's assumptions?",
+                        "options": [
+                                "Pathological conditions serve as a manifestation of the total pattern of the individual",
+                                "Pathology is primary and exists prior to structural and functional changes",
+                                "Removal of pathology will change the pattern of the individual",
+                                "Health encompasses conditions previously described as illness or pathology"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Pathology is primary and exists prior to structural and functional changes. Verified Nursing Theories response."
+                },
+                {
+                        "id": 68,
+                        "question": "Which of the following is NOT a weakness of Margaret Newman's theory?",
+                        "options": [
+                                "Abstract nature",
+                                "Multidimensional nature",
+                                "Qualitatively focused",
+                                "Quantitatively focused"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Quantitatively focused. Verified Nursing Theories response."
+                },
+                {
+                        "id": 69,
+                        "question": "Which of the following is an EXCEPTION among the assumptions of Jean Watson's Theory of Human Caring?",
+                        "options": [
+                                "Effective caring promotes health and individual and family growth",
+                                "The practice of caring is central to nursing",
+                                "Caring is more healthogenic than curing",
+                                "The development of a helping-trust relationship"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) The development of a helping-trust relationship. Verified Nursing Theories response."
+                },
+                {
+                        "id": 70,
+                        "question": "Which of the following is NOT among Jean Watson's carative factors?",
+                        "options": [
+                                "Forming humanistic-altruistic value system",
+                                "Cultivating sensitivity to self and others",
+                                "Strengthening flexible lines of defense",
+                                "Instilling faith-hope"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Strengthening flexible lines of defense. Verified Nursing Theories response."
+                }
+        ]
 }
     ],
     "sem-3": [
