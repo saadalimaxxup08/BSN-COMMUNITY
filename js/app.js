@@ -1326,6 +1326,13 @@ function renderSubjects(semesterKey) {
 
     const isAuthorizedAdmin = window.isUserAdmin();
 
+    // Dynamic sort: Unlocked papers on top (in curriculum order), Locked papers below (in curriculum order)
+    orderedSubjects.sort((a, b) => {
+        const aUnlocked = window.isPaperUnlocked(a.subject.id) ? 0 : 1;
+        const bUnlocked = window.isPaperUnlocked(b.subject.id) ? 0 : 1;
+        return aUnlocked - bUnlocked;
+    });
+
     // Calculate counts for header
     let liveCount = 0;
     let lockedCount = 0;
