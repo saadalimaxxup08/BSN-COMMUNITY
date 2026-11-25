@@ -3563,6 +3563,861 @@ const QUIZ_DATA = {
                         "explanation": "Correct Option: (B) Bulbourethral gland. Verified Anatomy & Physiology II response."
                 }
         ]
+},
+        {
+        "id": "s2-fon-model-paper",
+        "title": "Fundamentals of Nursing - 70 Scenario Mock Paper",
+        "code": "FON-205-MODEL",
+        "semester": "Semester 2",
+        "description": "70-scenario Fundamentals of Nursing examination covering pain management, sleep, sexuality, values, loss & grief, stress, nursing process, and clinical skills with instant marksheet generation.",
+        "durationMinutes": 70,
+        "icon": "fa-user-nurse",
+        "badgeColor": "cyan",
+        "isModelPaper": false,
+        "showAnswersImmediately": true,
+        "totalQuestions": 70,
+        "questions": [
+                {
+                        "id": 1,
+                        "question": "A 58-year-old client with poorly controlled diabetes mellitus reports a persistent \"dull, burning sensation\" along the soles of both feet that worsens at night, even when bedsheets lightly touch the skin. Which combination of pain characteristics and abnormal pain processing is most consistent with this presentation?",
+                        "options": [
+                                "Nociceptive somatic pain with hyperalgesia",
+                                "Neuropathic pain with allodynia",
+                                "Visceral pain with hyperpathia",
+                                "Psychogenic pain with dysesthesia"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Neuropathic pain with allodynia. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 2,
+                        "question": "A nurse is caring for a post-operative client who has an order for an analgesic to be administered \"around the clock\" (ATC) rather than PRN for persistent moderate-to-severe pain. What is the primary clinical rationale for this dosing schedule?",
+                        "options": [
+                                "It prevents severe pain spikes and maintains more consistent pain relief",
+                                "It eliminates the need to reassess pain intensity before each dose",
+                                "It prevents tolerance to non-steroidal anti-inflammatory drugs (NSAIDs)",
+                                "It replaces non-pharmacological measures during acute recovery"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) It prevents severe pain spikes and maintains more consistent pain relief. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 3,
+                        "question": "During a home visit for a client with terminal liver cancer, the client states, \"I'm no longer afraid of dying\u2014I've settled my affairs and feel ready to move on.\" According to K\u00fcbler-Ross's stages of dying, which stage does this statement best reflect?",
+                        "options": [
+                                "Bargaining",
+                                "Depression",
+                                "Acceptance",
+                                "Denial"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Acceptance. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 4,
+                        "question": "A nursing student is writing a care plan for an immunocompromised client and states: \"The client will remain free from nosocomial infection throughout hospitalization.\" In nursing process terminology, this statement is best classified as a:",
+                        "options": [
+                                "Nursing diagnosis",
+                                "Short-term goal",
+                                "Expected outcome / long-term objective",
+                                "Collaborative intervention"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Expected outcome / long-term objective. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 5,
+                        "question": "Which mechanism occurs when a painful physical or chemical stimulus is converted into a neural signal capable of being transmitted toward the central nervous system?",
+                        "options": [
+                                "Modulation",
+                                "Transduction",
+                                "Transmission",
+                                "Perception"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Transduction. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 6,
+                        "question": "A 28-month-old toddler is admitted with severe acute diarrhea, is febrile with dry lips, and is irritable. What is the nurse's highest priority action upon admission?",
+                        "options": [
+                                "Obtain an accurate baseline weight",
+                                "Assess hydration status and skin turgor",
+                                "Measure the apical-radial pulse deficit",
+                                "Administer oral antipyretics immediately"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Assess hydration status and skin turgor. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 7,
+                        "question": "According to Edward Suchman's (1972) stages of illness behavior, during which stage does the client acknowledge the illness, seek validation and explanation of causes/duration/complications, and potentially relinquish or negotiate the sick role?",
+                        "options": [
+                                "Stage 1: Symptom experience",
+                                "Stage 2: Assumption of sick role",
+                                "Stage 3: Medical care contact",
+                                "Stage 4: Dependent client care"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Stage 3: Medical care contact. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 8,
+                        "question": "A client with an indwelling urinary catheter is being taught home care. Which statement by the client or family indicates a need for further nursing teaching?",
+                        "options": [
+                                "\"I will keep the drainage bag below the level of the bladder at all times.\"",
+                                "\"I should use clean technique when emptying the collecting bag.\"",
+                                "\"Soaking in a warm tub bath every evening will prevent catheter irritation and infection.\"",
+                                "\"Adequate fluid intake helps maintain urine flow unless contraindicated.\""
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) \"Soaking in a warm tub bath every evening will prevent catheter irritation and infection.\". Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 9,
+                        "question": "A client with a history of a recent left lower-limb amputation reports intense burning and cramping in the missing left foot. Which type of pain is the client experiencing?",
+                        "options": [
+                                "Somatic pain",
+                                "Phantom pain",
+                                "Visceral pain",
+                                "Referred somatic pain"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Phantom pain. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 10,
+                        "question": "In Ronald Melzack and Patrick Wall's Gate Control Theory of pain, which of the following is most likely to help \"close the gate\" to ascending pain signals?",
+                        "options": [
+                                "High levels of fear and severe anxiety",
+                                "Distraction, relaxation, and large-fiber stimulation",
+                                "Increased activity in small-diameter C fibers",
+                                "Anticipation of worsening tissue injury"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Distraction, relaxation, and large-fiber stimulation. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 11,
+                        "question": "A client who has just undergone abdominal surgery is admitted to the nursing unit. When assessing pain in the immediate post-operative period, which assessment parameter should the nurse prioritize first?",
+                        "options": [
+                                "Lifetime pain tolerance",
+                                "Pain intensity, location, and quality",
+                                "Past analgesic preferences from childhood",
+                                "Cultural beliefs about stoicism"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Pain intensity, location, and quality. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 12,
+                        "question": "A male client grimaces and tenses his muscles while transferring from bed to chair, yet tells the nurse, \"I'm fine, I don't have any pain.\" What is the most appropriate nursing response?",
+                        "options": [
+                                "Confront the client and state that his grimacing proves he is in pain",
+                                "Clarify the discrepancy gently by addressing the observed nonverbal behavior",
+                                "Document \"no pain\" and withhold ordered analgesics",
+                                "Encourage him to ignore discomfort to speed mobilization"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Clarify the discrepancy gently by addressing the observed nonverbal behavior. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 13,
+                        "question": "According to the WHO Analgesic Ladder, which medication class is recommended as an *adjuvant* to help manage neuropathic pain symptoms?",
+                        "options": [
+                                "Antacids and proton pump inhibitors",
+                                "Tricyclic antidepressants and antiepileptic drugs",
+                                "High-dose aspirin alone",
+                                "Laxatives and antiemetics"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Tricyclic antidepressants and antiepileptic drugs. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 14,
+                        "question": "Stimulating the left knee when a client experiences localized pain in the right knee is an example of which non-pharmacological technique?",
+                        "options": [
+                                "Contralateral stimulation",
+                                "Guided imagery",
+                                "Acupressure over the affected joint",
+                                "Aromatherapy"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Contralateral stimulation. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 15,
+                        "question": "Which non-pharmacological pain intervention is typically most challenging to use effectively with older adults who have significant cognitive impairment?",
+                        "options": [
+                                "Moist heat application",
+                                "Guided imagery",
+                                "Gentle repositioning",
+                                "Avoiding painful stimuli"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Guided imagery. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 16,
+                        "question": "Descending pain modulation involves specific central nervous system structures. Which abbreviation represents key structures associated with pain modulation in your study notes?",
+                        "options": [
+                                "EEG, EMG, and ECG",
+                                "PAG, DLPT, and RVM (written as RUM in notes)",
+                                "CNS, PNS, and ANS",
+                                "ADH, TSH, and ACTH"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) PAG, DLPT, and RVM (written as RUM in notes). Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 17,
+                        "question": "A client with low back pain receives a moist heating pad at prescribed intervals to reduce muscle spasm and discomfort. Which theoretical mechanism supports this intervention?",
+                        "options": [
+                                "Gate control theory and non-pharmacological physical/sensory modulation",
+                                "Elimination of nociceptors in the lumbar spine",
+                                "Suppression of all sympathetic nervous system reflexes",
+                                "Conversion of acute pain into chronic pain"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Gate control theory and non-pharmacological physical/sensory modulation. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 18,
+                        "question": "Which pain assessment tool, developed by Ronald Melzack, evaluates multiple dimensions (sensory, affective, evaluative, and temporal) of a client's pain experience?",
+                        "options": [
+                                "Visual Analog Scale (VAS)",
+                                "McGill Pain Questionnaire",
+                                "Minnesota Multiphasic Personality Inventory (MMPI)",
+                                "Glasgow Coma Scale"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) McGill Pain Questionnaire. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 19,
+                        "question": "A client presents with colicky, poorly localized abdominal pain originating from internal organs. This type of pain is classified as:",
+                        "options": [
+                                "Cutaneous pain",
+                                "Somatic pain",
+                                "Visceral pain",
+                                "Neuropathic pain"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Visceral pain. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 20,
+                        "question": "A nurse is awakened at 04:00 to give scheduled morning medication to an older adult inpatient. When gently woken, the client is confused, disoriented, and difficult to arouse. From which sleep stage was the client most likely awakened?",
+                        "options": [
+                                "Stage I NREM",
+                                "Stage II NREM",
+                                "Stage III / Stage IV NREM (slow-wave/deep sleep)",
+                                "REM sleep"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Stage III / Stage IV NREM (slow-wave/deep sleep). Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 21,
+                        "question": "During which stage of sleep does the brain exhibit high activity levels alongside vivid dreaming and physiological fluctuations, while skeletal muscle tone is generally inhibited?",
+                        "options": [
+                                "Stage I NREM",
+                                "Stage II NREM",
+                                "Stage III NREM",
+                                "REM sleep"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) REM sleep. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 22,
+                        "question": "A 10-year-old boy is found walking calmly down the pediatric hallway at 01:30 with eyes open, unaware of surroundings, and has complete amnesia for the event the next morning. This parasomnia is termed:",
+                        "options": [
+                                "Narcolepsy",
+                                "Somnambulism",
+                                "Bruxism",
+                                "Restless legs syndrome"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Somnambulism. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 23,
+                        "question": "During a clinical interview, a client reports falling asleep abruptly and uncontrollably in the middle of conversations and daytime activities. Which condition is associated with excessive daytime sleepiness and hypocretin deficiency in the CNS?",
+                        "options": [
+                                "Insomnia",
+                                "Narcolepsy",
+                                "Central sleep apnea",
+                                "Nocturnal enuresis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Narcolepsy. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 24,
+                        "question": "Which type of sleep apnea results from a defect or dysfunction in the brain's respiratory control center, often seen in clients with brainstem lesions or neuromuscular disorders?",
+                        "options": [
+                                "Obstructive sleep apnea",
+                                "Central sleep apnea",
+                                "Mixed sleep apnea",
+                                "Postural apnea"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Central sleep apnea. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 25,
+                        "question": "Teeth grinding and clenching during sleep\u2014which can eventually wear down tooth enamel\u2014most typically occurs during which sleep stage?",
+                        "options": [
+                                "Stage I NREM",
+                                "Stage II NREM",
+                                "Stage IV NREM",
+                                "REM sleep"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Stage II NREM. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 26,
+                        "question": "Over a 24-hour circadian cycle, at what time window does human core body temperature typically reach its lowest point?",
+                        "options": [
+                                "Midday (around 12:00 PM)",
+                                "Late night to early morning (around 4:00 AM to 6:00 AM)",
+                                "Late afternoon / early evening (around 4:00 PM to 6:00 PM)",
+                                "Midnight (12:00 AM)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Late night to early morning (around 4:00 AM to 6:00 AM). Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 27,
+                        "question": "A factory worker recently switched from day shift to night shift and reports difficulty falling and staying asleep. Which nursing diagnosis best fits this situation?",
+                        "options": [
+                                "Disturbed Sleep Pattern related to altered sleep-wake schedule",
+                                "Ineffective Coping related to unemployment",
+                                "Risk for Aspiration related to night shift work",
+                                "Chronic Confusion related to circadian shift"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Disturbed Sleep Pattern related to altered sleep-wake schedule. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 28,
+                        "question": "In a normal adult night of sleep, approximately how many complete sleep cycles does an individual typically experience, and how long does the first cycle generally take to pass through the first three NREM stages?",
+                        "options": [
+                                "1\u20132 cycles; 15\u201320 minutes",
+                                "4\u20136 cycles; about 60\u201390 minutes",
+                                "8\u201310 cycles; 120\u2013150 minutes",
+                                "2\u20133 cycles; 10\u201315 minutes"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) 4\u20136 cycles; about 60\u201390 minutes. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 29,
+                        "question": "Which statement accurately reflects expected age-related sleep changes in older adults?",
+                        "options": [
+                                "Total need for slow-wave (Stage IV) sleep increases markedly",
+                                "Stage IV sleep tends to decline, with more frequent nighttime awakenings",
+                                "Older adults require 10\u201312 hours of sleep per night",
+                                "REM sleep doubles in duration after age 65"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Stage IV sleep tends to decline, with more frequent nighttime awakenings. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 30,
+                        "question": "Which of the following is a parasomnia rather than a dyssomnia?",
+                        "options": [
+                                "Insomnia",
+                                "Narcolepsy",
+                                "Sleepwalking (somnambulism)",
+                                "Sleep apnea"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Sleepwalking (somnambulism). Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 31,
+                        "question": "What is the correct chronological sequence of the human sexual response cycle phases described in your sexuality notes?",
+                        "options": [
+                                "Excitement, orgasm, plateau, resolution",
+                                "Excitement, plateau, orgasm, resolution",
+                                "Plateau, excitement, orgasm, resolution",
+                                "Orgasm, excitement, plateau, resolution"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Excitement, plateau, orgasm, resolution. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 32,
+                        "question": "Which phase of the sexual response cycle is characterized by falling blood pressure, muscle relaxation, and the body returning from its excited state to baseline?",
+                        "options": [
+                                "Excitement phase",
+                                "Pslateau phase",
+                                "Orgasm phase",
+                                "Resolution phase"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Resolution phase. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 33,
+                        "question": "According to Sigmund Freud's psychosexual development theory, which stage occurs roughly between 3 and 6 years of age and centers on the genitals?",
+                        "options": [
+                                "Oral stage",
+                                "Anal stage",
+                                "Phallic stage",
+                                "Latency stage"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Phallic stage. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 34,
+                        "question": "In Freud's psychosexual theory, during which developmental period (approximately 6 years to puberty) are sexual urges comparatively dormant while focus shifts to social and intellectual skills?",
+                        "options": [
+                                "Oral stage",
+                                "Anal stage",
+                                "Latency stage",
+                                "Genital stage"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Latency stage. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 35,
+                        "question": "Involuntary spasm or contraction of the pelvic/perineal muscles surrounding the outer third of the vagina when penetration is attempted is known as:",
+                        "options": [
+                                "Vulvodynia",
+                                "Vaginismus",
+                                "Dyspareunia",
+                                "Cervicitis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Vaginismus. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 36,
+                        "question": "Genital pain occurring before, during, or after sexual intercourse\u2014which can affect either sex\u2014is termed:",
+                        "options": [
+                                "Dyspareunia",
+                                "Vaginismus",
+                                "Dysmenorrhea",
+                                "Dyspraxia"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Dyspareunia. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 37,
+                        "question": "When counseling a client or adolescent about masturbation, which evidence-based statement guides accurate nursing teaching?",
+                        "options": [
+                                "Masturbation is a normal way people learn about their bodies and sexual responses",
+                                "Masturbation reliably causes psychological disturbance",
+                                "Adolescent masturbation always impairs academic performance",
+                                "Very few adults engage in masturbation after adolescence"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Masturbation is a normal way people learn about their bodies and sexual responses. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 38,
+                        "question": "The PLISSIT model is a framework used by nurses to address clients' sexual health concerns. Which stage of the PLISSIT model involves providing concrete facts or education directly related to how a specific illness or treatment affects sexuality?",
+                        "options": [
+                                "Permission giving",
+                                "Limited information",
+                                "Specific information",
+                                "Intensive therapy"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Specific information. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 39,
+                        "question": "How one expresses one's gender to others through behaviors, mannerisms, speech, dress, and social presentation is referred to as:",
+                        "options": [
+                                "Sexual orientation",
+                                "Sex role / gender expression",
+                                "Chromosomal sex",
+                                "Asexuality"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Sex role / gender expression. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 40,
+                        "question": "Which of the following is a primary viral sexually transmitted infection (STI)?",
+                        "options": [
+                                "Gonorrhea",
+                                "Chlamydia",
+                                "Genital herpes",
+                                "Syphilis"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Genital herpes. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 41,
+                        "question": "According to the AACN (1998) professional nursing values, acting in accordance with an appropriate code of ethics and accepted standards of practice defines which value?",
+                        "options": [
+                                "Altruism",
+                                "Autonomy",
+                                "Human dignity",
+                                "Integrity"
+                        ],
+                        "correctIndex": 3,
+                        "explanation": "Correct Option: (D) Integrity. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 42,
+                        "question": "A nurse who advocates for fair, equitable access to quality healthcare resources for underserved populations is primarily demonstrating which professional value?",
+                        "options": [
+                                "Social justice",
+                                "Hedonism",
+                                "Self-determination",
+                                "Stoicism"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Social justice. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 43,
+                        "question": "A 20-year-old client with mild intellectual disability (Down syndrome) tells the nurse, \"I'm a good helper because I can carry heavy trays well, even though I learn slowly.\" Which assessment of self-concept and self-esteem best fits this client?",
+                        "options": [
+                                "Negative self-concept and low self-esteem",
+                                "Negative self-concept and high self-esteem",
+                                "Positive self-concept and fairly high self-esteem",
+                                "Positive self-concept and very low self-esteem"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Positive self-concept and fairly high self-esteem. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 44,
+                        "question": "Yusra is 5'7\" tall and weighs 105 lb, yet persistently views herself as \"fat.\" Which aspect of self-concept is primarily altered?",
+                        "options": [
+                                "Core self-concept",
+                                "Body image",
+                                "Moral-ethical self",
+                                "Role performance"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Body image. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 45,
+                        "question": "When asked to list 20 words describing himself, a young adult writes only \"25 years old, male, named Luqman\" over 15 minutes and stops. Which nursing interpretation is most appropriate?",
+                        "options": [
+                                "Unrealistic self-expectations",
+                                "Deficient self-knowledge / limited self-description",
+                                "High self-actualization",
+                                "Psychotic thought blocking"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Deficient self-knowledge / limited self-description. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 46,
+                        "question": "A nursing student juggles heavy clinical rotations, part-time shift work, and family caregiving responsibilities, feeling pulled in competing directions. Which role concept is most likely being experienced?",
+                        "options": [
+                                "Role conflict",
+                                "Role mastery",
+                                "Role reversal",
+                                "Rolelessness"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Role conflict. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 47,
+                        "question": "Seven-year-old Shano has type 1 diabetes and becomes angry when denied restricted snacks; her parents revoke her favorite TV show to reinforce dietary adherence. Which mode of value transmission is illustrated?",
+                        "options": [
+                                "Modeling",
+                                "Moralizing",
+                                "Reward and punishment",
+                                "Laissez-faire"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Reward and punishment. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 48,
+                        "question": "Which statement is most helpful when a nurse assists a client in clarifying their own values regarding a healthcare decision?",
+                        "options": [
+                                "\"If I were in your place, I would choose the surgical option.\"",
+                                "\"Some people choose one path and others choose differently; what led you to your decision?\"",
+                                "\"You should follow the physician's recommendation without delay.\"",
+                                "\"That choice doesn't seem very practical given your history.\""
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) \"Some people choose one path and others choose differently; what led you to your decision?\". Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 49,
+                        "question": "Which of the following is an *internal* variable influencing a client's illness behavior?",
+                        "options": [
+                                "Economic status and insurance coverage",
+                                "Social support and family expectations",
+                                "Perception of symptoms and nature of the illness",
+                                "Cultural norms of the community"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Perception of symptoms and nature of the illness. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 50,
+                        "question": "Grief that is *not* socially recognized, validated, or openly mourned\u2014such as grief over a pet, an ex-partner, or an stigmatized loss\u2014is termed:",
+                        "options": [
+                                "Anticipatory grief",
+                                "Disenfranchised grief",
+                                "Uncomplicated grief",
+                                "Delayed grief"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Disenfranchised grief. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 51,
+                        "question": "The departure of grown children from home, retirement from a career, and age-related physical changes are classic examples of which type of loss?",
+                        "options": [
+                                "Maturational / developmental loss",
+                                "Situational loss",
+                                "Perceived loss",
+                                "Covert loss"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Maturational / developmental loss. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 52,
+                        "question": "A post-mortem change characterized by stiffening of muscles (beginning in involuntary/smaller muscles and progressing to extremities) and eventual resolution roughly around 72\u201396 hours after death is:",
+                        "options": [
+                                "Algor mortis",
+                                "Livor mortis",
+                                "Rigor mortis",
+                                "Pallor mortis"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Rigor mortis. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 53,
+                        "question": "According to the Health Belief Model, how many core components shape an individual's perception of threat from a disease?",
+                        "options": [
+                                "One",
+                                "Two",
+                                "Three",
+                                "Four"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Two. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 54,
+                        "question": "Screening programs (such as hypertension or cancer screening) aimed at early detection and prompt intervention of disease are classified under which level of prevention?",
+                        "options": [
+                                "Primordial prevention",
+                                "Primary prevention",
+                                "Secondary prevention",
+                                "Tertiary prevention"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Secondary prevention. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 55,
+                        "question": "In Hans Selye's General Adaptation Syndrome (GAS), which three sequential stages describe the body's physiological response to stress?",
+                        "options": [
+                                "Denial, anger, acceptance",
+                                "Alarm, resistance, exhaustion",
+                                "Appraisal, coping, adaptation",
+                                "Arousal, plateau, resolution"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Alarm, resistance, exhaustion. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 56,
+                        "question": "Which stress model views stress as arising from an ongoing interaction/transaction between the person and the environment, involving cognitive appraisal and coping?",
+                        "options": [
+                                "Stimulus-based model",
+                                "Response-based model",
+                                "Transaction-based model",
+                                "Purely anatomical model"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Transaction-based model. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 57,
+                        "question": "Which of the following represents a *maladaptive* or *short-term* coping strategy rather than a healthy long-term coping strategy?",
+                        "options": [
+                                "Regular aerobic exercise",
+                                "Problem-solving and time management",
+                                "Using recreational/unprescribed drugs to numb distress",
+                                "Seeking social support and balanced nutrition"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Using recreational/unprescribed drugs to numb distress. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 58,
+                        "question": "Which of the following is a *physiological* indicator of stress rather than a purely emotional/psychological indicator?",
+                        "options": [
+                                "Fear and dread",
+                                "Anger and frustration",
+                                "Pupil dilation, dry mouth, and elevated blood pressure",
+                                "Hopelessness"
+                        ],
+                        "correctIndex": 2,
+                        "explanation": "Correct Option: (C) Pupil dilation, dry mouth, and elevated blood pressure. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 59,
+                        "question": "When initiating the *implementation* phase of the nursing process, what should the nurse do first?",
+                        "options": [
+                                "Document interventions that have not yet occurred",
+                                "Reassess the client to verify that the planned interventions remain appropriate",
+                                "Delegate all tasks to unlicensed assistive personnel",
+                                "Close the nursing care plan"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Reassess the client to verify that the planned interventions remain appropriate. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 60,
+                        "question": "Which type of nursing diagnosis includes four components (label, definition, defining characteristics, and related factors/risk factors) or focuses on a cluster of nursing diagnoses?",
+                        "options": [
+                                "Actual nursing diagnosis",
+                                "Syndrome nursing diagnosis",
+                                "Health promotion nursing diagnosis",
+                                "Possible nursing diagnosis"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Syndrome nursing diagnosis. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 61,
+                        "question": "During an admission assessment, a nurse observes reddened skin over a bedbound client's heels and updates the care plan to include heel offloading and frequent turning. This is an example of:",
+                        "options": [
+                                "Discharge planning",
+                                "Ongoing planning",
+                                "Retrospective charting",
+                                "Tertiary referral"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Ongoing planning. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 62,
+                        "question": "Which documentation format organizes progress notes using the Data, Action, Response (DAR) structure?",
+                        "options": [
+                                "Narrative charting",
+                                "Focus charting",
+                                "Charting by Exception (CBE)",
+                                "PIE charting"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Focus charting. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 63,
+                        "question": "Which documentation approach records only significant abnormal findings or exceptions to predefined norms, often paired with flow sheets and standard care protocols?",
+                        "options": [
+                                "Charting by Exception (CBE)",
+                                "Traditional source-oriented narrative notes",
+                                "Problem-Oriented Medical Record (POMR)",
+                                "Verbal shift report"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Charting by Exception (CBE). Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 64,
+                        "question": "Which of the following statements about charting nursing actions is a legal and professional standard?",
+                        "options": [
+                                "Routine activities such as raising bed rails may be charted hours ahead of time",
+                                "Interventions should never be charted before they are actually performed",
+                                "Abbreviations and illegible handwriting are acceptable if time is short",
+                                "Errors may be erased or covered with correction fluid"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Interventions should never be charted before they are actually performed. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 65,
+                        "question": "When administering ear (otic) drops to a 2-year-old child, how should the nurse position the pinna to straighten the ear canal?",
+                        "options": [
+                                "Pull the pinna up and back",
+                                "Pull the pinna down and back",
+                                "Pull the pinna straight up",
+                                "Pull the pinna straight forward"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Pull the pinna down and back. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 66,
+                        "question": "What is the most accurate method to confirm proper placement of a small-bore nasogastric feeding tube?",
+                        "options": [
+                                "Injecting 20 mL of air and auscultating over the epigastrium",
+                                "Radiographic (X-ray) examination",
+                                "Measuring gastric residual volume only",
+                                "Observing whether the client coughs"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Radiographic (X-ray) examination. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 67,
+                        "question": "A client with fecal impaction is ordered an oil-retention enema. Which nursing action is most appropriate?",
+                        "options": [
+                                "Infuse a large-volume (1,000 mL) hypertonic solution rapidly",
+                                "Instruct the client to retain the oil enema for at least 30 minutes (or as prescribed) to soften stool",
+                                "Administer a carminative solution to expel flatus only",
+                                "Perform immediate digital evacuation before instillation"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Instruct the client to retain the oil enema for at least 30 minutes (or as prescribed) to soften stool. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 68,
+                        "question": "Which diet progression is appropriate for a client ordered a full liquid diet?",
+                        "options": [
+                                "Clear apple juice, black tea, and broth only",
+                                "Milk, custard, cream soups, and strained/smooth juices",
+                                "Raw vegetables, whole-grain toast, and fried meats",
+                                "Nothing by mouth (NPO)"
+                        ],
+                        "correctIndex": 1,
+                        "explanation": "Correct Option: (B) Milk, custard, cream soups, and strained/smooth juices. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 69,
+                        "question": "Which laboratory value best alerts the nurse to potential protein-calorie malnutrition or depleted visceral protein stores?",
+                        "options": [
+                                "Decreased serum albumin level",
+                                "Elevated platelet count",
+                                "Slightly elevated blood glucose after a meal",
+                                "Normal capillary refill"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Decreased serum albumin level. Verified Fundamentals of Nursing response."
+                },
+                {
+                        "id": 70,
+                        "question": "A client with severe malabsorption, bowel failure, or inability to use the GI tract for more than 5 days may require which nutritional route to achieve an anabolic state?",
+                        "options": [
+                                "Total Parenteral Nutrition (TPN)",
+                                "Clear liquid oral diet",
+                                "Routine bolus nasogastric feeding alone",
+                                "High-fiber bulk laxatives"
+                        ],
+                        "correctIndex": 0,
+                        "explanation": "Correct Option: (A) Total Parenteral Nutrition (TPN). Verified Fundamentals of Nursing response."
+                }
+        ]
 }
     ],
     "sem-3": [
