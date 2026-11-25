@@ -4,6 +4,159 @@
 // Personalized Demo Login, Quiz Arena, and Marksheets
 // ===================================================
 
+
+// ====================================================================
+// PROFESSIONAL IN-APP MODAL NOTIFICATION SYSTEM
+// Eliminates awkward native browser 'bsn-community.vercel.app says' popups
+// ====================================================================
+window.showAppModal = function(options) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('global-custom-modal');
+        const badge = document.getElementById('global-modal-badge');
+        const iconBox = document.getElementById('global-modal-icon-box');
+        const icon = document.getElementById('global-modal-icon');
+        const title = document.getElementById('global-modal-title');
+        const body = document.getElementById('global-modal-body');
+        const btnConfirm = document.getElementById('btn-global-modal-confirm');
+        const btnCancel = document.getElementById('btn-global-modal-cancel');
+        const btnClose = document.getElementById('btn-close-global-modal');
+        const confirmText = document.getElementById('global-modal-confirm-text');
+
+        if (!modal) {
+            resolve(true);
+            return;
+        }
+
+        const optTitle = options.title || 'Official Portal Notification';
+        const optBadge = options.badge || 'ZAFII PORTAL NOTICE';
+        const optMessage = options.message || '';
+        const optType = options.type || 'info';
+        const optConfirmText = options.confirmText || 'Acknowledge';
+        const isConfirm = Boolean(options.isConfirm);
+
+        if (title) title.textContent = optTitle;
+        if (badge) badge.textContent = optBadge;
+        if (body) {
+            const escaped = typeof escapeHtml === 'function' ? escapeHtml(optMessage) : optMessage;
+            body.innerHTML = escaped.replace(/\n/g, '<br>');
+        }
+        if (confirmText) confirmText.textContent = optConfirmText;
+
+        // Styling according to message type
+        if (iconBox && icon) {
+            if (optType === 'danger' || optType === 'locked') {
+                iconBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                iconBox.style.color = '#f43f5e';
+                iconBox.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.35)';
+                icon.className = optType === 'locked' ? 'fa-solid fa-lock' : 'fa-solid fa-triangle-exclamation';
+                if (badge) {
+                    badge.style.background = 'rgba(239, 68, 68, 0.15)';
+                    badge.style.color = '#fda4af';
+                    badge.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+                }
+            } else if (optType === 'success') {
+                iconBox.style.background = 'rgba(16, 185, 129, 0.15)';
+                iconBox.style.color = '#10b981';
+                iconBox.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.35)';
+                icon.className = 'fa-solid fa-circle-check';
+                if (badge) {
+                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badge.style.color = '#6ee7b7';
+                    badge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+                }
+            } else if (optType === 'warning') {
+                iconBox.style.background = 'rgba(245, 158, 11, 0.15)';
+                iconBox.style.color = 'var(--amber-warning)';
+                iconBox.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.35)';
+                icon.className = 'fa-solid fa-shield-halved';
+                if (badge) {
+                    badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                    badge.style.color = 'var(--amber-warning)';
+                    badge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+                }
+            } else {
+                iconBox.style.background = 'rgba(6, 182, 212, 0.15)';
+                iconBox.style.color = 'var(--cyan-primary)';
+                iconBox.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.35)';
+                icon.className = 'fa-solid fa-bell';
+                if (badge) {
+                    badge.style.background = 'rgba(6, 182, 212, 0.15)';
+                    badge.style.color = 'var(--cyan-primary)';
+                    badge.style.borderColor = 'rgba(6, 182, 212, 0.35)';
+                }
+            }
+        }
+
+        if (btnCancel) {
+            btnCancel.style.display = isConfirm ? 'inline-block' : 'none';
+        }
+
+        modal.classList.add('active');
+
+        function cleanup(result) {
+            modal.classList.remove('active');
+            btnConfirm.removeEventListener('click', onConfirmClick);
+            if (btnCancel) btnCancel.removeEventListener('click', onCancelClick);
+            if (btnClose) btnClose.removeEventListener('click', onCancelClick);
+            modal.removeEventListener('click', onBackdropClick);
+            resolve(result);
+        }
+
+        function onConfirmClick(e) {
+            e.stopPropagation();
+            cleanup(true);
+        }
+        function onCancelClick(e) {
+            e.stopPropagation();
+            cleanup(false);
+        }
+        function onBackdropClick(e) {
+            if (e.target === modal) cleanup(false);
+        }
+
+        btnConfirm.addEventListener('click', onConfirmClick);
+        if (btnCancel) btnCancel.addEventListener('click', onCancelClick);
+        if (btnClose) btnClose.addEventListener('click', onCancelClick);
+        modal.addEventListener('click', onBackdropClick);
+    });
+};
+
+// Global override: Replaces native browser alert everywhere with custom branded modal
+window.alert = function(msg) {
+    let type = 'info';
+    let title = 'Portal Notification';
+    let badge = 'ZAFII PORTAL NOTICE';
+
+    const str = String(msg || '');
+    if (str.includes('🔒') || str.toLowerCase().includes('lock') || str.toLowerCase().includes('restricted')) {
+        type = 'locked';
+        title = 'Access Restricted';
+        badge = 'SECURITY RESTRICTION';
+    } else if (str.includes('❌') || str.toLowerCase().includes('error') || str.toLowerCase().includes('denied') || str.toLowerCase().includes('failed') || str.toLowerCase().includes('incorrect')) {
+        type = 'danger';
+        title = 'Action Required';
+        badge = 'SYSTEM ALERT';
+    } else if (str.includes('⚠️') || str.toLowerCase().includes('warning') || str.toLowerCase().includes('expired') || str.toLowerCase().includes('mandatory') || str.toLowerCase().includes('required')) {
+        type = 'warning';
+        title = 'Important Notice';
+        badge = 'ATTENTION REQUIRED';
+    } else if (str.includes('✅') || str.includes('🎉') || str.toLowerCase().includes('success') || str.toLowerCase().includes('unlocked')) {
+        type = 'success';
+        title = 'Operation Successful';
+        badge = 'CONFIRMATION';
+    }
+
+    const cleanMsg = str.replace(/^[🔒❌⚠️ℹ️✅🎉⏰📱]\s*/, '');
+    window.showAppModal({
+        title: title,
+        badge: badge,
+        message: cleanMsg,
+        type: type,
+        confirmText: 'Acknowledge'
+    });
+};
+
+
 const AppState = {
     currentUser: null,
     activeSemester: "sem-2", // Default active semester set to Semester 5
@@ -672,7 +825,9 @@ function initDashboard() {
     if (btnGoSem5) {
         btnGoSem5.addEventListener('click', () => {
             closeLockedSemesterModal();
-            switchSemester('sem-2');
+            if (typeof switchSemester === 'function') {
+                switchSemester('sem-2');
+            }
         });
     }
 
@@ -1027,7 +1182,13 @@ window.isPaperUnlocked = function(quizId) {
 };
 
 window.showLockedPaperNotice = function(paperTitle) {
-    alert(`🔒 Access Restricted!\n\n"${paperTitle}" is currently locked by the Administrator.\n\nOnce the administrator unlocks this examination paper from the Admin Console, candidates will be able to attempt the assessment.`);
+    window.showAppModal({
+        title: 'Examination Paper Locked',
+        badge: 'SECURITY RESTRICTION',
+        message: `"${paperTitle}" is currently locked by the Administrator.\n\nOnce the administrator unlocks this examination paper from the Admin Console, candidates will be able to attempt the assessment.`,
+        type: 'locked',
+        confirmText: 'Understood'
+    });
 };
 
 function renderSubjects(semesterKey) {
